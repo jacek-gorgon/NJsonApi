@@ -4,9 +4,9 @@ using System.Linq.Expressions;
 using System.Web.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SocialCee.Framework.Common.Infrastructure;
+using NJsonApi.Common.Infrastructure;
 
-namespace SocialCee.Framework.NJsonApi.Serialization
+namespace NJsonApi.Serialization
 {
     public class JsonApiTransformer : IJsonApiTransformer
     {

@@ -10,7 +10,7 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using NJsonApi.Common.Infrastructure;
 
-namespace SocialCee.Framework.NJsonApi.Serialization
+namespace NJsonApi.Serialization
 {
     public class JsonApiActionFilter : IActionFilter
     {

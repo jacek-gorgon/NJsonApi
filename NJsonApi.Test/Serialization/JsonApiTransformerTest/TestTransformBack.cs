@@ -1,11 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
-using SocialCee.Framework.NJsonApi.Serialization;
-using SocialCee.Framework.NJsonApi.Test.TestModel;
+using NJsonApi.Test.TestModel;
+using NJsonApi.Serialization;
 using SoftwareApproach.TestingExtensions;
 using System.Collections.Generic;
 
-namespace SocialCee.Framework.NJsonApi.Test.Serialization.JsonApiTransformerTest
+namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 {
     [TestClass]
     public class TestTransformBack

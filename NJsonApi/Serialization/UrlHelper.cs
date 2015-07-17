@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web;
 
-namespace SocialCee.Framework.NJsonApi.Serialization
+namespace NJsonApi.Serialization
 {
     public class UrlBuilder : IUrlBuilder
     {

@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace SocialCee.Framework.NJsonApi.Conventions
+namespace NJsonApi.Conventions
 {
     /// <summary>
     /// Represents a set of conventions for property scanning.

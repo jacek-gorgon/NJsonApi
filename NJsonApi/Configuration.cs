@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Web.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using SocialCee.Framework.NJsonApi.Serialization;
+using NJsonApi.Serialization;
 
-namespace SocialCee.Framework.NJsonApi
+namespace NJsonApi
 {
     public class Configuration
     {

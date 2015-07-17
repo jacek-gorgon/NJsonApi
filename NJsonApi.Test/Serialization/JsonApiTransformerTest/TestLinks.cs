@@ -3,10 +3,10 @@ using System.Linq;
 using FakeItEasy;
 using FakeItEasy.ExtensionSyntax.Full;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SocialCee.Framework.NJsonApi.Serialization;
+using NJsonApi.Serialization;
 using SoftwareApproach.TestingExtensions;
 
-namespace SocialCee.Framework.NJsonApi.Test.Serialization.JsonApiTransformerTest
+namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 {
     [TestClass]
     public class TestLinks

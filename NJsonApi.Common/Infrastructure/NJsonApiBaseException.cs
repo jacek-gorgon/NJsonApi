@@ -25,7 +25,7 @@ namespace NJsonApi.Common.Infrastructure
             AssignId();
         }
 
-        protected NJsonApiBaseException(string message, Exception innerException)
+        public NJsonApiBaseException(string message, Exception innerException)
             : base(message, innerException)
         {
             AssignId();

@@ -1,4 +1,4 @@
-﻿namespace SocialCee.Framework.NJsonApi
+﻿namespace NJsonApi
 {
     public enum SerializationDirection
     {

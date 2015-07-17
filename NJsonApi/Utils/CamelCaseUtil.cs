@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SocialCee.Framework.NJsonApi.Utils
+namespace NJsonApi.Utils
 {
     public static class CamelCaseUtil
     {

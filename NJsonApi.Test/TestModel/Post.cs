@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace SocialCee.Framework.NJsonApi.Test.TestModel
+namespace NJsonApi.Test.TestModel
 {
     public class Post
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace SocialCee.Framework.NJsonApi
+namespace NJsonApi
 {
     public interface ILinkMapping
     {

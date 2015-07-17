@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftwareApproach.TestingExtensions;
 
-namespace SocialCee.Framework.NJsonApi.Test
+namespace NJsonApi.Test
 {
     [TestClass]
     public class ConfigurationTest

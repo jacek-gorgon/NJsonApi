@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace SocialCee.Framework.NJsonApi
+namespace NJsonApi
 {
     public class LinkMapping<TParent, TNested> : ILinkMapping
         where TNested : class

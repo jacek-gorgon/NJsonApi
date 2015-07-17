@@ -2,9 +2,9 @@
 using System.Collections;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using SocialCee.Framework.NJsonApi.Utils;
+using NJsonApi.Utils;
 
-namespace SocialCee.Framework.NJsonApi.Serialization
+namespace NJsonApi.Serialization
 {
     public class CompoundDocumentObjectConverter : CustomCreationConverter<CompoundDocument>
     {

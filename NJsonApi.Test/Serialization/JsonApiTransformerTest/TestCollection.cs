@@ -1,13 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MSTestExtensions;
-using SocialCee.Framework.Common.Infrastructure;
-using SocialCee.Framework.NJsonApi.Serialization;
-using SoftwareApproach.TestingExtensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MSTestExtensions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NJsonApi.Common.Infrastructure;
+using NJsonApi.Serialization;
+using SoftwareApproach.TestingExtensions;
 
-namespace SocialCee.Framework.NJsonApi.Test.Serialization.JsonApiTransformerTest
+namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 {
     [TestClass]
     public class TestCollection
@@ -137,7 +137,7 @@ namespace SocialCee.Framework.NJsonApi.Test.Serialization.JsonApiTransformerTest
             var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
 
             // Act => Assert
-            ExceptionAssert.Throws<NotSupportedException>(() => sut.Transform(objectsToTransform, configuration));
+            ThrowsAssert.Throws<NotSupportedException>(() => sut.Transform(objectsToTransform, configuration));
         }
 
         private static IEnumerable<SampleClass> CreateObjectToTransform()

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Data.Entity.Design.PluralizationServices;
 using System.Globalization;
-using SocialCee.Framework.NJsonApi.Utils;
+using NJsonApi.Utils;
 
-namespace SocialCee.Framework.NJsonApi.Conventions.Impl
+namespace NJsonApi.Conventions.Impl
 {
     public class PluralizedCamelCaseTypeConvention : IResourceTypeConvention
     {

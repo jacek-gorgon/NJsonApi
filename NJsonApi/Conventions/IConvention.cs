@@ -1,4 +1,4 @@
-﻿namespace SocialCee.Framework.NJsonApi.Conventions
+﻿namespace NJsonApi.Conventions
 {
     /// <summary>
     /// Marker interface for all convention interfaces used by NJsonApi.

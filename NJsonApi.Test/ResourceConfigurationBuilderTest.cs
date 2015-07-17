@@ -2,10 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SocialCee.Framework.NJsonApi.Test.TestModel;
+using NJsonApi.Test.TestModel;
 using SoftwareApproach.TestingExtensions;
 
-namespace SocialCee.Framework.NJsonApi.Test
+namespace NJsonApi.Test
 {
     [TestClass]
     public class ResourceConfigurationBuilderTest

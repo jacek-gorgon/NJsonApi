@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SocialCee.Framework.Common.Infrastructure;
-using SocialCee.Framework.NJsonApi.Serialization;
+using NJsonApi.Common.Infrastructure;
+using NJsonApi.Serialization;
 using SoftwareApproach.TestingExtensions;
 
-namespace SocialCee.Framework.NJsonApi.Test.Serialization.JsonApiTransformerTest
+namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 {
     [TestClass]
     public class TestMetadataWrapper

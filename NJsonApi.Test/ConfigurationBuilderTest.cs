@@ -4,14 +4,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using FakeItEasy;
-using FakeItEasy.ExtensionSyntax.Full;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SocialCee.Framework.NJsonApi.Conventions;
-using SocialCee.Framework.NJsonApi.Conventions.Impl;
-using SocialCee.Framework.NJsonApi.Test.TestModel;
+using NJsonApi.Test.TestModel;
+using NJsonApi.Conventions;
+using NJsonApi.Conventions.Impl;
 using SoftwareApproach.TestingExtensions;
 
-namespace SocialCee.Framework.NJsonApi.Test
+namespace NJsonApi.Test
 {
     [TestClass]
     public class ConfigurationBuilderTest

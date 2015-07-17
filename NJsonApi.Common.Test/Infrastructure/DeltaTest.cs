@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NJsonApi.Common.Infrastructure;
 using SoftwareApproach.TestingExtensions;
 
-namespace SocialCee.Framework.Common.Test.Infrastructure
+namespace NJsonApi.Common.Test.Infrastructure
 {
     [TestClass]
     public class DeltaTest

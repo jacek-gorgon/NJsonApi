@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace SocialCee.Framework.NJsonApi.Conventions
+namespace NJsonApi.Conventions
 {
     /// <summary>
     /// Represents a convention for link names given the expression pointing and the linked resource property.

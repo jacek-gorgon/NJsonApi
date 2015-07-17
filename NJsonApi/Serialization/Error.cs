@@ -1,4 +1,4 @@
-﻿namespace SocialCee.Framework.NJsonApi.Serialization
+﻿namespace NJsonApi.Serialization
 {
     public class Error
     {

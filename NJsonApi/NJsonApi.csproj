@@ -7,8 +7,8 @@
     <ProjectGuid>{39073AC4-47C1-4C0E-87E1-E48FA606D165}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SocialCee.Framework.NJsonApi</RootNamespace>
-    <AssemblyName>SocialCee.Framework.NJsonApi</AssemblyName>
+    <RootNamespace>NJsonApi</RootNamespace>
+    <AssemblyName>NJsonApi</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
@@ -44,6 +44,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
@@ -67,7 +68,7 @@
     <Compile Include="Serialization\IJsonApiTransformer.cs" />
     <Compile Include="Serialization\IUrlBuilder.cs" />
     <Compile Include="Serialization\JsonApiFormatter.cs" />
-    <Compile Include="Exceptions\MisssingMappingException.cs" />
+    <Compile Include="Exceptions\MissingMappingException.cs" />
     <Compile Include="Serialization\TransformationHelper.cs" />
     <Compile Include="Serialization\UpdateDocumentTypeWrapper.cs" />
     <Compile Include="Serialization\UrlHelper.cs" />

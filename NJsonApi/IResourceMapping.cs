@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace SocialCee.Framework.NJsonApi
+namespace NJsonApi
 {
     public interface IResourceMapping
     {

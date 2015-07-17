@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
-using SocialCee.Framework.NJsonApi.Utils;
+using NJsonApi.Utils;
 
-namespace SocialCee.Framework.NJsonApi.Conventions.Impl
+namespace NJsonApi.Conventions.Impl
 {
     public class SimpleLinkedIdConvention : ILinkIdConvention
     {

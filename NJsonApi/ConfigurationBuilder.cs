@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SocialCee.Framework.NJsonApi.Conventions;
-using SocialCee.Framework.NJsonApi.Conventions.Impl;
+using NJsonApi.Conventions;
+using NJsonApi.Conventions.Impl;
 
-namespace SocialCee.Framework.NJsonApi
+namespace NJsonApi
 {
     public class ConfigurationBuilder
     {

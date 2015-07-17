@@ -1,8 +1,8 @@
 using System;
 using Newtonsoft.Json;
-using SocialCee.Framework.Common.Infrastructure;
+using NJsonApi.Common.Infrastructure;
 
-namespace SocialCee.Framework.NJsonApi.Serialization
+namespace NJsonApi.Serialization
 {
     public interface IJsonApiTransformer
     {

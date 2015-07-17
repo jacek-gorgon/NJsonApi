@@ -1,15 +1,14 @@
 using Newtonsoft.Json.Linq;
-using SocialCee.Framework.Common.Infrastructure;
-using SocialCee.Framework.NJsonApi.Exceptions;
-using SocialCee.Framework.SCFCommon.Exception;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web.Http;
+using NJsonApi.Common.Infrastructure;
+using NJsonApi.Exceptions;
 
-namespace SocialCee.Framework.NJsonApi.Serialization
+namespace NJsonApi.Serialization
 {
     public class TransformationHelper
     {
@@ -17,9 +16,9 @@ namespace SocialCee.Framework.NJsonApi.Serialization
 
         public CompoundDocument HandleException(Exception exception)
         {
-            var scfException = exception is SCFException
-                ? exception as SCFException
-                : new SCFGeneralException(exception.Message, exception);
+            var scfException = exception is NJsonApiBaseException
+                ? exception as NJsonApiBaseException
+                : new NJsonApiBaseException(exception.Message, exception);
 
             var compoundDocument = new CompoundDocument
             {
@@ -422,7 +421,7 @@ namespace SocialCee.Framework.NJsonApi.Serialization
         {
             if (!config.IsMappingRegistered(type))
             {
-                throw new MisssingMappingException(type);
+                throw new MissingMappingException(type);
             }
         }
 

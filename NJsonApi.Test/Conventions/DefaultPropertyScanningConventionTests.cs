@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SocialCee.Framework.NJsonApi.Conventions.Impl;
-using SocialCee.Framework.NJsonApi.Test.TestModel;
+using NJsonApi.Test.TestModel;
+using NJsonApi.Conventions.Impl;
 using SoftwareApproach.TestingExtensions;
 
-namespace SocialCee.Framework.NJsonApi.Test.Conventions
+namespace NJsonApi.Test.Conventions
 {
     [TestClass]
     public class DefaultPropertyScanningConventionTests

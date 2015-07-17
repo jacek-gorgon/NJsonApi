@@ -2,12 +2,12 @@
 using FakeItEasy.ExtensionSyntax.Full;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
-using SocialCee.Framework.NJsonApi.Serialization;
+using NJsonApi.Serialization;
 using SoftwareApproach.TestingExtensions;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SocialCee.Framework.NJsonApi.Test.Serialization.JsonApiTransformerTest
+namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 {
     [TestClass]
     public class TestLinked

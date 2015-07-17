@@ -5,10 +5,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using SocialCee.Framework.NJsonApi.Conventions;
-using SocialCee.Framework.NJsonApi.Utils;
+using NJsonApi.Conventions;
+using NJsonApi.Utils;
 
-namespace SocialCee.Framework.NJsonApi
+namespace NJsonApi
 {
     public class ResourceConfigurationBuilder<TResource> : IResourceConfigurationBuilder
     {

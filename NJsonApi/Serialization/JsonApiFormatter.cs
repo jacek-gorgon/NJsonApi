@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Newtonsoft.Json;
-using SocialCee.Framework.Common.Infrastructure;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -8,8 +7,9 @@ using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Web.Http;
+using NJsonApi.Common.Infrastructure;
 
-namespace SocialCee.Framework.NJsonApi.Serialization
+namespace NJsonApi.Serialization
 {
     public class JsonApiFormatter : BufferedMediaTypeFormatter
     {

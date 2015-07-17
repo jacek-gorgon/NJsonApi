@@ -1,4 +1,4 @@
-﻿namespace SocialCee.Framework.NJsonApi.Test.TestModel
+﻿namespace NJsonApi.Test.TestModel
 {
     public class Comment
     {

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Newtonsoft.Json;
-using SocialCee.Framework.NJsonApi.Utils;
+using NJsonApi.Utils;
 
-namespace SocialCee.Framework.NJsonApi.Conventions.Impl
+namespace NJsonApi.Conventions.Impl
 {
     public class DefaultPropertyScanningConvention : IPropertyScanningConvention
     {

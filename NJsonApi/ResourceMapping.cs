@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using SocialCee.Framework.NJsonApi.Utils;
+using NJsonApi.Utils;
 
-namespace SocialCee.Framework.NJsonApi
+namespace NJsonApi
 {
     public class ResourceMapping<T> : IResourceMapping
     {
