@@ -1,2 +1,2 @@
 # nJsonApi
-.NET implementation of the {json:api} standard
+.NET server implementation of the {**json:api**} standard.

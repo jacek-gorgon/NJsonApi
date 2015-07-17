@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("NJsonApi")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription(".NET implementation of the {json:api} compliant sever serializer")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SocialCee")]
 [assembly: AssemblyProduct("NJsonApi")]
