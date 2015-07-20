@@ -13,5 +13,10 @@
     <releaseNotes>Initial release</releaseNotes>
     <copyright>Copyright 2015</copyright>
     <tags>jsonapi njsonapi</tags>
+    <dependencies>
+      <dependency id="Microsoft.AspNet.WebApi.Client" version="5.2.3"/>
+      <dependency id="Microsoft.AspNet.WebApi.Core" version="5.2.3"/>
+      <dependency id="Newtonsoft.Json" version="7.0.1"/>
+    </dependencies>
   </metadata>
 </package>
