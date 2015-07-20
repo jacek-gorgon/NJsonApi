@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Formatting;
 using System.Web.Http;
+using NJsonApi.HelloWorld.Models;
 
 namespace NJsonApi.HelloWorld
 {
@@ -8,7 +9,10 @@ namespace NJsonApi.HelloWorld
         public static void Register(HttpConfiguration config)
         {
             config.Formatters.Clear();
-            config.Formatters.Add(new JsonMediaTypeFormatter());
+
+            var formatter = new JsonMediaTypeFormatter();
+            formatter.Indent = true;
+            config.Formatters.Add(formatter);
 
             config.MapHttpAttributeRoutes();
             
@@ -17,6 +21,20 @@ namespace NJsonApi.HelloWorld
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            // The following code bootstraps NJsonApi
+            var configBuilder = new ConfigurationBuilder();
+
+            configBuilder
+                .Resource<World>()
+                .WithAllProperties();
+
+            configBuilder
+                .Resource<Continent>()
+                .WithAllProperties();
+
+            var nJsonApiConfig = configBuilder.Build();
+            nJsonApiConfig.Apply(config);
         }
     }
 }
