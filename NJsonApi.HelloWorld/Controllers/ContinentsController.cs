@@ -5,20 +5,20 @@ using NJsonApi.HelloWorld.Models;
 
 namespace NJsonApi.HelloWorld.Controllers
 {
-    public class WorldsController : ApiController
+    public class ContinentsController : ApiController
     {
         // GET api/worlds
-        public IEnumerable<World> Get()
+        public IEnumerable<Continent> Get()
         {
-            return StaticPersistentStore.Worlds;
+            return StaticPersistentStore.Continents;
         }
 
         // GET api/worlds
-        public World Get(int id)
+        public Continent Get(int id)
         {
             try
             {
-                return StaticPersistentStore.Worlds.Single(w => w.Id == id);
+                return StaticPersistentStore.Continents.Single(w => w.Id == id);
             }
             catch
             {

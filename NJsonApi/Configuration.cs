@@ -54,6 +54,9 @@ namespace NJsonApi
             var serializerSettings = new JsonSerializerSettings();
             serializerSettings.Converters.Add(new IsoDateTimeConverter());
             serializerSettings.Converters.Add(new StringEnumConverter() { CamelCaseText = true});
+#if DEBUG
+            serializerSettings.Formatting = Formatting.Indented;
+#endif
             var jsonSerializer = JsonSerializer.Create(serializerSettings);
             return jsonSerializer;
         }

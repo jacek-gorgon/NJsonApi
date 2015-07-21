@@ -92,8 +92,8 @@ namespace NJsonApi.Serialization
 
         public virtual void InternalActionExecuted(HttpActionExecutedContext actionExecutedContext, CancellationToken cancellationToken)
         {
-            if (!actionExecutedContext.Request.Headers.Accept.Contains(new MediaTypeWithQualityHeaderValue("application/vnd.api+json")) ||
-                !actionExecutedContext.Request.Headers.Accept.Any())
+            if (!actionExecutedContext.Request.Headers.Accept.Contains(new MediaTypeWithQualityHeaderValue("application/vnd.api+json")) &&
+                actionExecutedContext.Request.Headers.Accept.Any())
             {
                 return;
             }

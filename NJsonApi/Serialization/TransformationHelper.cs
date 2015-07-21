@@ -118,7 +118,7 @@ namespace NJsonApi.Serialization
         {
             if (resource is IEnumerable)
             {
-                if (((IEnumerable) resource).OfType<object>().All(hashSet.Contains))
+                if (((IEnumerable)resource).OfType<object>().All(hashSet.Contains))
                 {
                     return;
                 }
@@ -135,7 +135,7 @@ namespace NJsonApi.Serialization
                 }
                 hashSet.Add(resource);
             }
-            
+
             depth++;
 
             foreach (var linkMapping in resourceMapping.Links.Where(l => l.SerializeAsLinked))
@@ -149,7 +149,7 @@ namespace NJsonApi.Serialization
                     .ToList();
 
                 MergeResultToDictionary(linkedDictionary, key, linkedObjects);
-                
+
                 if (linkMapping.ResourceMapping.Links.Any() && nestedObjects.Any() && depth < RECURSION_DEPTH_LIMIT)
                 {
 
@@ -329,11 +329,13 @@ namespace NJsonApi.Serialization
             };
 
             var objectDict = new Dictionary<string, object>();
-
             var id = resourceMapping.IdGetter(objectGraph).ToString();
+
+            if (resourceMapping.UrlTemplate != null)
+                objectDict["href"] = urlBuilder.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace("{id}", id));
             objectDict["id"] = id;
-            objectDict["href"] = urlBuilder.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace("{id}", id));
             objectDict["type"] = resourceMapping.ResourceType;
+
             foreach (var propertyGetter in resourceMapping.PropertyGetters)
             {
                 var propertyValue = propertyGetter.Value(objectGraph);
@@ -379,7 +381,7 @@ namespace NJsonApi.Serialization
                     var nestedObjectsIds = resources
                         .Select(o => mapping.ResourceMapping.IdGetter(o).ToString())
                         .ToList();
-                    
+
                     if (nestedObjectsIds.Any())
                     {
                         if (!linkMapping.IsCollection)
@@ -469,7 +471,7 @@ namespace NJsonApi.Serialization
                 else
                 {
                     resultValue = Convert.ChangeType(value, returnType);
-                } 
+                }
             }
             catch
             {

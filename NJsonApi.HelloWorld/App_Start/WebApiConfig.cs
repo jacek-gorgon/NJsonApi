@@ -10,10 +10,6 @@ namespace NJsonApi.HelloWorld
         {
             config.Formatters.Clear();
 
-            var formatter = new JsonMediaTypeFormatter();
-            formatter.Indent = true;
-            config.Formatters.Add(formatter);
-
             config.MapHttpAttributeRoutes();
             
             config.Routes.MapHttpRoute(

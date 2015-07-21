@@ -105,11 +105,13 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\ContinentsController.cs" />
     <Compile Include="Controllers\WorldsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Continent.cs" />
+    <Compile Include="Models\StaticPersistentStore.cs" />
     <Compile Include="Models\World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -125,6 +127,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="packages.config" />
+    <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\NJsonApi.Common\NJsonApi.Common.csproj">
       <Project>{59e4c7f0-daa5-462c-bab2-6bd36787d122}</Project>
       <Name>NJsonApi.Common</Name>
@@ -133,10 +139,6 @@
       <Project>{39073ac4-47c1-4c0e-87e1-e48fa606d165}</Project>
       <Name>NJsonApi</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="packages.config" />
-    <None Include="Project_Readme.html" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
