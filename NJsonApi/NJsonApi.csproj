@@ -94,6 +94,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="makeNugetPackage.bat" />
+    <None Include="NJsonApi.nuspec" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

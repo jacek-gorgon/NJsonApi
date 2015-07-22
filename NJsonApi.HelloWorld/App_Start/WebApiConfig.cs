@@ -1,6 +1,5 @@
-﻿using System.Net.Http.Formatting;
-using System.Web.Http;
-using NJsonApi.HelloWorld.Models;
+﻿using System.Web.Http;
+using NJsonApi.HelloWorld.Common;
 
 namespace NJsonApi.HelloWorld
 {
@@ -19,17 +18,7 @@ namespace NJsonApi.HelloWorld
             );
 
             // The following code bootstraps NJsonApi
-            var configBuilder = new ConfigurationBuilder();
-
-            configBuilder
-                .Resource<World>()
-                .WithAllProperties();
-
-            configBuilder
-                .Resource<Continent>()
-                .WithAllProperties();
-
-            var nJsonApiConfig = configBuilder.Build();
+            var nJsonApiConfig = NJsonApiConfiguration.BuildConfiguration();
             nJsonApiConfig.Apply(config);
         }
     }

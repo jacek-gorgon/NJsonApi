@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace NJsonApi.HelloWorld.Models
+namespace NJsonApi.HelloWorld.Common.Models
 {
     /// <summary>
     /// Primitive backing store for persistence.

@@ -1,24 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Web.Http;
 using System.Linq;
-using NJsonApi.HelloWorld.Models;
+using NJsonApi.HelloWorld.Common.Models;
 
-namespace NJsonApi.HelloWorld.Controllers
+namespace NJsonApi.HelloWorld.Common.Controllers
 {
-    public class ContinentsController : ApiController
+    public class WorldsController : ApiController
     {
         // GET api/worlds
-        public IEnumerable<Continent> Get()
+        public IEnumerable<World> Get()
         {
-            return StaticPersistentStore.Continents;
+            return StaticPersistentStore.Worlds;
         }
 
         // GET api/worlds
-        public Continent Get(int id)
+        public World Get(int id)
         {
             try
             {
-                return StaticPersistentStore.Continents.Single(w => w.Id == id);
+                return StaticPersistentStore.Worlds.Single(w => w.Id == id);
             }
             catch
             {
