@@ -129,13 +129,15 @@ namespace NJsonApi.Serialization
                     routeData.Route.DataTokens["actions"] != null)
                 {
                     var descriptor = ((HttpActionDescriptor[])routeData.Route.DataTokens["actions"])[0].ControllerDescriptor;
-                    var routePrefixAttribute = descriptor.GetCustomAttributes<RoutePrefixAttribute>().FirstOrDefault();
-
+                    var routePrefixAttribute = descriptor.GetCustomAttributes<RoutePrefixAttribute>().FirstOrDefault();                    
                     if (routePrefixAttribute != null)
                     {
-                        result += routeData.Values.ContainsKey("orgId")
-                            ? routePrefixAttribute.Prefix + "/" + routeData.Values["orgId"]
-                            : routePrefixAttribute.Prefix;
+                        var prefix = routePrefixAttribute.Prefix;
+                        foreach (var kvp in routeData.Values)
+                        {
+                            prefix = prefix.Replace("{" + kvp.Key + "}", kvp.Value.ToString());
+                        }
+                        result += prefix;
                     }
                 }
             }

@@ -51,7 +51,7 @@ namespace NJsonApi.Serialization
             if (Uri.TryCreate(urlTemplate, UriKind.Absolute, out fullyQualiffiedUrl))
                 return fullyQualiffiedUrl.ToString();
 
-            if (!Uri.TryCreate(new Uri(Url), new Uri('/' + RoutePrefix + urlTemplate, UriKind.Relative), out fullyQualiffiedUrl))
+            if (!Uri.TryCreate(new Uri(Url), new Uri(RoutePrefix + urlTemplate, UriKind.Relative), out fullyQualiffiedUrl))
                 throw new ArgumentException(string.Format("Unable to create fully qualified url for urltemplate = '{0}'", urlTemplate));
 
             return fullyQualiffiedUrl.ToString();
