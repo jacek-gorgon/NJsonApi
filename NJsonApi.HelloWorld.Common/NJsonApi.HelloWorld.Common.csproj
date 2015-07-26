@@ -68,6 +68,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NJsonApi.Common\NJsonApi.Common.csproj">
+      <Project>{59e4c7f0-daa5-462c-bab2-6bd36787d122}</Project>
+      <Name>NJsonApi.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NJsonApi\NJsonApi.csproj">
       <Project>{39073ac4-47c1-4c0e-87e1-e48fa606d165}</Project>
       <Name>NJsonApi</Name>

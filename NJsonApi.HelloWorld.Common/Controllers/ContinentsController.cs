@@ -5,6 +5,7 @@ using NJsonApi.HelloWorld.Common.Models;
 
 namespace NJsonApi.HelloWorld.Common.Controllers
 {
+    [RoutePrefix("continents")]
     public class ContinentsController : ApiController
     {
         // GET api/worlds
