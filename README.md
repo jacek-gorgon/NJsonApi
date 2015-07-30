@@ -47,7 +47,7 @@ Given the two POCOs:
 ```
 
 ... starts returning the {**json:api**} compliant* JSON:
-```js
+```json
 {
   "links": {
     "worlds.continents": {
