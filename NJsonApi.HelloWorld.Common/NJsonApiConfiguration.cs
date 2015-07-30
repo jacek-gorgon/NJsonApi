@@ -11,12 +11,12 @@ namespace NJsonApi.HelloWorld.Common
             configBuilder
                 .Resource<World>()
                 .WithAllProperties()
-                .WithLinkTemplate("/api/worlds/{id}");
+                .WithLinkTemplate("/worlds/{id}");
 
             configBuilder
                 .Resource<Continent>()
                 .WithAllProperties()
-                .WithLinkTemplate("/api/continents/{id}");
+                .WithLinkTemplate("/continents/{id}");
 
             var nJsonApiConfig = configBuilder.Build();
             return nJsonApiConfig;

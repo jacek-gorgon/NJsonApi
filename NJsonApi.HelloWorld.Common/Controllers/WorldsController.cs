@@ -29,17 +29,20 @@ namespace NJsonApi.HelloWorld.Common.Controllers
         }
 
         [HttpPost, Route]
-        public void Post([FromBody]World world)
+        public World Post([FromBody]Delta<World> worldDelta)
         {
+            var world = worldDelta.ToObject();
             world.Id = StaticPersistentStore.Worlds.Max(w => w.Id) + 1;
             StaticPersistentStore.Worlds.Add(world);
+            return world;
         }
 
         [HttpPut, Route("{id}")]
-        public void Put([FromBody]Delta<World> w, [FromUri]int id)
+        public World Put([FromBody]Delta<World> worldDelta, [FromUri]int id)
         {
             var world = Get(id);
-            w.Apply(world);
+            worldDelta.Apply(world);
+            return world;
         }
     }
 }

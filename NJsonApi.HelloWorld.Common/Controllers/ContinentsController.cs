@@ -8,13 +8,13 @@ namespace NJsonApi.HelloWorld.Common.Controllers
     [RoutePrefix("continents")]
     public class ContinentsController : ApiController
     {
-        // GET api/worlds
+        [HttpGet, Route]
         public IEnumerable<Continent> Get()
         {
             return StaticPersistentStore.Continents;
         }
 
-        // GET api/worlds
+        [HttpGet, Route("{id}")]
         public Continent Get(int id)
         {
             try
