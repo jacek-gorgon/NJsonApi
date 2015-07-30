@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace NJsonApi.Common.Infrastructure
 {
-    public class Delta<T> : IDelta<T>
+    public class Delta<T> : IDelta<T> where T : new()
     {
         private readonly Dictionary<string, Action<object, object>> currentTypeSetters;
         // ReSharper disable once StaticFieldInGenericType
@@ -63,6 +63,13 @@ namespace NJsonApi.Common.Infrastructure
                     typeof(T).GetProperty(objectPropertyNameValue.Key, bindingFlags).SetValue(inputObject, objectPropertyNameValue.Value);
                 }
             }
+        }
+
+        public T ToObject()
+        {
+            var t = new T();
+            Apply(t);
+            return t;
         }
 
         public Dictionary<string, Action<object, object>> ScanForProperties()
