@@ -13,6 +13,7 @@ namespace NJsonApi.Serialization
 {
     public class JsonApiFormatter : BufferedMediaTypeFormatter
     {
+        public const string JSON_API_MIME_TYPE = "application/vnd.api+json";
         private readonly Configuration configuration;
         private readonly JsonSerializer jsonSerializer;
  
@@ -20,7 +21,7 @@ namespace NJsonApi.Serialization
         {
             this.jsonSerializer = jsonSerializer;
             configuration = cfg;
-            SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/vnd.api+json"));
+            SupportedMediaTypes.Add(new MediaTypeHeaderValue(JSON_API_MIME_TYPE));
             SupportedEncodings.Add(new UTF8Encoding(false, true));
 
             if(jsonSerializer.Converters.All(x => x.GetType() != typeof (CompoundDocumentObjectConverter)))
@@ -51,7 +52,7 @@ namespace NJsonApi.Serialization
 
         public override bool CanReadType(Type type)
         {
-            return type.GetGenericTypeDefinition() == typeof (Delta<>);
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof (Delta<>);
         }
 
         public override bool CanWriteType(Type type)

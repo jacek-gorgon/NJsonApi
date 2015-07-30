@@ -71,7 +71,7 @@ namespace NJsonApi.Serialization
         public virtual void InternalActionExecuting(HttpActionContext actionContext, CancellationToken cancellationToken)
         {
             var contentType = actionContext.Request.Content.Headers.ContentType;
-            if (contentType != null && contentType.MediaType != "application/vnd.api+json")
+            if (contentType != null && contentType.MediaType != JsonApiFormatter.JSON_API_MIME_TYPE)
             {
                 return;
             }
@@ -92,24 +92,25 @@ namespace NJsonApi.Serialization
 
         public virtual void InternalActionExecuted(HttpActionExecutedContext actionExecutedContext, CancellationToken cancellationToken)
         {
-            if (!actionExecutedContext.Request.Headers.Accept.Contains(new MediaTypeWithQualityHeaderValue("application/vnd.api+json")) &&
-                actionExecutedContext.Request.Headers.Accept.Any())
+            try
             {
-                return;
-            }
+                var objectContent = actionExecutedContext.Response.Content as ObjectContent;
+                if (objectContent != null && objectContent.Formatter.GetType() == typeof(JsonApiFormatter))
+                {
+                    var routePrefix = SetRoutePrefix(actionExecutedContext);
 
-            var objectContent = actionExecutedContext.Response.Content as ObjectContent;
-            if (objectContent != null)
+                    var value = objectContent.Value;
+                    var transformed = jsonApiTransformer.Transform(value, configuration, routePrefix);
+
+                    var jsonApiFormatter = new JsonApiFormatter(configuration, jsonApiTransformer.Serializer);
+                    actionExecutedContext.Response.Content = new ObjectContent(transformed.GetType(), transformed, jsonApiFormatter);
+
+                    HandlePostRequests(actionExecutedContext, transformed);
+                }
+            }            
+            catch
             {
-                var routePrefix = SetRoutePrefix(actionExecutedContext);
-
-                var value = objectContent.Value;
-                var transformed = jsonApiTransformer.Transform(value, configuration, routePrefix);
-
-                var jsonApiFormatter = new JsonApiFormatter(configuration, jsonApiTransformer.Serializer);
-                actionExecutedContext.Response.Content = new ObjectContent(transformed.GetType(), transformed, jsonApiFormatter);
-
-                HandlePostRequests(actionExecutedContext, transformed);
+                // Different kinds of unsupported requests may end up here. Ideally, these should be programmed against to avoid throwing.
             }
         }
 
@@ -122,25 +123,25 @@ namespace NJsonApi.Serialization
                 result += "http://localhost/";
             }
 
-            var routeData = actionExecutedContext.Request.GetRouteData();
-            if (routeData != null)
-            {
-                if (routeData.Route != null && routeData.Route.DataTokens != null &&
-                    routeData.Route.DataTokens["actions"] != null)
-                {
-                    var descriptor = ((HttpActionDescriptor[])routeData.Route.DataTokens["actions"])[0].ControllerDescriptor;
-                    var routePrefixAttribute = descriptor.GetCustomAttributes<RoutePrefixAttribute>().FirstOrDefault();                    
-                    if (routePrefixAttribute != null)
-                    {
-                        var prefix = routePrefixAttribute.Prefix;
-                        foreach (var kvp in routeData.Values)
-                        {
-                            prefix = prefix.Replace("{" + kvp.Key + "}", kvp.Value.ToString());
-                        }
-                        result += prefix;
-                    }
-                }
-            }
+            //var routeData = actionExecutedContext.Request.GetRouteData();
+            //if (routeData != null)
+            //{
+            //    if (routeData.Route != null && routeData.Route.DataTokens != null &&
+            //        routeData.Route.DataTokens["actions"] != null)
+            //    {
+            //        var descriptor = ((HttpActionDescriptor[])routeData.Route.DataTokens["actions"])[0].ControllerDescriptor;
+            //        var routePrefixAttribute = descriptor.GetCustomAttributes<RoutePrefixAttribute>().FirstOrDefault();                    
+            //        if (routePrefixAttribute != null)
+            //        {
+            //            var prefix = routePrefixAttribute.Prefix;
+            //            foreach (var kvp in routeData.Values)
+            //            {
+            //                prefix = prefix.Replace("{" + kvp.Key + "}", kvp.Value.ToString());
+            //            }
+            //            result += prefix;
+            //        }
+            //    }
+            //}
 
             return result;
         }
