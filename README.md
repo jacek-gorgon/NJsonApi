@@ -3,7 +3,12 @@ The .NET server implementation of the {**json:api**} standard.
 
 Spawned as an internal project used in production environment, the package is now available in the open thanks to courtesy of [**SocialCee**](http://socialcee.com)! Further development, including updating to {**json:api**} 1.0 will take place here.
 ## Quick start
-Given the two POCOs:
+After installing the package:
+```
+PM> Install-Package NJsonApi
+```
+
+... given the two POCOs:
 ```cs
     public class World
     {
