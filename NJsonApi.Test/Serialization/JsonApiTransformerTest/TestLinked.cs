@@ -36,7 +36,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
             // Assert
             result.Links.ShouldHaveCountOf(1);
-            var resultData = result.Data.First().Value as Dictionary<string, object>;
+            var resultData = result.Data as Dictionary<string, object>;
             resultData.Keys.ShouldContain("links");
 
             // TODO-DD: Asserts
@@ -54,7 +54,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
             // Assert
             result.Links.ShouldHaveCountOf(1);
-            var resultData = result.Data.First().Value as Dictionary<string, object>;
+            var resultData = result.Data as Dictionary<string, object>;
             resultData.Keys.ShouldContain("links");
             var linkedDict = resultData["links"] as Dictionary<string, object>;
             linkedDict.ShouldNotBeEmpty();

@@ -24,8 +24,8 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectToTransform, configuration);
 
             // Assert
-            result.Data.ShouldHaveCountOf(1);
-            var transformedObject = result.Data["sampleClasses"] as Dictionary<string, object>;
+            result.Data.ShouldNotBeNull();
+            var transformedObject = result.Data as Dictionary<string, object>;
             transformedObject.ShouldNotBeNull();
         }
 
@@ -41,7 +41,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectToTransform, configuration);
 
             // Assert
-            var transformedObject = result.Data["sampleClasses"] as Dictionary<string, object>;
+            var transformedObject = result.Data as Dictionary<string, object>;
             transformedObject["id"].ShouldEqual(objectToTransform.Id.ToString());
         }
 
@@ -57,7 +57,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectToTransform, configuration);
 
             // Assert
-            var transformedObject = result.Data["sampleClasses"] as Dictionary<string, object>;
+            var transformedObject = result.Data as Dictionary<string, object>;
             transformedObject["someValue"].ShouldEqual(objectToTransform.SomeValue);
             transformedObject["date"].ShouldEqual(objectToTransform.DateTime);
             transformedObject.Keys.Where(k => !reservedKeys.Contains(k)).ShouldHaveCountOf(2);
@@ -75,7 +75,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectToTransform, configuration);
 
             // Assert
-            var transformedObject = result.Data["sampleClasses"] as Dictionary<string, object>;
+            var transformedObject = result.Data as Dictionary<string, object>;
             transformedObject["href"].ShouldEqual("http://sampleclass/1");
         }
 
@@ -91,7 +91,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectToTransform, configuration);
 
             // Assert
-            var transformedObject = result.Data["sampleClasses"] as Dictionary<string, object>;
+            var transformedObject = result.Data as Dictionary<string, object>;
             transformedObject["type"].ShouldEqual("sampleClasses");
         }
 

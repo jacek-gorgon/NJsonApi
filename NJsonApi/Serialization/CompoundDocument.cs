@@ -15,14 +15,13 @@ namespace NJsonApi.Serialization
         /// </summary>
         public CompoundDocument()
         {
-            Data = new Dictionary<string, object>();
             Links = new Dictionary<string, LinkTemplate>();
             Linked = new Dictionary<string, JToken>();
             Metadata = new Dictionary<string, object>();
             Errors = new Dictionary<string, Error>();
         }
 
-        public Dictionary<string, object> Data { get; set; }
+        public object Data { get; set; }
 
         public Dictionary<string, LinkTemplate> Links { get; set; }
 
@@ -42,14 +41,17 @@ namespace NJsonApi.Serialization
         public Dictionary<string, JToken> UnmappedAttributes { get; set; }
 
         public string GetPrimaryResourceHref()
-        {
-            var resource = Data.FirstOrDefault().Value as Dictionary<string, object>;
+        {            
+            var resource = Data as Dictionary<string, object>;
             if (resource != null && resource.ContainsKey("href"))
             {
                 return resource["href"].ToString();
             }
 
-            return string.Empty;
+            var resourceList = Data as List<Dictionary<string, object>>;
+            var href = resourceList?.FirstOrDefault()?.FirstOrDefault(kvp => kvp.Key == "href").Value as string;
+
+            return href ?? string.Empty;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace NJsonApi.Serialization
             foreach (var propertyInfo in propertyInfos)
             {
                 // Skip all properties excluding Data & UnmappedAttributes
-                if (propertyInfo.Name == "UnmappedAttributes" || propertyInfo.Name == "Data")
+                if (propertyInfo.Name == "UnmappedAttributes")
                 {
                     continue;
                 }
@@ -38,13 +38,13 @@ namespace NJsonApi.Serialization
                 }
             }
 
-            // Write dictionary key-value pairs.
-            var compoundDocument = (CompoundDocument)value;
-            foreach (var kvp in compoundDocument.Data)
-            {
-                writer.WritePropertyName(kvp.Key);
-                serializer.Serialize(writer, kvp.Value);
-            }
+            //// Write dictionary key-value pairs.
+            //var compoundDocument = (CompoundDocument)value;
+            //foreach (var kvp in compoundDocument.Data)
+            //{
+            //    writer.WritePropertyName(kvp.Key);
+            //    serializer.Serialize(writer, kvp.Value);
+            //}
             writer.WriteEndObject();
         }
 

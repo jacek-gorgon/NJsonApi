@@ -26,8 +26,8 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
 
             // Assert
-            result.Data.ShouldHaveCountOf(1);
-            var transformedObject = result.Data["sampleClasses"] as List<Dictionary<string, object>>;
+            result.Data.ShouldNotBeNull();
+            var transformedObject = result.Data as List<Dictionary<string, object>>;
             transformedObject.ShouldNotBeNull();
         }
 
@@ -43,8 +43,8 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
 
             // Assert
-            result.Data.ShouldHaveCountOf(1);
-            var transformedObject = result.Data["sampleClasses"] as List<Dictionary<string, object>>;
+            result.Data.ShouldNotBeNull();
+            var transformedObject = result.Data as List<Dictionary<string, object>>;
             transformedObject.ShouldNotBeNull();
         }
 
@@ -61,7 +61,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
 
             // Assert
-            var transformedObject = result.Data["sampleClasses"] as List<Dictionary<string, object>>;
+            var transformedObject = result.Data as List<Dictionary<string, object>>;
             transformedObject[0]["id"].ShouldEqual(objectsToTransform.First().Id.ToString());
             transformedObject[1]["id"].ShouldEqual(objectsToTransform.Last().Id.ToString());
         }
@@ -78,7 +78,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
 
             // Assert
-            var transformedObject = result.Data["sampleClasses"] as List<Dictionary<string, object>>;
+            var transformedObject = result.Data as List<Dictionary<string, object>>;
 
             Action<Dictionary<string, object>, SampleClass> assertSame = (actual, expected) =>
             {
@@ -103,7 +103,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
 
             // Assert
-            var transformedObject = result.Data["sampleClasses"] as List<Dictionary<string, object>>;
+            var transformedObject = result.Data as List<Dictionary<string, object>>;
             transformedObject[0]["href"].ShouldEqual("http://sampleclass/1");
             transformedObject[1]["href"].ShouldEqual("http://sampleclass/2");
         }
@@ -120,7 +120,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
 
             // Assert
-            var transformedObject = result.Data["sampleClasses"] as List<Dictionary<string, object>>;
+            var transformedObject = result.Data as List<Dictionary<string, object>>;
             transformedObject[0]["type"].ShouldEqual("sampleClasses");
             transformedObject[1]["type"].ShouldEqual("sampleClasses");
         }

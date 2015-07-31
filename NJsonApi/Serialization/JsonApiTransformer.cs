@@ -47,7 +47,7 @@ namespace NJsonApi.Serialization
 
             var primaryResource = TransformationHelper.GetPrimaryResource(resource, resourceMapping, routePrefix);
 
-            result.Data.Add(resourceMapping.ResourceType, primaryResource);
+            result.Data = primaryResource;
 
             if (resourceMapping.Links.Any())
             {
