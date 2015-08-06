@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.Common", "NJsonApi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.HelloWorld.Common", "NJsonApi.HelloWorld.Common\NJsonApi.HelloWorld.Common.csproj", "{244CA8C7-6AB9-459E-A531-DBF25EA30DE0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.Common.Test", "NJsonApi.Common.Test\NJsonApi.Common.Test.csproj", "{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.Test", "NJsonApi.Test\NJsonApi.Test.csproj", "{D893BD32-7E79-44DB-AC75-423102B69816}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{244CA8C7-6AB9-459E-A531-DBF25EA30DE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{244CA8C7-6AB9-459E-A531-DBF25EA30DE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{244CA8C7-6AB9-459E-A531-DBF25EA30DE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D893BD32-7E79-44DB-AC75-423102B69816}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D893BD32-7E79-44DB-AC75-423102B69816}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D893BD32-7E79-44DB-AC75-423102B69816}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D893BD32-7E79-44DB-AC75-423102B69816}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -71,7 +71,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             var result = transformer.Transform(objectToTransform, configuration);
 
             // Assert
-            (result.Linked.First().Value as JArray).ShouldHaveCountOf(2);
+            (result.Included.First().Value as JArray).ShouldHaveCountOf(2);
         }
 
         private object CreateOneToManyObject()

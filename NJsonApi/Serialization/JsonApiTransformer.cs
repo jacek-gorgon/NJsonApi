@@ -5,6 +5,7 @@ using System.Web.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NJsonApi.Common.Infrastructure;
+using NJsonApi.Serialization.Documents;
 
 namespace NJsonApi.Serialization
 {
@@ -52,7 +53,7 @@ namespace NJsonApi.Serialization
             if (resourceMapping.Links.Any())
             {
                 result.Links = TransformationHelper.CreateLinkRepresentation(resourceMapping, routePrefix);
-                result.Linked = TransformationHelper.CreateLinkedRepresentation(resource, resourceMapping)
+                result.Included = TransformationHelper.CreateLinkedRepresentation(resource, resourceMapping)
                     .ToDictionary(k => k.Key, v => JToken.FromObject(v.Value, Serializer));
             }
 

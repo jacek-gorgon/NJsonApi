@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NJsonApi.Serialization;
+using NJsonApi.Serialization.Documents;
 using SoftwareApproach.TestingExtensions;
 using System;
 using System.Collections.Generic;

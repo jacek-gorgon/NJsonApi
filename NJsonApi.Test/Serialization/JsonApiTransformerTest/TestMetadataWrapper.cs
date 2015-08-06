@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NJsonApi.Common.Infrastructure;
 using NJsonApi.Serialization;
 using SoftwareApproach.TestingExtensions;
+using NJsonApi.Serialization.Documents;
 
 namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 {

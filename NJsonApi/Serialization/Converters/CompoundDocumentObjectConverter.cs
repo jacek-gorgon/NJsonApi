@@ -3,8 +3,9 @@ using System.Collections;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using NJsonApi.Utils;
+using NJsonApi.Serialization.Documents;
 
-namespace NJsonApi.Serialization
+namespace NJsonApi.Serialization.Converters
 {
     public class CompoundDocumentObjectConverter : CustomCreationConverter<CompoundDocument>
     {

@@ -2,13 +2,14 @@
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NJsonApi.Serialization.Representations;
 
-namespace NJsonApi.Serialization
+namespace NJsonApi.Serialization.Documents
 {
     /// <summary>
     /// Represents a compound document, the root JSON API object returned.
     /// </summary>
-    public class CompoundDocument
+    public class CompoundDocument : Document
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object"/> class.
@@ -16,25 +17,17 @@ namespace NJsonApi.Serialization
         public CompoundDocument()
         {
             Links = new Dictionary<string, LinkTemplate>();
-            Linked = new Dictionary<string, JToken>();
+            Included = new Dictionary<string, JToken>();
             Metadata = new Dictionary<string, object>();
             Errors = new Dictionary<string, Error>();
         }
 
-        public object Data { get; set; }
+        public IResourceRepresentation Data { get; set; }
 
         public Dictionary<string, LinkTemplate> Links { get; set; }
 
-        public Dictionary<string, JToken> Linked { get; set; }
+        public Dictionary<string, JToken> Included { get; set; }
 
-        /// <summary>
-        /// TODO: support metadata
-        /// </summary>
-        public Dictionary<string, object> Metadata { get; set; }
-
-        /// <summary>
-        /// TODO: support errors
-        /// </summary>
         public Dictionary<string, Error> Errors { get; set; }
 
         [JsonExtensionData]

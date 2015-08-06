@@ -8,6 +8,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Web.Http;
 using NJsonApi.Common.Infrastructure;
+using NJsonApi.Serialization.Documents;
+using NJsonApi.Serialization.Converters;
 
 namespace NJsonApi.Serialization
 {

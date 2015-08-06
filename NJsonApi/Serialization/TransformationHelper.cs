@@ -7,6 +7,8 @@ using System.Linq;
 using System.Web.Http;
 using NJsonApi.Common.Infrastructure;
 using NJsonApi.Exceptions;
+using NJsonApi.Serialization.Documents;
+using NJsonApi.Serialization.Representations;
 
 namespace NJsonApi.Serialization
 {
@@ -50,18 +52,15 @@ namespace NJsonApi.Serialization
             };
         }
 
-        public object GetPrimaryResource(object resource, IResourceMapping resourceMapping, string routePrefix)
+        public IResourceRepresentation GetPrimaryResource(object resource, IResourceMapping resourceMapping, string routePrefix)
         {
             var resourcesList = UnifyObjectsToList(resource);
 
-            var result = Enumerable.Select<object, Dictionary<string, object>>(resourcesList, res => CreateResourceRepresentation(res, resourceMapping, routePrefix))
-                .ToList();
+            var representationList = resourcesList.Select(o => CreateResourceRepresentation(o, resourceMapping, routePrefix));
 
-            if (resource is IEnumerable) return result;
-
-            return result.Count == 1
-                ? (object)result.Single()
-                : result;
+            return resource is IEnumerable ?
+                (IResourceRepresentation)new ResourceCollection(representationList) :
+                representationList.Single();
         }
 
         public Dictionary<string, List<object>> CreateLinkedRepresentation(object resource, IResourceMapping resourceMapping)
@@ -321,37 +320,34 @@ namespace NJsonApi.Serialization
             return objectType;
         }
 
-        public Dictionary<string, object> CreateResourceRepresentation(object objectGraph, IResourceMapping resourceMapping, string routePrefix)
+        public SingleResource CreateResourceRepresentation(object objectGraph, IResourceMapping resourceMapping, string routePrefix)
         {
             var urlBuilder = new UrlBuilder
             {
                 RoutePrefix = routePrefix
             };
 
-            var objectDict = new Dictionary<string, object>();
-            var id = resourceMapping.IdGetter(objectGraph).ToString();
+            var result = new SingleResource();
+
+            result.Id = resourceMapping.IdGetter(objectGraph).ToString();
+            result.Type = resourceMapping.ResourceType;
+
+            result.Attributes = resourceMapping.PropertyGetters.ToDictionary(kvp => kvp.Key, kvp => kvp.Value(objectGraph));
 
             if (resourceMapping.UrlTemplate != null)
-                objectDict["href"] = urlBuilder.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace("{id}", id));
-            objectDict["id"] = id;
-            objectDict["type"] = resourceMapping.ResourceType;
+                result.Links["self"] = new SimpleLink { Href = urlBuilder.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace("{id}", result.Id)) };
 
-            foreach (var propertyGetter in resourceMapping.PropertyGetters)
-            {
-                var propertyValue = propertyGetter.Value(objectGraph);
-                if (propertyValue != null) objectDict[propertyGetter.Key] = propertyGetter.Value(objectGraph);
-            }
+            // TODO: Refactor this into relationships object
+            //if (resourceMapping.Links.Any())
+            //{
+            //    var links = CreateLinks(objectGraph, resourceMapping);
+            //    if (Enumerable.Any<KeyValuePair<string, object>>(links))
+            //    {
+            //        attributeDict["links"] = links;
+            //    }
+            //}
 
-            if (resourceMapping.Links.Any())
-            {
-                var links = CreateLinks(objectGraph, resourceMapping);
-                if (Enumerable.Any<KeyValuePair<string, object>>(links))
-                {
-                    objectDict["links"] = links;
-                }
-            }
-
-            return objectDict;
+            return result;
         }
 
         public Dictionary<string, object> CreateLinks(object objectGraph, IResourceMapping resourceMapping)
