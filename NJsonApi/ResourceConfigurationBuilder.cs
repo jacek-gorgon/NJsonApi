@@ -204,17 +204,17 @@ namespace NJsonApi
 
             var link = new LinkMapping<TResource, TNested>
             {
-                LinkName = linkName,
+                RelationshipName = linkName,
                 ResourceIdGetter = idAccessor,
                 ResourceGetter = ExpressionUtils.CompileToObjectTypedExpression(objectAccessor),
                 IsCollection = isCollection,
-                CollectionProperty = isCollection ? propertyInfo : null,
-                LinkedType = linkedType,
-                LinkedResourceType = linkedResourceType,
-                SerializeAsLinked = serializeAsLinked
+                RelatedCollectionProperty = isCollection ? propertyInfo : null,
+                RelatedBaseType = linkedType,
+                RelatedBaseResourceType = linkedResourceType,
+                InclusionRule = serializeAsLinked
             };
 
-            ConstructedMetadata.Links.Add(link);
+            ConstructedMetadata.Relationships.Add(link);
             return this;
         }
 

@@ -25,7 +25,7 @@ namespace NJsonApi.Serialization.Converters
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            writer.WriteValue(((ISerializationAware)value).Serialize());
+            ((ISerializationAware)value).Serialize(writer);
         }
     }
 }

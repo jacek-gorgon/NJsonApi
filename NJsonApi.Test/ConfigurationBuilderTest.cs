@@ -112,27 +112,27 @@ namespace NJsonApi.Test
             var authorMapping = configuration.GetMapping(typeof(Author));
 
             //Assert
-            postMapping.Links.Count.ShouldEqual(1);
+            postMapping.Relationships.Count.ShouldEqual(1);
 
-            var linkToAuthor = postMapping.Links.Single();
+            var linkToAuthor = postMapping.Relationships.Single();
 
             linkToAuthor.IsCollection.ShouldBeFalse();
-            linkToAuthor.LinkName.ShouldEqual("author");
+            linkToAuthor.RelationshipName.ShouldEqual("author");
             linkToAuthor.ParentType.ShouldEqual(typeof(Post));
-            linkToAuthor.LinkedType.ShouldEqual(typeof(Author));
-            linkToAuthor.Resource(post).ShouldBeSameAs(author);
-            linkToAuthor.ResourceId(post).ShouldEqual(4);
+            linkToAuthor.RelatedBaseType.ShouldEqual(typeof(Author));
+            linkToAuthor.RelatedResource(post).ShouldBeSameAs(author);
+            linkToAuthor.RelatedResourceId(post).ShouldEqual(4);
             linkToAuthor.ResourceMapping.ShouldBeSameAs(authorMapping);
 
-            authorMapping.Links.Count.ShouldEqual(1);
-            var linkToPosts = authorMapping.Links.Single();
+            authorMapping.Relationships.Count.ShouldEqual(1);
+            var linkToPosts = authorMapping.Relationships.Single();
 
             linkToPosts.IsCollection.ShouldBeTrue();
-            linkToPosts.LinkName.ShouldEqual("posts");
-            linkToPosts.LinkedType.ShouldEqual(typeof(Post));
+            linkToPosts.RelationshipName.ShouldEqual("posts");
+            linkToPosts.RelatedBaseType.ShouldEqual(typeof(Post));
             linkToPosts.ParentType.ShouldEqual(typeof(Author));
-            linkToPosts.Resource(author).ShouldBeSameAs(author.Posts);
-            linkToPosts.ResourceId.ShouldBeNull();
+            linkToPosts.RelatedResource(author).ShouldBeSameAs(author.Posts);
+            linkToPosts.RelatedResourceId.ShouldBeNull();
             linkToPosts.ResourceMapping.ShouldBeSameAs(postMapping);
         }
 
@@ -172,12 +172,12 @@ namespace NJsonApi.Test
 
             var configuration = builder.Build();
             var postMapping = configuration.GetMapping(typeof(Post));
-            var link = postMapping.Links.Single();
+            var link = postMapping.Relationships.Single();
 
             //Assert
-            link.LinkName.ShouldEqual(testLinkName);
-            link.LinkedResourceType.ShouldEqual(testResourceType);
-            link.ResourceId(new Post()).ShouldEqual(4);
+            link.RelationshipName.ShouldEqual(testLinkName);
+            link.RelatedBaseResourceType.ShouldEqual(testResourceType);
+            link.RelatedResourceId(new Post()).ShouldEqual(4);
         }
 
         [TestMethod]
@@ -235,9 +235,9 @@ namespace NJsonApi.Test
             var postMapping = configuration.GetMapping(typeof(Post));
 
             //Assert
-            postMapping.Links.Count.ShouldEqual(2);
-            postMapping.Links.SingleOrDefault(l => l.LinkedResourceType == "authors").ShouldNotBeNull();
-            postMapping.Links.SingleOrDefault(l => l.LinkedResourceType == "comments").ShouldNotBeNull();
+            postMapping.Relationships.Count.ShouldEqual(2);
+            postMapping.Relationships.SingleOrDefault(l => l.RelatedBaseResourceType == "authors").ShouldNotBeNull();
+            postMapping.Relationships.SingleOrDefault(l => l.RelatedBaseResourceType == "comments").ShouldNotBeNull();
         }
 
         [TestMethod]
@@ -263,9 +263,9 @@ namespace NJsonApi.Test
             var postMapping = configuration.GetMapping(typeof(Post));
 
             //Assert
-            postMapping.Links.Count.ShouldEqual(2);
-            postMapping.Links.SingleOrDefault(l => l.LinkedResourceType == "authors").ShouldNotBeNull();
-            postMapping.Links.SingleOrDefault(l => l.LinkedResourceType == "comments").ShouldNotBeNull();
+            postMapping.Relationships.Count.ShouldEqual(2);
+            postMapping.Relationships.SingleOrDefault(l => l.RelatedBaseResourceType == "authors").ShouldNotBeNull();
+            postMapping.Relationships.SingleOrDefault(l => l.RelatedBaseResourceType == "comments").ShouldNotBeNull();
             postMapping.PropertyGetters.Count.ShouldEqual(2);
             postMapping.PropertySetters.Count.ShouldEqual(2);
             postMapping.IdGetter.ShouldNotBeNull();
@@ -320,12 +320,12 @@ namespace NJsonApi.Test
 
             var configuration = builder.Build();
             var postMapping = configuration.GetMapping(typeof(Post));
-            var link = postMapping.Links.Single();
+            var link = postMapping.Relationships.Single();
 
             //Assert
-            link.LinkName.ShouldEqual(testLinkName);
-            link.LinkedResourceType.ShouldEqual(testResourceType);
-            link.ResourceId(new Post()).ShouldEqual(4);
+            link.RelationshipName.ShouldEqual(testLinkName);
+            link.RelatedBaseResourceType.ShouldEqual(testResourceType);
+            link.RelatedResourceId(new Post()).ShouldEqual(4);
             postMapping.PropertyGetters.ContainsKey(testname).ShouldBeTrue();
 
             A.CallTo(() => propertyScanningConventionMock.IsLinkedResource(A<PropertyInfo>._)).MustHaveHappened();
@@ -370,20 +370,20 @@ namespace NJsonApi.Test
             var result = configurationBuilder.Build();
 
             //Assert
-            resourceConfigurationForPost.ConstructedMetadata.Links.Count.ShouldEqual(1);
-            resourceConfigurationForAuthor.ConstructedMetadata.Links.Count.ShouldEqual(1);
+            resourceConfigurationForPost.ConstructedMetadata.Relationships.Count.ShouldEqual(1);
+            resourceConfigurationForAuthor.ConstructedMetadata.Relationships.Count.ShouldEqual(1);
             configurationBuilder.ResourceConfigurationsByType.All(
-                r => r.Value.ConstructedMetadata.Links.All(l => l.ResourceMapping != null));
+                r => r.Value.ConstructedMetadata.Relationships.All(l => l.ResourceMapping != null));
             var authorLinks =
                  configurationBuilder.ResourceConfigurationsByType[
-                     resourceConfigurationForAuthor.ConstructedMetadata.ResourceRepresentationType].ConstructedMetadata.Links;
+                     resourceConfigurationForAuthor.ConstructedMetadata.ResourceRepresentationType].ConstructedMetadata.Relationships;
             authorLinks.ShouldNotBeNull().Count.ShouldEqual(1);
-            authorLinks[0].LinkName.ShouldEqual("posts");
+            authorLinks[0].RelationshipName.ShouldEqual("posts");
             authorLinks[0].ResourceMapping.PropertyGetters.ShouldNotBeNull().Count.ShouldEqual(1);
-            authorLinks[0].ResourceMapping.Links
-                .ForEach(p => p.ResourceMapping.Links
+            authorLinks[0].ResourceMapping.Relationships
+                .ForEach(p => p.ResourceMapping.Relationships
                     .ForEach(c => c
-                        .LinkName
+                        .RelationshipName
                         .ShouldEqual(resourceConfigurationForComment.ConstructedMetadata.ResourceType)));
 
         }

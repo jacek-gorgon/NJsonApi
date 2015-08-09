@@ -100,13 +100,13 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
             var linkMapping = new LinkMapping<SampleClass, NestedClass>()
             {
-                LinkName = "nestedValues",
+                RelationshipName = "nestedValues",
                 ResourceMapping = nestedClassMapping,
                 ResourceGetter = c => c.NestedValue,
                 ResourceIdGetter = c => c.NestedValueId
             };
 
-            sampleClassMapping.Links.Add(linkMapping);
+            sampleClassMapping.Relationships.Add(linkMapping);
             
             conf.AddMapping(sampleClassMapping);
             conf.AddMapping(nestedClassMapping);

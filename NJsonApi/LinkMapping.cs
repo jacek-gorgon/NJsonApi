@@ -6,33 +6,35 @@ using System.Reflection;
 
 namespace NJsonApi
 {
-    public class LinkMapping<TParent, TNested> : ILinkMapping
+    public class LinkMapping<TParent, TNested> : IRelationshipMapping
         where TNested : class
     {
-        public string LinkName { get; set; }
+        public string RelationshipName { get; set; }
         public Type ParentType { get; set; }
-        public Type LinkedType { get; set; }
-        public string LinkedResourceType { get; set; }
+        public Type RelatedBaseType { get; set; }
+        public string RelatedBaseResourceType { get; set; }
         public IResourceMapping ResourceMapping { get; set; }
+        public string SelfUrlTemplate { get; set; }
+        public string RelatedUrlTemplate { get; set; }
         public bool IsCollection { get; set; }
-        public PropertyInfo CollectionProperty{ get; set; }
-        public bool SerializeAsLinked { get; set; }
+        public PropertyInfo RelatedCollectionProperty{ get; set; }
+        public ResourceInclusionRules InclusionRule { get; set; }
         public string ParentResourceNavigationPropertyName { get; private set; }
         public Type ParentResourceNavigationPropertyType { get; private set; }
 
-        public Func<object, object> Resource { get; private set; }
+        public Func<object, object> RelatedResource { get; private set; }
         public Expression<Func<TParent, object>> ResourceGetter
         {
-            set { Resource = CompileToObjectTypedFunction(value); }
+            set { RelatedResource = CompileToObjectTypedFunction(value); }
         }
 
-        public Func<object, object> ResourceId { get; private set; }
+        public Func<object, object> RelatedResourceId { get; private set; }
 
         public Expression<Func<TParent, object>> ResourceIdGetter
         {
             set
             {
-                ResourceId = CompileToObjectTypedFunction(value);
+                RelatedResourceId = CompileToObjectTypedFunction(value);
                 ParentResourceNavigationPropertyName = GetPropertyName(value);
                 ParentResourceNavigationPropertyType = GetPropertyType(value);
             }
@@ -87,7 +89,7 @@ namespace NJsonApi
         public LinkMapping()
         {
             ParentType = typeof(TParent);
-            LinkedType = typeof(TNested);
+            RelatedBaseType = typeof(TNested);
         }
 
         private Type GetItemType(Type ienumerableType)

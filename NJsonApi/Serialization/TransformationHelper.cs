@@ -9,12 +9,16 @@ using NJsonApi.Common.Infrastructure;
 using NJsonApi.Exceptions;
 using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Representations;
+using NJsonApi.Serialization.Representations.Relationships;
 
 namespace NJsonApi.Serialization
 {
     public class TransformationHelper
     {
-        public const int RECURSION_DEPTH_LIMIT = 10;
+        public const int RecursionDepthLimit = 10;
+        private const string ParentIdPlaceholder = "{parentId}";
+        private const string RelatedIdPlaceholder = "{relatedId}";
+        private const string MetaCountAttribute = "count";
 
         public CompoundDocument HandleException(Exception exception)
         {
@@ -52,11 +56,11 @@ namespace NJsonApi.Serialization
             };
         }
 
-        public IResourceRepresentation GetPrimaryResource(object resource, IResourceMapping resourceMapping, string routePrefix)
+        public IResourceRepresentation GetPrimaryResource(object resource, Configuration config, IResourceMapping resourceMapping, string routePrefix)
         {
             var resourcesList = UnifyObjectsToList(resource);
 
-            var representationList = resourcesList.Select(o => CreateResourceRepresentation(o, resourceMapping, routePrefix));
+            var representationList = resourcesList.Select(o => CreateResourceRepresentation(o, config, resourceMapping, routePrefix));
 
             return resource is IEnumerable ?
                 (IResourceRepresentation)new ResourceCollection(representationList) :
@@ -137,7 +141,7 @@ namespace NJsonApi.Serialization
 
             depth++;
 
-            foreach (var linkMapping in resourceMapping.Links.Where(l => l.SerializeAsLinked))
+            foreach (var linkMapping in resourceMapping.Relationships.Where(l => l.InclusionRule))
             {
                 var key = linkMapping.ResourceMapping.ResourceType;
                 var nestedObject = GetNestedResource(resource, linkMapping);
@@ -149,7 +153,7 @@ namespace NJsonApi.Serialization
 
                 MergeResultToDictionary(linkedDictionary, key, linkedObjects);
 
-                if (linkMapping.ResourceMapping.Links.Any() && nestedObjects.Any() && depth < RECURSION_DEPTH_LIMIT)
+                if (linkMapping.ResourceMapping.Relationships.Any() && nestedObjects.Any() && depth < RecursionDepthLimit)
                 {
 
                     CreateLinkedRepresentationInner(nestedObject, linkMapping.ResourceMapping, linkedDictionary, ref depth, hashSet);
@@ -157,14 +161,14 @@ namespace NJsonApi.Serialization
             }
         }
 
-        public object GetNestedResource(object resource, ILinkMapping linkMapping)
+        public object GetNestedResource(object resource, IRelationshipMapping linkMapping)
         {
             if (resource is IEnumerable<object>)
             {
                 var result = new List<object>();
                 foreach (var rsx in (resource as IEnumerable<object>))
                 {
-                    var innerResource = linkMapping.Resource(rsx);
+                    var innerResource = linkMapping.RelatedResource(rsx);
                     if (innerResource != null)
                     {
                         if (innerResource is IEnumerable<object>)
@@ -180,7 +184,7 @@ namespace NJsonApi.Serialization
                 return result;
             }
 
-            return linkMapping.Resource(resource);
+            return linkMapping.RelatedResource(resource);
         }
 
         public List<object> UnifyObjectsToList(object nestedObject)
@@ -243,14 +247,14 @@ namespace NJsonApi.Serialization
 
         public void CreateLinkRepresentationInner(IResourceMapping resourceMapping, Dictionary<string, LinkTemplate> links, string routePrefix)
         {
-            if (resourceMapping.Links.Any())
+            if (resourceMapping.Relationships.Any())
             {
                 var urlBuilder = new UrlBuilder()
                 {
                     RoutePrefix = routePrefix
                 };
 
-                foreach (var linkMapping in resourceMapping.Links)
+                foreach (var linkMapping in resourceMapping.Relationships)
                 {
                     var linkTemplate = new LinkTemplate
                     {
@@ -258,12 +262,12 @@ namespace NJsonApi.Serialization
                         Type = linkMapping.ResourceMapping.ResourceType
                     };
 
-                    var linkKey = string.Format("{0}.{1}", resourceMapping.ResourceType, linkMapping.LinkName);
+                    var linkKey = string.Format("{0}.{1}", resourceMapping.ResourceType, linkMapping.RelationshipName);
                     if (links.ContainsKey(linkKey)) break;
 
                     links.Add(linkKey, linkTemplate);
 
-                    if (resourceMapping.Links.Any())
+                    if (resourceMapping.Relationships.Any())
                     {
                         CreateLinkRepresentationInner(resourceMapping, links, routePrefix);
                     }
@@ -320,7 +324,7 @@ namespace NJsonApi.Serialization
             return objectType;
         }
 
-        public SingleResource CreateResourceRepresentation(object objectGraph, IResourceMapping resourceMapping, string routePrefix)
+        public SingleResource CreateResourceRepresentation(object objectGraph, Configuration config, IResourceMapping resourceMapping, string routePrefix)
         {
             var urlBuilder = new UrlBuilder
             {
@@ -337,59 +341,101 @@ namespace NJsonApi.Serialization
             if (resourceMapping.UrlTemplate != null)
                 result.Links["self"] = new SimpleLink { Href = urlBuilder.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace("{id}", result.Id)) };
 
-            // TODO: Refactor this into relationships object
-            //if (resourceMapping.Links.Any())
-            //{
-            //    var links = CreateLinks(objectGraph, resourceMapping);
-            //    if (Enumerable.Any<KeyValuePair<string, object>>(links))
-            //    {
-            //        attributeDict["links"] = links;
-            //    }
-            //}
+            if (resourceMapping.Relationships.Any())
+                result.Relationships = CreateLinks(objectGraph, config, resourceMapping, routePrefix, result.Id);
 
             return result;
         }
 
-        public Dictionary<string, object> CreateLinks(object objectGraph, IResourceMapping resourceMapping)
+        private ILink GetUrlFromTemplate(string urlTemplate, string routePrefix, string parentId, string relatedId = null)
         {
-            var links = new Dictionary<string, object>();
-            foreach (var linkMapping in resourceMapping.Links)
+            var builder = new UrlBuilder
             {
-                var resourceType = linkMapping.LinkName;
-                if (linkMapping.ResourceId != null)
+                RoutePrefix = routePrefix
+            };
+            return new SimpleLink
+            {
+                Href = builder.GetFullyQualifiedUrl(urlTemplate.Replace(ParentIdPlaceholder, parentId).Replace(RelatedIdPlaceholder, relatedId))
+            };
+        }
+
+        public Dictionary<string, IRelationship> CreateLinks(object objectGraph, Configuration config, IResourceMapping resourceMapping, string routePrefix, string parentId)
+        {
+            var links = new Dictionary<string, IRelationship>();
+            foreach (var linkMapping in resourceMapping.Relationships)
+            {
+                var relationshipName = linkMapping.RelationshipName;
+                var rel = new Relationship();
+                var relLinks = new RelationshipLinks();
+
+                // Generating "self" link
+                if (linkMapping.SelfUrlTemplate != null)
+                    relLinks.Self = GetUrlFromTemplate(linkMapping.SelfUrlTemplate, routePrefix, parentId);
+
+                if (!linkMapping.IsCollection)
                 {
-                    var nestedId = linkMapping.ResourceId(objectGraph);
-                    if (nestedId != null)
+                    string relatedId = null;
+                    object relatedInstance = null;
+                    if (linkMapping.RelatedResource != null)
                     {
-                        links.Add(resourceType, nestedId.ToString());
+                        relatedInstance = linkMapping.RelatedResource(objectGraph);
+                        relatedId = linkMapping.ResourceMapping.IdGetter(relatedInstance).ToString();
+                    }
+                    if (linkMapping.RelatedResourceId != null && relatedId == null)
+                        relatedId = linkMapping.RelatedResourceId(objectGraph).ToString();
+
+
+                    // Generating "related" link for to-one relationships
+                    if (linkMapping.RelatedUrlTemplate != null && relatedId != null)
+                        relLinks.Related = GetUrlFromTemplate(linkMapping.RelatedUrlTemplate, routePrefix, parentId, relatedId.ToString());
+
+
+                    if (linkMapping.InclusionRule != ResourceInclusionRules.ForceOmit)
+                    {
+                        // Generating resource linkage for to-one relationships
+                        if (relatedInstance != null)
+                            rel.Data = new SingleResourceIdentifier
+                            {
+                                Id = relatedId,
+                                Type = config.GetMapping(relatedInstance.GetType()).ResourceType // This allows polymorphic (subtyped) resources to be fully represented
+                            };
+                        else if (relatedId == null || linkMapping.InclusionRule == ResourceInclusionRules.ForceInclude)
+                            rel.Data = new NullResourceIdentifier(); // two-state null case, see NullResourceIdentifier summary
                     }
                 }
                 else
                 {
-                    if (linkMapping.Resource == null)
+                    // Generating "related" link for to-many relationships
+                    if (linkMapping.RelatedUrlTemplate != null)
+                        relLinks.Related = GetUrlFromTemplate(linkMapping.RelatedUrlTemplate, routePrefix, parentId);
+
+                    IEnumerable relatedInstance = null;
+                    if (linkMapping.RelatedResource != null)
+                        relatedInstance = (IEnumerable)linkMapping.RelatedResource(objectGraph);
+
+                    // Generating resource linkage for to-many relationships
+                    if (linkMapping.InclusionRule == ResourceInclusionRules.ForceInclude && relatedInstance == null)
+                        rel.Data = new MultipleResourceIdentifiers();
+                    if (linkMapping.InclusionRule != ResourceInclusionRules.ForceOmit && relatedInstance != null)
                     {
-                        continue;
+                        var idGetter = linkMapping.ResourceMapping.IdGetter;
+                        var identifiers = relatedInstance
+                            .Cast<object>()
+                            .Select(o => new SingleResourceIdentifier
+                            {
+                                Id = idGetter(o).ToString(),
+                                Type = config.GetMapping(o.GetType()).ResourceType // This allows polymorphic (subtyped) resources to be fully represented
+                            });
+                        rel.Data = new MultipleResourceIdentifiers(identifiers);
                     }
 
-                    ILinkMapping mapping = linkMapping;
+                    // If data is present, count meta attribute is added for convenience
+                    if (rel.Data != null)
+                        rel.Meta = new Dictionary<string, string> { { MetaCountAttribute, ((MultipleResourceIdentifiers)rel.Data).Count.ToString() } };
+                }                
 
-                    IEnumerable<object> resources = UnifyObjectsToList(linkMapping.Resource(objectGraph));
-                    var nestedObjectsIds = resources
-                        .Select(o => mapping.ResourceMapping.IdGetter(o).ToString())
-                        .ToList();
-
-                    if (nestedObjectsIds.Any())
-                    {
-                        if (!linkMapping.IsCollection)
-                        {
-                            links.Add(resourceType, nestedObjectsIds.First());
-                        }
-                        else
-                        {
-                            links.Add(resourceType, nestedObjectsIds);
-                        }
-                    }
-                }
+                if (relLinks.Self != null || relLinks.Related != null)
+                    rel.Links = relLinks;
             }
             return links;
         }
@@ -404,7 +450,7 @@ namespace NJsonApi.Serialization
                 objectDict[propertyGetter.Key] = propertyGetter.Value(objectGraph);
             }
 
-            if (resourceMapping.Links.Any())
+            if (resourceMapping.Relationships.Any())
             {
                 var links = CreateLinks(objectGraph, resourceMapping);
                 if (links.Any())
@@ -423,7 +469,7 @@ namespace NJsonApi.Serialization
             }
         }
 
-        public object GetCollection(JToken value, ILinkMapping mapping)
+        public object GetCollection(JToken value, IRelationshipMapping mapping)
         {
             IList resultValue;
 
@@ -442,7 +488,7 @@ namespace NJsonApi.Serialization
                         return obj;
                     });
 
-                resultValue = (IList)Activator.CreateInstance(mapping.CollectionProperty.PropertyType);
+                resultValue = (IList)Activator.CreateInstance(mapping.RelatedCollectionProperty.PropertyType);
                 foreach (var item in listOfItems)
                 {
                     resultValue.Add(item);

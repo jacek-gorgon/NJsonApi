@@ -58,12 +58,12 @@ namespace NJsonApi
             // Each link needs to be wired to full metadata once all resources are registered
             foreach (var resourceConfiguration in ResourceConfigurationsByType)
             {
-                var links = resourceConfiguration.Value.ConstructedMetadata.Links;
+                var links = resourceConfiguration.Value.ConstructedMetadata.Relationships;
                 for (int i = links.Count - 1; i >= 0; i--)
                 {
                     var link = links[i];
                     IResourceConfigurationBuilder resourceConfigurationOutput;
-                    if (!ResourceConfigurationsByType.TryGetValue(link.LinkedType, out resourceConfigurationOutput))
+                    if (!ResourceConfigurationsByType.TryGetValue(link.RelatedBaseType, out resourceConfigurationOutput))
                     {
                         if (propertyScanningConvention.ThrowOnUnmappedLinkedType)
                         {
@@ -71,8 +71,8 @@ namespace NJsonApi
                                 string.Format(
                                     "Type {0} was registered to have a linked resource {1} of type {2} which was not registered. Register resource type {2} or disable serialization of that property.",
                                     link.ParentType.Name,
-                                    link.LinkName,
-                                    link.LinkedType.Name));
+                                    link.RelationshipName,
+                                    link.RelatedBaseType.Name));
                         }
                         else
                             links.RemoveAt(i);

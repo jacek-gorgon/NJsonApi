@@ -243,10 +243,10 @@ namespace NJsonApi.Test
                 .WithLinkedResource<Author>(p => p.Author);
 
             //Assert
-            resourceConfigurationForPost.ConstructedMetadata.Links.Count.ShouldEqual(1);
-            resourceConfigurationForPost.ConstructedMetadata.Links[0].LinkName.ShouldContain(typeof(Author).Name.ToLower());
-            resourceConfigurationForPost.ConstructedMetadata.Links[0].LinkedType.ShouldEqual(typeof(Author));
-            resourceConfigurationForPost.ConstructedMetadata.Links[0].ResourceMapping.ShouldBeNull();
+            resourceConfigurationForPost.ConstructedMetadata.Relationships.Count.ShouldEqual(1);
+            resourceConfigurationForPost.ConstructedMetadata.Relationships[0].RelationshipName.ShouldContain(typeof(Author).Name.ToLower());
+            resourceConfigurationForPost.ConstructedMetadata.Relationships[0].RelatedBaseType.ShouldEqual(typeof(Author));
+            resourceConfigurationForPost.ConstructedMetadata.Relationships[0].ResourceMapping.ShouldBeNull();
         }
 
         [TestMethod]

@@ -46,11 +46,11 @@ namespace NJsonApi.Serialization
             var resource = TransformationHelper.GetResourceObject(objectGraph);
             var resourceMapping = config.GetMapping(innerObjectType);
 
-            var primaryResource = TransformationHelper.GetPrimaryResource(resource, resourceMapping, routePrefix);
+            var primaryResource = TransformationHelper.GetPrimaryResource(resource, config, resourceMapping, routePrefix);
 
             result.Data = primaryResource;
 
-            if (resourceMapping.Links.Any())
+            if (resourceMapping.Relationships.Any())
             {
                 result.Links = TransformationHelper.CreateLinkRepresentation(resourceMapping, routePrefix);
                 result.Included = TransformationHelper.CreateLinkedRepresentation(resource, resourceMapping)
@@ -112,10 +112,10 @@ namespace NJsonApi.Serialization
 
             if (links != null)
             {
-                foreach (var link in mapping.Links)
+                foreach (var link in mapping.Relationships)
                 {
                     JToken value;
-                    links.TryGetValue(link.LinkName, StringComparison.CurrentCultureIgnoreCase, out value);
+                    links.TryGetValue(link.RelationshipName, StringComparison.CurrentCultureIgnoreCase, out value);
                     if (value == null)
                     {
                         continue;
@@ -123,12 +123,12 @@ namespace NJsonApi.Serialization
 
                     if (link.IsCollection)
                     {
-                        var property = link.CollectionProperty;
+                        var property = link.RelatedCollectionProperty;
                         if (property != null)
                         {
                             var resultValue = TransformationHelper.GetCollection(value, link);
 
-                            string key = link.LinkName.TrimStart('_');
+                            string key = link.RelationshipName.TrimStart('_');
                             delta.ObjectPropertyValues.Add(key, resultValue);
                         }    
                     }

@@ -15,7 +15,7 @@ namespace NJsonApi
         public Dictionary<string, Func<object, object>> PropertyGetters { get; set; }
         public Dictionary<string, Action<object, object>> PropertySetters { get; private set; }
         public Dictionary<string, Expression<Action<object, object>>> PropertySettersExpressions { get; private set; }
-        public List<ILinkMapping> Links { get; set; }
+        public List<IRelationshipMapping> Relationships { get; set; }
 
         public ResourceMapping()
         {
@@ -23,7 +23,7 @@ namespace NJsonApi
             PropertyGetters = new Dictionary<string, Func<object, object>>();
             PropertySetters = new Dictionary<string, Action<object, object>>();
             PropertySettersExpressions = new Dictionary<string, Expression<Action<object, object>>>();
-            Links = new List<ILinkMapping>();
+            Relationships = new List<IRelationshipMapping>();
         }
         public ResourceMapping(Expression<Func<T, object>> idPointer, string urlResource)
         {
@@ -33,7 +33,7 @@ namespace NJsonApi
             PropertyGetters = new Dictionary<string, Func<object, object>>();
             PropertySetters = new Dictionary<string, Action<object, object>>();
             PropertySettersExpressions = new Dictionary<string, Expression<Action<object, object>>>();
-            Links = new List<ILinkMapping>();
+            Relationships = new List<IRelationshipMapping>();
         }
 
         public void AddPropertyGetter(string key, Expression<Func<T, object>> expression)
