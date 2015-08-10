@@ -16,9 +16,11 @@ namespace NJsonApi.Serialization
     public class TransformationHelper
     {
         public const int RecursionDepthLimit = 10;
+        private const string IdPlaceholder = "{id}";
         private const string ParentIdPlaceholder = "{parentId}";
         private const string RelatedIdPlaceholder = "{relatedId}";
         private const string MetaCountAttribute = "count";
+        private const string SelfLinkKey = "self";
 
         public CompoundDocument HandleException(Exception exception)
         {
@@ -141,7 +143,7 @@ namespace NJsonApi.Serialization
 
             depth++;
 
-            foreach (var linkMapping in resourceMapping.Relationships.Where(l => l.InclusionRule))
+            foreach (var linkMapping in resourceMapping.Relationships.Where(l => l.InclusionRule != ResourceInclusionRules.ForceOmit))
             {
                 var key = linkMapping.ResourceMapping.ResourceType;
                 var nestedObject = GetNestedResource(resource, linkMapping);
@@ -190,19 +192,14 @@ namespace NJsonApi.Serialization
         public List<object> UnifyObjectsToList(object nestedObject)
         {
             if (nestedObject == null)
-            {
                 return new List<object>();
-            }
 
             var list = new List<object>();
             if (nestedObject is IEnumerable<object>)
-            {
                 list.AddRange((IEnumerable<object>)nestedObject);
-            }
             else
-            {
                 list.Add(nestedObject);
-            }
+
             return list;
         }
 
@@ -339,10 +336,10 @@ namespace NJsonApi.Serialization
             result.Attributes = resourceMapping.PropertyGetters.ToDictionary(kvp => kvp.Key, kvp => kvp.Value(objectGraph));
 
             if (resourceMapping.UrlTemplate != null)
-                result.Links["self"] = new SimpleLink { Href = urlBuilder.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace("{id}", result.Id)) };
+                result.Links[SelfLinkKey] = new SimpleLink { Href = urlBuilder.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace(IdPlaceholder, result.Id)) };
 
             if (resourceMapping.Relationships.Any())
-                result.Relationships = CreateLinks(objectGraph, config, resourceMapping, routePrefix, result.Id);
+                result.Relationships = CreateRelationships(objectGraph, config, resourceMapping, routePrefix, result.Id);
 
             return result;
         }
@@ -359,7 +356,7 @@ namespace NJsonApi.Serialization
             };
         }
 
-        public Dictionary<string, IRelationship> CreateLinks(object objectGraph, Configuration config, IResourceMapping resourceMapping, string routePrefix, string parentId)
+        public Dictionary<string, IRelationship> CreateRelationships(object objectGraph, Configuration config, IResourceMapping resourceMapping, string routePrefix, string parentId)
         {
             var links = new Dictionary<string, IRelationship>();
             foreach (var linkMapping in resourceMapping.Relationships)
@@ -432,7 +429,7 @@ namespace NJsonApi.Serialization
                     // If data is present, count meta attribute is added for convenience
                     if (rel.Data != null)
                         rel.Meta = new Dictionary<string, string> { { MetaCountAttribute, ((MultipleResourceIdentifiers)rel.Data).Count.ToString() } };
-                }                
+                }
 
                 if (relLinks.Self != null || relLinks.Related != null)
                     rel.Links = relLinks;
