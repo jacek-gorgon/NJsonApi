@@ -10,6 +10,7 @@ using NJsonApi.Exceptions;
 using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Representations;
 using NJsonApi.Serialization.Representations.Relationships;
+using NJsonApi.Serialization.Representations.Resources;
 
 namespace NJsonApi.Serialization
 {
@@ -57,69 +58,28 @@ namespace NJsonApi.Serialization
                 }
             };
         }
-
-        public IResourceRepresentation GetPrimaryResource(object resource, Configuration config, IResourceMapping resourceMapping, string routePrefix)
+        
+        public IResourceRepresentation ChooseProperResourceRepresentation(object resource, IEnumerable<SingleResource> representationList)
         {
-            var resourcesList = UnifyObjectsToList(resource);
-
-            var representationList = resourcesList.Select(o => CreateResourceRepresentation(o, config, resourceMapping, routePrefix));
-
             return resource is IEnumerable ?
                 (IResourceRepresentation)new ResourceCollection(representationList) :
                 representationList.Single();
         }
 
-        public Dictionary<string, List<object>> CreateLinkedRepresentation(object resource, IResourceMapping resourceMapping)
+        public List<SingleResource> CreateIncludedRepresentation(object resourceGraph, IEnumerable<SingleResource> primaryResourceList, IResourceMapping resourceMapping, Context context)
         {
-            var linkedDictionary = new Dictionary<string, List<object>>();
+            var includedList = new List<SingleResource>();
             var depth = 0;
-            CreateLinkedRepresentationInner(resource, resourceMapping, linkedDictionary, ref depth, new HashSet<object>());
+            CreateLinkedRepresentationInner(resourceGraph, resourceMapping, includedList, ref depth, new HashSet<object>(), context);
 
-            var distinctValues = GetDistinctValues(linkedDictionary);
-
-            var objects = (resource as IList);
-            if (objects != null)
-            {
-                List<string> primaryIds = objects
-                    .Cast<object>()
-                    .Select(r => resourceMapping.IdGetter(r).ToString())
-                    .ToList();
-
-                return RemovePrimaryResource(distinctValues, primaryIds, resourceMapping.ResourceType);
-            }
-
+            var distinctValues = GetDistinctValues(includedList);
+            var primaryIdentifiers = primaryResourceList.Select(r => r.Id).ToLookup(r => r);            
+            distinctValues.RemoveAll(r => r.Type == resourceMapping.ResourceType && primaryIdentifiers.Contains(r.Id));
 
             return distinctValues;
         }
 
-        public Dictionary<string, List<object>> RemovePrimaryResource(Dictionary<string, List<object>> linkedDictionary, List<string> primaryResourceId, string resourceType)
-        {
-            if (!linkedDictionary.ContainsKey(resourceType))
-            {
-                return linkedDictionary;
-            }
-
-            foreach (var dictItem in linkedDictionary.Where(d => d.Key == resourceType))
-            {
-                IEnumerable<Dictionary<string, object>> linked = dictItem.Value
-                    .Cast<Dictionary<string, object>>()
-                    .Where(i => i.ContainsKey("id"))
-                    .ToList();
-
-                foreach (var linkedInner in linked)
-                {
-                    if (primaryResourceId.Contains(linkedInner["id"]))
-                    {
-                        linkedDictionary[dictItem.Key].Remove(linkedInner);
-                    }
-                }
-
-            }
-
-            return linkedDictionary;
-        }
-
-        public void CreateLinkedRepresentationInner(object resource, IResourceMapping resourceMapping, Dictionary<string, List<object>> linkedDictionary, ref int depth, HashSet<object> hashSet)
+        public void CreateLinkedRepresentationInner(object resource, IResourceMapping resourceMapping, List<SingleResource> includedList, ref int depth, HashSet<object> hashSet, Context context)
         {
             if (resource is IEnumerable)
             {
@@ -150,15 +110,15 @@ namespace NJsonApi.Serialization
                 List<object> nestedObjects = UnifyObjectsToList(nestedObject);
 
                 List<object> linkedObjects = nestedObjects
-                    .Select(o => (object)CreateLinkedResourceRepresentation(o, linkMapping.ResourceMapping))
+                    .Select(o => (object)CreateIncludedResourceRepresentation(o, linkMapping.ResourceMapping, context))
                     .ToList();
 
-                MergeResultToDictionary(linkedDictionary, key, linkedObjects);
+                MergeResultToDictionary(includedList, key, linkedObjects);
 
                 if (linkMapping.ResourceMapping.Relationships.Any() && nestedObjects.Any() && depth < RecursionDepthLimit)
                 {
 
-                    CreateLinkedRepresentationInner(nestedObject, linkMapping.ResourceMapping, linkedDictionary, ref depth, hashSet);
+                    CreateLinkedRepresentationInner(nestedObject, linkMapping.ResourceMapping, includedList, ref depth, hashSet, context);
                 }
             }
         }
@@ -215,40 +175,30 @@ namespace NJsonApi.Serialization
             }
         }
 
-        public Dictionary<string, List<object>> GetDistinctValues(Dictionary<string, List<object>> linkedObjectDictionary)
+        public List<SingleResource> GetDistinctValues(List<SingleResource> linkedObjectDictionary)
         {
-            var resultDictionary = new Dictionary<string, List<object>>();
-            foreach (var dictItem in linkedObjectDictionary)
-            {
-                var distinctObjects = dictItem.Value
-                    .Cast<Dictionary<string, object>>()
-                    .Where(i => i.ContainsKey("id"))
-                    .GroupBy(i => i["id"])
-                    .Select(g => (object)g.First())
-                    .ToList();
-
-                resultDictionary[dictItem.Key] = distinctObjects;
-            }
-
-            return resultDictionary;
+            return linkedObjectDictionary
+                .GroupBy(r => r.Id)
+                .Select(g => g.First())
+                .ToList();
         }
 
-        public Dictionary<string, LinkTemplate> CreateLinkRepresentation(IResourceMapping resourceMapping, string routePrefix)
+        public Dictionary<string, LinkTemplate> CreateLinkRepresentation(IResourceMapping resourceMapping, Context context)
         {
             var links = new Dictionary<string, LinkTemplate>();
 
-            CreateLinkRepresentationInner(resourceMapping, links, routePrefix);
+            CreateLinkRepresentationInner(resourceMapping, links, context);
 
             return links;
         }
 
-        public void CreateLinkRepresentationInner(IResourceMapping resourceMapping, Dictionary<string, LinkTemplate> links, string routePrefix)
+        public void CreateLinkRepresentationInner(IResourceMapping resourceMapping, Dictionary<string, LinkTemplate> links, Context context)
         {
             if (resourceMapping.Relationships.Any())
             {
                 var urlBuilder = new UrlBuilder()
                 {
-                    RoutePrefix = routePrefix
+                    RoutePrefix = context.RoutePrefix
                 };
 
                 foreach (var linkMapping in resourceMapping.Relationships)
@@ -266,7 +216,7 @@ namespace NJsonApi.Serialization
 
                     if (resourceMapping.Relationships.Any())
                     {
-                        CreateLinkRepresentationInner(resourceMapping, links, routePrefix);
+                        CreateLinkRepresentationInner(resourceMapping, links, context);
                     }
                 }
             }
@@ -285,7 +235,7 @@ namespace NJsonApi.Serialization
             }
         }
 
-        public object GetResourceObject(object objectGraph)
+        public object UnwrapResourceObject(object objectGraph)
         {
             if (!(objectGraph is IMetaDataWrapper))
             {
@@ -321,11 +271,11 @@ namespace NJsonApi.Serialization
             return objectType;
         }
 
-        public SingleResource CreateResourceRepresentation(object objectGraph, Configuration config, IResourceMapping resourceMapping, string routePrefix)
+        public SingleResource CreateResourceRepresentation(object objectGraph, IResourceMapping resourceMapping, Context context)
         {
             var urlBuilder = new UrlBuilder
             {
-                RoutePrefix = routePrefix
+                RoutePrefix = context.RoutePrefix
             };
 
             var result = new SingleResource();
@@ -336,10 +286,10 @@ namespace NJsonApi.Serialization
             result.Attributes = resourceMapping.PropertyGetters.ToDictionary(kvp => kvp.Key, kvp => kvp.Value(objectGraph));
 
             if (resourceMapping.UrlTemplate != null)
-                result.Links[SelfLinkKey] = new SimpleLink { Href = urlBuilder.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace(IdPlaceholder, result.Id)) };
+                result.Links = new Dictionary<string, ILink>() { { SelfLinkKey, new SimpleLink { Href = urlBuilder.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace(IdPlaceholder, result.Id)) } } };
 
             if (resourceMapping.Relationships.Any())
-                result.Relationships = CreateRelationships(objectGraph, config, resourceMapping, routePrefix, result.Id);
+                result.Relationships = CreateRelationships(objectGraph, result.Id, resourceMapping, context);
 
             return result;
         }
@@ -356,7 +306,7 @@ namespace NJsonApi.Serialization
             };
         }
 
-        public Dictionary<string, IRelationship> CreateRelationships(object objectGraph, Configuration config, IResourceMapping resourceMapping, string routePrefix, string parentId)
+        public Dictionary<string, IRelationship> CreateRelationships(object objectGraph, string parentId, IResourceMapping resourceMapping, Context context)
         {
             var links = new Dictionary<string, IRelationship>();
             foreach (var linkMapping in resourceMapping.Relationships)
@@ -367,7 +317,7 @@ namespace NJsonApi.Serialization
 
                 // Generating "self" link
                 if (linkMapping.SelfUrlTemplate != null)
-                    relLinks.Self = GetUrlFromTemplate(linkMapping.SelfUrlTemplate, routePrefix, parentId);
+                    relLinks.Self = GetUrlFromTemplate(linkMapping.SelfUrlTemplate, context.RoutePrefix, parentId);
 
                 if (!linkMapping.IsCollection)
                 {
@@ -384,7 +334,7 @@ namespace NJsonApi.Serialization
 
                     // Generating "related" link for to-one relationships
                     if (linkMapping.RelatedUrlTemplate != null && relatedId != null)
-                        relLinks.Related = GetUrlFromTemplate(linkMapping.RelatedUrlTemplate, routePrefix, parentId, relatedId.ToString());
+                        relLinks.Related = GetUrlFromTemplate(linkMapping.RelatedUrlTemplate, context.RoutePrefix, parentId, relatedId.ToString());
 
 
                     if (linkMapping.InclusionRule != ResourceInclusionRules.ForceOmit)
@@ -394,7 +344,7 @@ namespace NJsonApi.Serialization
                             rel.Data = new SingleResourceIdentifier
                             {
                                 Id = relatedId,
-                                Type = config.GetMapping(relatedInstance.GetType()).ResourceType // This allows polymorphic (subtyped) resources to be fully represented
+                                Type = context.Configuration.GetMapping(relatedInstance.GetType()).ResourceType // This allows polymorphic (subtyped) resources to be fully represented
                             };
                         else if (relatedId == null || linkMapping.InclusionRule == ResourceInclusionRules.ForceInclude)
                             rel.Data = new NullResourceIdentifier(); // two-state null case, see NullResourceIdentifier summary
@@ -404,7 +354,7 @@ namespace NJsonApi.Serialization
                 {
                     // Generating "related" link for to-many relationships
                     if (linkMapping.RelatedUrlTemplate != null)
-                        relLinks.Related = GetUrlFromTemplate(linkMapping.RelatedUrlTemplate, routePrefix, parentId);
+                        relLinks.Related = GetUrlFromTemplate(linkMapping.RelatedUrlTemplate, context.RoutePrefix, parentId);
 
                     IEnumerable relatedInstance = null;
                     if (linkMapping.RelatedResource != null)
@@ -421,7 +371,7 @@ namespace NJsonApi.Serialization
                             .Select(o => new SingleResourceIdentifier
                             {
                                 Id = idGetter(o).ToString(),
-                                Type = config.GetMapping(o.GetType()).ResourceType // This allows polymorphic (subtyped) resources to be fully represented
+                                Type = context.Configuration.GetMapping(o.GetType()).ResourceType // This allows polymorphic (subtyped) resources to be fully represented
                             });
                         rel.Data = new MultipleResourceIdentifiers(identifiers);
                     }
@@ -437,11 +387,11 @@ namespace NJsonApi.Serialization
             return links;
         }
 
-        public Dictionary<string, object> CreateLinkedResourceRepresentation(object objectGraph, IResourceMapping resourceMapping)
+        public Dictionary<string, object> CreateIncludedResourceRepresentation(object objectGraph, IResourceMapping resourceMapping, Context context)
         {
             var objectDict = new Dictionary<string, object>();
-
-            objectDict["id"] = resourceMapping.IdGetter(objectGraph).ToString();
+            var id = resourceMapping.IdGetter(objectGraph).ToString();
+            objectDict["id"] = id;
             foreach (var propertyGetter in resourceMapping.PropertyGetters)
             {
                 objectDict[propertyGetter.Key] = propertyGetter.Value(objectGraph);
@@ -449,10 +399,10 @@ namespace NJsonApi.Serialization
 
             if (resourceMapping.Relationships.Any())
             {
-                var links = CreateLinks(objectGraph, resourceMapping);
-                if (links.Any())
+                var relationships = CreateRelationships(objectGraph, id, resourceMapping, context);
+                if (relationships.Any())
                 {
-                    objectDict["links"] = links;
+                    objectDict["links"] = relationships;
                 }
             }
             return objectDict;

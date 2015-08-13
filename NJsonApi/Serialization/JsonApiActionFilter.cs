@@ -47,6 +47,12 @@ namespace NJsonApi.Serialization
             }
             catch (Exception exception)
             {
+                var context = new Context
+                {
+                    Configuration = configuration,
+                    RoutePrefix = string.Empty
+                };
+
                 executedContext = new HttpActionExecutedContext(actionContext, exception);
                 if (executedContext.Response == null)
                 {
@@ -54,7 +60,7 @@ namespace NJsonApi.Serialization
                     if (nJsonApiBaseException != null)
                     {
                         executedContext.Response = new HttpResponseMessage(nJsonApiBaseException.GetHttpStatusCode());
-                        var transformed = jsonApiTransformer.Transform(nJsonApiBaseException, configuration);
+                        var transformed = jsonApiTransformer.Transform(nJsonApiBaseException, context);
                         var jsonApiFormatter = new JsonApiFormatter(configuration, jsonApiTransformer.Serializer);
                         executedContext.Response.Content = new ObjectContent(transformed.GetType(), transformed, jsonApiFormatter);
                     }
@@ -101,7 +107,12 @@ namespace NJsonApi.Serialization
                     var routePrefix = SetRoutePrefix(actionExecutedContext);
 
                     var value = objectContent.Value;
-                    var transformed = jsonApiTransformer.Transform(value, configuration, routePrefix);
+                    var context = new Context
+                    {
+                        Configuration = configuration,
+                        RoutePrefix = routePrefix
+                    };
+                    var transformed = jsonApiTransformer.Transform(value, context);
 
                     var jsonApiFormatter = new JsonApiFormatter(configuration, jsonApiTransformer.Serializer);
                     actionExecutedContext.Response.Content = new ObjectContent(transformed.GetType(), transformed, jsonApiFormatter);

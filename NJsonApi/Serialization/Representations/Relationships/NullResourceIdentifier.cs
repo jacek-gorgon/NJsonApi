@@ -31,7 +31,7 @@ namespace NJsonApi.Serialization.Representations.Relationships
     /// With Newtonsoft.Json, attributes allow to either always serialize a null field as null or always omit it. 
     /// However, choosing behavior dynamically requires this workaround.
     /// </summary>
-    [JsonConverter(typeof(SerializationAwareConverter)]
+    [JsonConverter(typeof(SerializationAwareConverter))]
     public class NullResourceIdentifier : IResourceLinkage, ISerializationAware
     {
         public void Serialize(JsonWriter writer)

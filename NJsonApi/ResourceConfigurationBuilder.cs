@@ -187,7 +187,7 @@ namespace NJsonApi
         /// 
         /// Supply a custom implementations to alter behavior.
         /// </remarks>
-        public ResourceConfigurationBuilder<TResource> WithLinkedResource<TNested>(Expression<Func<TResource, TNested>> objectAccessor, Expression<Func<TResource, object>> idAccessor = null, string linkedResourceType = null, string linkName = null, bool serializeAsLinked = true) where TNested : class
+        public ResourceConfigurationBuilder<TResource> WithLinkedResource<TNested>(Expression<Func<TResource, TNested>> objectAccessor, Expression<Func<TResource, object>> idAccessor = null, string linkedResourceType = null, string linkName = null, ResourceInclusionRules inclusionRule = ResourceInclusionRules.Smart) where TNested : class
         {
             if (typeof(TNested).Name == "Array")
                 throw new NotSupportedException("Array type is not supported!");
@@ -211,7 +211,7 @@ namespace NJsonApi
                 RelatedCollectionProperty = isCollection ? propertyInfo : null,
                 RelatedBaseType = linkedType,
                 RelatedBaseResourceType = linkedResourceType,
-                InclusionRule = serializeAsLinked
+                InclusionRule = inclusionRule
             };
 
             ConstructedMetadata.Relationships.Add(link);

@@ -26,11 +26,11 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         public void Creates_one_to_one_relation_links()
         {
             // Arrange
-            var configuration = CreateConfiguration();
+            var context = CreateContext();
             var objectToTransform = CreateObject();
 
             // Act
-            var result = transformer.Transform(objectToTransform, configuration, appUrl);
+            var result = transformer.Transform(objectToTransform, context);
 
             // Assert
             result.Links.ShouldNotBeEmpty();
@@ -43,11 +43,11 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         public void Creates_one_to_one_null_relation_links()
         {
             // Arrange
-            var configuration = CreateConfiguration();
+            var context = CreateContext();
             var objectToTransform = CreateNullNestedObject();
 
             // Act
-            var result = transformer.Transform(objectToTransform, configuration, appUrl);
+            var result = transformer.Transform(objectToTransform, context);
 
             // Assert
             result.Links.ShouldNotBeEmpty();
@@ -85,7 +85,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             return sampleClass;
         }
 
-        private Configuration CreateConfiguration()
+        private Context CreateContext()
         {
             var conf = new Configuration();
             var sampleClassMapping = new ResourceMapping<SampleClass>(c => c.Id, "http://sampleClass/{id}");
@@ -111,7 +111,11 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             conf.AddMapping(sampleClassMapping);
             conf.AddMapping(nestedClassMapping);
 
-            return conf;
+            return new Context
+            {
+                Configuration = conf,
+                RoutePrefix = appUrl
+            };
 
         }
 

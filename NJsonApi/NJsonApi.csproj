@@ -64,6 +64,7 @@
     <Compile Include="Conventions\Impl\SimpleLinkedIdConvention.cs" />
     <Compile Include="Conventions\IPropertyScanningConvention.cs" />
     <Compile Include="Conventions\IRelationshipUrlConvention.cs" />
+    <Compile Include="Context.cs" />
     <Compile Include="SerializationDirection.cs" />
     <Compile Include="Serialization\Converters\SerializationAwareConverter.cs" />
     <Compile Include="Serialization\Converters\ISerializationAware.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="Serialization\Representations\Relationships\IResourceLinkage.cs" />
     <Compile Include="Serialization\Representations\Relationships\NullResourceIdentifier.cs" />
     <Compile Include="Serialization\Representations\Relationships\RelationshipLinks.cs" />
+    <Compile Include="Serialization\Representations\Resources\IResourceIdentifier.cs" />
     <Compile Include="Serialization\Representations\Resources\IResourceRepresentation.cs" />
     <Compile Include="Serialization\Representations\Resources\ILink.cs" />
     <Compile Include="Serialization\Representations\Relationships\MultipleResourceIdentifiers.cs" />

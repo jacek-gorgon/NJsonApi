@@ -3,6 +3,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NJsonApi.Serialization.Representations;
+using NJsonApi.Serialization.Representations.Resources;
 
 namespace NJsonApi.Serialization.Documents
 {
@@ -16,17 +17,13 @@ namespace NJsonApi.Serialization.Documents
         /// </summary>
         public CompoundDocument()
         {
-            Links = new Dictionary<string, LinkTemplate>();
-            Included = new Dictionary<string, JToken>();
-            Metadata = new Dictionary<string, object>();
-            Errors = new Dictionary<string, Error>();
         }
 
         public IResourceRepresentation Data { get; set; }
 
         public Dictionary<string, LinkTemplate> Links { get; set; }
 
-        public Dictionary<string, JToken> Included { get; set; }
+        public List<SingleResource> Included { get; set; }
 
         public Dictionary<string, Error> Errors { get; set; }
 
@@ -34,7 +31,7 @@ namespace NJsonApi.Serialization.Documents
         public Dictionary<string, JToken> UnmappedAttributes { get; set; }
 
         public string GetPrimaryResourceHref()
-        {            
+        {
             var resource = Data as Dictionary<string, object>;
             if (resource != null && resource.ContainsKey("href"))
             {

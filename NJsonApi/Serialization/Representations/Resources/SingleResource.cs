@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using NJsonApi.Serialization.Representations.Resources;
+using System.Collections.Generic;
 
-namespace NJsonApi.Serialization.Representations
+namespace NJsonApi.Serialization.Representations.Resources
 {
-    public class SingleResource : IResourceRepresentation
+    public class SingleResource : IResourceRepresentation, IResourceIdentifier
     {
         public SingleResource()
         {
@@ -15,6 +16,7 @@ namespace NJsonApi.Serialization.Representations
         public string Type { get; set; }
         public Dictionary<string,object> Attributes { get; set; }
         public Dictionary<string, IRelationship> Relationships { get; set; }
+        
         public Dictionary<string, ILink> Links { get; set; }
     }
 }

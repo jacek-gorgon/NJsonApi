@@ -15,7 +15,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         public void Serilized_properly()
         {
             // Arrange
-            var configuration = CreateConfiguration();
+            var configuration = CreateContext();
             var objectToTransform = CreateObjectToTransform();
             var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
 
@@ -65,7 +65,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             };
         }
 
-        private Configuration CreateConfiguration()
+        private Context CreateContext()
         {
             var conf = new Configuration();
             var sampleClassMapping = new ResourceMapping<SampleClass>(c => c.Id, "http://sampleClass/{id}");
@@ -106,7 +106,11 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             conf.AddMapping(nestedClassMapping);
             conf.AddMapping(deeplyNestedMapping);
 
-            return conf;
+            return new Context
+            {
+                Configuration = conf,
+                RoutePrefix = string.Empty
+            };
 
         }
 

@@ -21,7 +21,7 @@ namespace NJsonApi.Serialization
             set { serializer = value; }
         }
 
-        public CompoundDocument Transform(object objectGraph, Configuration config, string routePrefix = "")
+        public CompoundDocument Transform(object objectGraph, Context context)
         {
             Type innerObjectType = TransformationHelper.GetObjectType(objectGraph);
 
@@ -36,25 +36,26 @@ namespace NJsonApi.Serialization
             }
 
             TransformationHelper.VerifyTypeSupport(innerObjectType);
-            TransformationHelper.AssureAllMappingsRegistered(innerObjectType, config);
+            TransformationHelper.AssureAllMappingsRegistered(innerObjectType, context.Configuration);
 
             var result = new CompoundDocument
             {
                 Metadata = TransformationHelper.GetMetadata(objectGraph)
             };
 
-            var resource = TransformationHelper.GetResourceObject(objectGraph);
-            var resourceMapping = config.GetMapping(innerObjectType);
+            var resource = TransformationHelper.UnwrapResourceObject(objectGraph);
+            var resourceMapping = context.Configuration.GetMapping(innerObjectType);
 
-            var primaryResource = TransformationHelper.GetPrimaryResource(resource, config, resourceMapping, routePrefix);
+            var resourceList = TransformationHelper.UnifyObjectsToList(resource);
+            var representationList = resourceList.Select(o => TransformationHelper.CreateResourceRepresentation(o, resourceMapping, context));
+            var primaryResource = TransformationHelper.ChooseProperResourceRepresentation(resource, representationList);
 
             result.Data = primaryResource;
 
             if (resourceMapping.Relationships.Any())
             {
-                result.Links = TransformationHelper.CreateLinkRepresentation(resourceMapping, routePrefix);
-                result.Included = TransformationHelper.CreateLinkedRepresentation(resource, resourceMapping)
-                    .ToDictionary(k => k.Key, v => JToken.FromObject(v.Value, Serializer));
+                result.Links = TransformationHelper.CreateLinkRepresentation(resourceMapping, context);
+                result.Included = TransformationHelper.CreateIncludedRepresentation(resource, representationList, resourceMapping, context);
             }
 
             return result;

@@ -8,7 +8,7 @@ namespace NJsonApi.Serialization
     public interface IJsonApiTransformer
     {
         JsonSerializer Serializer { get; set; }
-        CompoundDocument Transform(object objectGraph, Configuration config, string routePrefix);
-        IDelta TransformBack(UpdateDocument updateDocument, Configuration config, Type type);
+        CompoundDocument Transform(object objectGraph, Context context);
+        IDelta TransformBack(UpdateDocument updateDocument, Type type, Context context);
     }
 }

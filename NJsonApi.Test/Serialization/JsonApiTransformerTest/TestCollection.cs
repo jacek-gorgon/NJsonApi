@@ -19,7 +19,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         public void Creates_CompondDocument_for_collection_not_nested_class_and_propertly_map_resourceName()
         {
             // Arrange
-            Configuration configuration = CreateConfiguration();
+            var configuration = CreateContext();            
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform();
             var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
 
@@ -36,7 +36,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         public void Creates_CompondDocument_for_collection_not_nested_single_class()
         {
             // Arrange
-            Configuration configuration = CreateConfiguration();
+            var configuration = CreateContext();
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform().Take(1);
             var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
 
@@ -54,7 +54,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         public void Creates_CompondDocument_for_collection_not_nested_class_and_propertly_map_id()
         {
             // Arrange
-            Configuration configuration = CreateConfiguration();
+            var configuration = CreateContext();
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform();
             var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
 
@@ -71,7 +71,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         public void Creates_CompondDocument_for_collection_not_nested_class_and_propertly_map_properties()
         {
             // Arrange
-            Configuration configuration = CreateConfiguration();
+            var configuration = CreateContext();
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform();
             var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
 
@@ -96,7 +96,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         public void Creates_CompondDocument_for_collection_not_nested_class_and_propertly_map_href()
         {
             // Arrange
-            Configuration configuration = CreateConfiguration();
+            var configuration = CreateContext();
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform();
             var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
 
@@ -113,7 +113,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         public void Creates_CompondDocument_for_collection_not_nested_class_and_propertly_map_type()
         {
             // Arrange
-            Configuration configuration = CreateConfiguration();
+            var configuration = CreateContext();
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform();
             var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
 
@@ -130,7 +130,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         public void Creates_CompondDocument_for_collectione_of_metadatawrapper_throws_notSupportedException()
         {
             // Arrange
-            Configuration configuration = CreateConfiguration();
+            var configuration = CreateContext();
             var objectsToTransform = new List<MetaDataWrapper<SampleClass>>
             {
                 new MetaDataWrapper<SampleClass>(new SampleClass())
@@ -166,7 +166,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             };
         }
 
-        private Configuration CreateConfiguration()
+        private Context CreateContext()
         {
             var conf = new Configuration();
             var mapping = new ResourceMapping<SampleClass>(c => c.Id, "http://sampleClass/{id}");
@@ -175,7 +175,11 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             mapping.AddPropertyGetter("date", c => c.DateTime);
             conf.AddMapping(mapping);
 
-            return conf;
+            return new Context
+            {
+                Configuration = conf,
+                RoutePrefix = string.Empty
+            };
 
         }
 

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using NJsonApi.Serialization.Representations.Resources;
 
 namespace NJsonApi.Serialization.Representations.Relationships
 {
-    public class SingleResourceIdentifier : IResourceLinkage
+    public class SingleResourceIdentifier : IResourceLinkage, IResourceIdentifier
     {
         public string Id { get; set; }
         public string Type { get; set; }
