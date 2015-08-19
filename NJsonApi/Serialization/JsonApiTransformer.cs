@@ -55,7 +55,7 @@ namespace NJsonApi.Serialization
             if (resourceMapping.Relationships.Any())
             {
                 result.Links = TransformationHelper.CreateLinkRepresentation(resourceMapping, context);
-                result.Included = TransformationHelper.CreateIncludedRepresentation(resource, representationList, resourceMapping, context);
+                result.Included = TransformationHelper.CreateIncludedRepresentation(resourceList, resourceMapping, context);
             }
 
             return result;

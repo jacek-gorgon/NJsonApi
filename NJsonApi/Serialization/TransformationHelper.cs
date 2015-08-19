@@ -58,7 +58,7 @@ namespace NJsonApi.Serialization
                 }
             };
         }
-        
+
         public IResourceRepresentation ChooseProperResourceRepresentation(object resource, IEnumerable<SingleResource> representationList)
         {
             return resource is IEnumerable ?
@@ -66,17 +66,24 @@ namespace NJsonApi.Serialization
                 representationList.Single();
         }
 
-        public List<SingleResource> CreateIncludedRepresentation(object resourceGraph, IEnumerable<SingleResource> primaryResourceList, IResourceMapping resourceMapping, Context context)
+        public List<SingleResource> CreateIncludedRepresentation(List<object> resourceList, IResourceMapping resourceMapping, Context context)
         {
             var includedList = new List<SingleResource>();
-            var depth = 0;
-            CreateLinkedRepresentationInner(resourceGraph, resourceMapping, includedList, ref depth, new HashSet<object>(), context);
+            var alreadyVisitedObjects = new HashSet<object>(resourceList);
 
-            var distinctValues = GetDistinctValues(includedList);
-            var primaryIdentifiers = primaryResourceList.Select(r => r.Id).ToLookup(r => r);            
-            distinctValues.RemoveAll(r => r.Type == resourceMapping.ResourceType && primaryIdentifiers.Contains(r.Id));
+            return CreateIncludedRepresentationRecursive(resourceList, resourceMapping, includedList, alreadyVisitedObjects, context);
+        }
 
-            return distinctValues;
+        public List<SingleResource> CreateIncludedRepresentationRecursive(List<object> resourceList, IResourceMapping resourceMapping, List<SingleResource> includedList, HashSet<object> alreadyVisitedObjects, Context context)
+        {
+            foreach (var resource in resourceList.Where(r => !alreadyVisitedObjects.Contains(r)))
+            {
+                alreadyVisitedObjects.Add(resource);
+
+                var smartIncludedResources = resourceMapping.Relationships
+                    .Where(rm => rm.InclusionRule == ResourceInclusionRules.Smart)
+                    .Select(rm => rm.RelatedResource(resource));
+            }
         }
 
         public void CreateLinkedRepresentationInner(object resource, IResourceMapping resourceMapping, List<SingleResource> includedList, ref int depth, HashSet<object> hashSet, Context context)
