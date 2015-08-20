@@ -7,6 +7,8 @@ using NJsonApi.Common.Infrastructure;
 using NJsonApi.Serialization;
 using SoftwareApproach.TestingExtensions;
 using NJsonApi.Serialization.Documents;
+using NJsonApi.Serialization.Representations;
+using NJsonApi.Serialization.Representations.Resources;
 
 namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 {
@@ -28,7 +30,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
             // Assert
             result.Data.ShouldNotBeNull();
-            var transformedObject = result.Data as List<Dictionary<string, object>>;
+            var transformedObject = result.Data as ResourceCollection;
             transformedObject.ShouldNotBeNull();
         }
 
@@ -45,7 +47,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
             // Assert
             result.Data.ShouldNotBeNull();
-            var transformedObject = result.Data as List<Dictionary<string, object>>;
+            var transformedObject = result.Data as ResourceCollection;
             transformedObject.ShouldNotBeNull();
         }
 
@@ -62,9 +64,9 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
 
             // Assert
-            var transformedObject = result.Data as List<Dictionary<string, object>>;
-            transformedObject[0]["id"].ShouldEqual(objectsToTransform.First().Id.ToString());
-            transformedObject[1]["id"].ShouldEqual(objectsToTransform.Last().Id.ToString());
+            var transformedObject = result.Data as ResourceCollection;
+            transformedObject[0].Id.ShouldEqual(objectsToTransform.First().Id.ToString());
+            transformedObject[1].Id.ShouldEqual(objectsToTransform.Last().Id.ToString());
         }
 
         [TestMethod]
@@ -79,13 +81,13 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
 
             // Assert
-            var transformedObject = result.Data as List<Dictionary<string, object>>;
+            var transformedObject = result.Data as ResourceCollection;
 
-            Action<Dictionary<string, object>, SampleClass> assertSame = (actual, expected) =>
+            Action<SingleResource, SampleClass> assertSame = (actual, expected) =>
             {
-                actual["someValue"].ShouldEqual(expected.SomeValue);
-                actual["date"].ShouldEqual(expected.DateTime);
-                actual.Keys.Where(k => !reservedKeys.Contains(k)).ShouldHaveCountOf(2);
+                actual.Attributes["someValue"].ShouldEqual(expected.SomeValue);
+                actual.Attributes["date"].ShouldEqual(expected.DateTime);
+                actual.Attributes.ShouldHaveCountOf(2);
             };
 
             assertSame(transformedObject[0], objectsToTransform.First());
@@ -104,9 +106,9 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
 
             // Assert
-            var transformedObject = result.Data as List<Dictionary<string, object>>;
-            transformedObject[0]["href"].ShouldEqual("http://sampleclass/1");
-            transformedObject[1]["href"].ShouldEqual("http://sampleclass/2");
+            var transformedObject = result.Data as ResourceCollection;
+            transformedObject[0].Links["self"].ToString().ShouldEqual("http://sampleclass/1");
+            transformedObject[1].Links["href"].ToString().ShouldEqual("http://sampleclass/2");
         }
 
         [TestMethod]
@@ -121,9 +123,9 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
 
             // Assert
-            var transformedObject = result.Data as List<Dictionary<string, object>>;
-            transformedObject[0]["type"].ShouldEqual("sampleClasses");
-            transformedObject[1]["type"].ShouldEqual("sampleClasses");
+            var transformedObject = result.Data as ResourceCollection;
+            transformedObject[0].Type.ShouldEqual("sampleClasses");
+            transformedObject[1].Type.ShouldEqual("sampleClasses");
         }
 
         [TestMethod]

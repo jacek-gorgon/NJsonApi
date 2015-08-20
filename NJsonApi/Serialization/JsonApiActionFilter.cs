@@ -90,8 +90,13 @@ namespace NJsonApi.Serialization
                 if (updateDocument != null)
                 {
                     var resultType = updateDocument.Type.GetGenericArguments()[0];
+                    var context = new Context
+                    {
+                        Configuration = configuration,
+                        RoutePrefix = GetRoutePrefix(actionContext)
+                    };
 
-                    var result = jsonApiTransformer.TransformBack(updateDocument.UpdateDocument, configuration, resultType);
+                    var result = jsonApiTransformer.TransformBack(updateDocument.UpdateDocument, resultType, context);
                     actionContext.ActionArguments[argument.Key] = result;
                 }
             }
@@ -104,13 +109,11 @@ namespace NJsonApi.Serialization
                 var objectContent = actionExecutedContext.Response.Content as ObjectContent;
                 if (objectContent != null && objectContent.Formatter.GetType() == typeof(JsonApiFormatter))
                 {
-                    var routePrefix = SetRoutePrefix(actionExecutedContext);
-
                     var value = objectContent.Value;
                     var context = new Context
                     {
                         Configuration = configuration,
-                        RoutePrefix = routePrefix
+                        RoutePrefix = GetRoutePrefix(actionExecutedContext)
                     };
                     var transformed = jsonApiTransformer.Transform(value, context);
 
@@ -126,7 +129,12 @@ namespace NJsonApi.Serialization
             }
         }
 
-        private string SetRoutePrefix(HttpActionExecutedContext actionExecutedContext)
+        private string GetRoutePrefix(HttpActionContext context)
+        {
+            return null;
+        }
+
+        private string GetRoutePrefix(HttpActionExecutedContext actionExecutedContext)
         {
             var result = String.Empty;
 

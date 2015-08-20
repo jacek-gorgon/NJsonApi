@@ -21,7 +21,7 @@ namespace NJsonApi.Serialization.Documents
 
         public IResourceRepresentation Data { get; set; }
 
-        public Dictionary<string, LinkTemplate> Links { get; set; }
+        public Dictionary<string, ILink> Links { get; set; }
 
         public List<SingleResource> Included { get; set; }
 

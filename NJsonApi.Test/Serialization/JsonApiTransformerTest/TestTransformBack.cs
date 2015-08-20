@@ -26,11 +26,11 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
                 .WithSimpleProperty(x => x.AuthorId)
                 .WithSimpleProperty(x => x.Id)
                 .WithSimpleProperty(x => x.Title);
-
+            var context = new Context { Configuration = configuration.ConfigurationBuilder.Build() };
             var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
 
             // Act
-            var resultDelta = sut.TransformBack(updateDocument, configuration.ConfigurationBuilder.Build(), typeof(Post));
+            var resultDelta = sut.TransformBack(updateDocument, typeof(Post), context);
 
             // Assert
             resultDelta.ObjectPropertyValues.ContainsKey("id").ShouldBeTrue();
@@ -58,11 +58,11 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
                 .WithSimpleProperty(x => x.AuthorId)
                 .WithSimpleProperty(x => x.Id)
                 .WithSimpleProperty(x => x.Title);
-
+            var context = new Context { Configuration = configuration.ConfigurationBuilder.Build() };
             var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
 
             // Act
-            var resultDelta = sut.TransformBack(updateDocument, configuration.ConfigurationBuilder.Build(), typeof(Post));
+            var resultDelta = sut.TransformBack(updateDocument, typeof(Post), context);
 
             // Assert
             resultDelta.ObjectPropertyValues.ContainsKey("title").ShouldBeTrue();
@@ -90,12 +90,12 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
                 .Resource<Post>()
                 .WithSimpleProperty(x => x.AuthorId)
                 .WithSimpleProperty(x => x.Title);
-
+            var context = new Context { Configuration = configuration.ConfigurationBuilder.Build() };
             var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
 
 
             // Act
-            var resultDelta = sut.TransformBack(updateDocument, configuration.ConfigurationBuilder.Build(), typeof(Post));
+            var resultDelta = sut.TransformBack(updateDocument, typeof(Post), context);
 
             // Assert
             resultDelta.ObjectPropertyValues.ContainsKey("title").ShouldBeTrue();

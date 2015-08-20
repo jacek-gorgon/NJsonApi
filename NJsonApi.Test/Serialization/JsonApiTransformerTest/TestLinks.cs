@@ -35,8 +35,6 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Assert
             result.Links.ShouldNotBeEmpty();
             result.Links.First().Key.ShouldEqual("sampleClasses.nestedValues");
-            result.Links.First().Value.Href = "http://nested/{id}";
-            result.Links.First().Value.Type = "nestedClasses";
         }
 
         [TestMethod]
@@ -52,8 +50,6 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Assert
             result.Links.ShouldNotBeEmpty();
             result.Links.First().Key.ShouldEqual("sampleClasses.nestedValues");
-            result.Links.First().Value.Href = "http://nested/{id}";
-            result.Links.First().Value.Type = "nestedClasses";
         }
 
 

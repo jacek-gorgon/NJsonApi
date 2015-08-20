@@ -11,5 +11,9 @@ namespace NJsonApi.Serialization.Representations
         {
             writer.WriteValue(Href);
         }
+        public override string ToString()
+        {
+            return Href;
+        }
     }
 }

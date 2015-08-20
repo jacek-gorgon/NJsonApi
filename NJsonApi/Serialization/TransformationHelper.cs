@@ -66,167 +66,49 @@ namespace NJsonApi.Serialization
                 representationList.Single();
         }
 
-        public List<SingleResource> CreateIncludedRepresentation(List<object> resourceList, IResourceMapping resourceMapping, Context context)
+        public List<SingleResource> CreateIncludedRepresentations(List<object> primaryResourceList, IResourceMapping resourceMapping, Context context)
         {
             var includedList = new List<SingleResource>();
-            var alreadyVisitedObjects = new HashSet<object>(resourceList);
+            var alreadyVisitedObjects = new HashSet<object>(primaryResourceList);
 
-            return CreateIncludedRepresentationRecursive(resourceList, resourceMapping, includedList, alreadyVisitedObjects, context);
+            foreach (var resource in primaryResourceList)
+                AppendIncludedRepresentationRecursive(resource, resourceMapping, includedList, alreadyVisitedObjects, context);
+
+            return includedList;
         }
 
-        public List<SingleResource> CreateIncludedRepresentationRecursive(List<object> resourceList, IResourceMapping resourceMapping, List<SingleResource> includedList, HashSet<object> alreadyVisitedObjects, Context context)
+        public void AppendIncludedRepresentationRecursive(object resource, IResourceMapping resourceMapping, List<SingleResource> includedList, HashSet<object> alreadyVisitedObjects, Context context)
         {
-            foreach (var resource in resourceList.Where(r => !alreadyVisitedObjects.Contains(r)))
-            {
-                alreadyVisitedObjects.Add(resource);
-
-                var smartIncludedResources = resourceMapping.Relationships
-                    .Where(rm => rm.InclusionRule == ResourceInclusionRules.Smart)
-                    .Select(rm => rm.RelatedResource(resource));
-            }
+            resourceMapping.Relationships
+                .Where(rm => rm.InclusionRule != ResourceInclusionRules.ForceOmit)
+                .SelectMany(rm => UnifyObjectsToList(rm.RelatedResource(resource)), (rm, o) => new
+                {
+                    Mapping = rm,
+                    RelatedResourceInstance = o,
+                })
+                .Where(x => !alreadyVisitedObjects.Contains(x.RelatedResourceInstance))
+                .ToList()
+                .ForEach(x =>
+                {
+                    alreadyVisitedObjects.Add(x.RelatedResourceInstance);
+                    includedList.Add(CreateResourceRepresentation(x.RelatedResourceInstance, x.Mapping.ResourceMapping, context));
+                    AppendIncludedRepresentationRecursive(x.RelatedResourceInstance, x.Mapping.ResourceMapping, includedList, alreadyVisitedObjects, context);
+                });
         }
 
-        public void CreateLinkedRepresentationInner(object resource, IResourceMapping resourceMapping, List<SingleResource> includedList, ref int depth, HashSet<object> hashSet, Context context)
-        {
-            if (resource is IEnumerable)
-            {
-                if (((IEnumerable)resource).OfType<object>().All(hashSet.Contains))
-                {
-                    return;
-                }
-                foreach (var res in (IEnumerable)resource)
-                {
-                    hashSet.Add(res);
-                }
-            }
-            else
-            {
-                if (hashSet.Contains(resource))
-                {
-                    return;
-                }
-                hashSet.Add(resource);
-            }
-
-            depth++;
-
-            foreach (var linkMapping in resourceMapping.Relationships.Where(l => l.InclusionRule != ResourceInclusionRules.ForceOmit))
-            {
-                var key = linkMapping.ResourceMapping.ResourceType;
-                var nestedObject = GetNestedResource(resource, linkMapping);
-                List<object> nestedObjects = UnifyObjectsToList(nestedObject);
-
-                List<object> linkedObjects = nestedObjects
-                    .Select(o => (object)CreateIncludedResourceRepresentation(o, linkMapping.ResourceMapping, context))
-                    .ToList();
-
-                MergeResultToDictionary(includedList, key, linkedObjects);
-
-                if (linkMapping.ResourceMapping.Relationships.Any() && nestedObjects.Any() && depth < RecursionDepthLimit)
-                {
-
-                    CreateLinkedRepresentationInner(nestedObject, linkMapping.ResourceMapping, includedList, ref depth, hashSet, context);
-                }
-            }
-        }
-
-        public object GetNestedResource(object resource, IRelationshipMapping linkMapping)
-        {
-            if (resource is IEnumerable<object>)
-            {
-                var result = new List<object>();
-                foreach (var rsx in (resource as IEnumerable<object>))
-                {
-                    var innerResource = linkMapping.RelatedResource(rsx);
-                    if (innerResource != null)
-                    {
-                        if (innerResource is IEnumerable<object>)
-                        {
-                            result.AddRange(innerResource as IEnumerable<object>);
-                        }
-                        else
-                        {
-                            result.Add(innerResource);
-                        }
-                    }
-                }
-                return result;
-            }
-
-            return linkMapping.RelatedResource(resource);
-        }
 
         public List<object> UnifyObjectsToList(object nestedObject)
         {
-            if (nestedObject == null)
-                return new List<object>();
-
             var list = new List<object>();
-            if (nestedObject is IEnumerable<object>)
-                list.AddRange((IEnumerable<object>)nestedObject);
-            else
-                list.Add(nestedObject);
+            if (nestedObject != null)
+            {
+                if (nestedObject is IEnumerable<object>)
+                    list.AddRange((IEnumerable<object>)nestedObject);
+                else
+                    list.Add(nestedObject);
+            }
 
             return list;
-        }
-
-        public void MergeResultToDictionary(Dictionary<string, List<object>> targerDictionary, string key, List<object> objects)
-        {
-            if (targerDictionary.ContainsKey(key))
-            {
-                targerDictionary[key].AddRange(objects);
-            }
-            else
-            {
-                targerDictionary[key] = objects;
-            }
-        }
-
-        public List<SingleResource> GetDistinctValues(List<SingleResource> linkedObjectDictionary)
-        {
-            return linkedObjectDictionary
-                .GroupBy(r => r.Id)
-                .Select(g => g.First())
-                .ToList();
-        }
-
-        public Dictionary<string, LinkTemplate> CreateLinkRepresentation(IResourceMapping resourceMapping, Context context)
-        {
-            var links = new Dictionary<string, LinkTemplate>();
-
-            CreateLinkRepresentationInner(resourceMapping, links, context);
-
-            return links;
-        }
-
-        public void CreateLinkRepresentationInner(IResourceMapping resourceMapping, Dictionary<string, LinkTemplate> links, Context context)
-        {
-            if (resourceMapping.Relationships.Any())
-            {
-                var urlBuilder = new UrlBuilder()
-                {
-                    RoutePrefix = context.RoutePrefix
-                };
-
-                foreach (var linkMapping in resourceMapping.Relationships)
-                {
-                    var linkTemplate = new LinkTemplate
-                    {
-                        Href = urlBuilder.GetFullyQualifiedUrl(linkMapping.ResourceMapping.UrlTemplate),
-                        Type = linkMapping.ResourceMapping.ResourceType
-                    };
-
-                    var linkKey = string.Format("{0}.{1}", resourceMapping.ResourceType, linkMapping.RelationshipName);
-                    if (links.ContainsKey(linkKey)) break;
-
-                    links.Add(linkKey, linkTemplate);
-
-                    if (resourceMapping.Relationships.Any())
-                    {
-                        CreateLinkRepresentationInner(resourceMapping, links, context);
-                    }
-                }
-            }
         }
 
         public void VerifyTypeSupport(Type innerObjectType)
@@ -333,7 +215,8 @@ namespace NJsonApi.Serialization
                     if (linkMapping.RelatedResource != null)
                     {
                         relatedInstance = linkMapping.RelatedResource(objectGraph);
-                        relatedId = linkMapping.ResourceMapping.IdGetter(relatedInstance).ToString();
+                        if (relatedInstance != null)
+                            relatedId = linkMapping.ResourceMapping.IdGetter(relatedInstance).ToString();
                     }
                     if (linkMapping.RelatedResourceId != null && relatedId == null)
                         relatedId = linkMapping.RelatedResourceId(objectGraph).ToString();

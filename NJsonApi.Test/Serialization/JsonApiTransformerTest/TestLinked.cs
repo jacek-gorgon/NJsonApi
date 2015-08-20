@@ -3,6 +3,7 @@ using FakeItEasy.ExtensionSyntax.Full;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 using NJsonApi.Serialization;
+using NJsonApi.Serialization.Representations.Resources;
 using SoftwareApproach.TestingExtensions;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,11 +54,8 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             var result = transformer.Transform(objectToTransform, configuration);
 
             // Assert
-            result.Links.ShouldHaveCountOf(1);
-            var resultData = result.Data as Dictionary<string, object>;
-            resultData.Keys.ShouldContain("links");
-            var linkedDict = resultData["links"] as Dictionary<string, object>;
-            linkedDict.ShouldNotBeEmpty();
+            var resultData = result.Data as SingleResource;
+            var linkedDict = resultData.Links.ShouldNotBeEmpty();
         }
 
         [TestMethod]
@@ -76,18 +74,22 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
         private object CreateOneToManyObject()
         {
+            var duplicated = new NestedClass()
+            {
+                Id = 1000,
+                SomeNestedValue = "Nested text value"
+            };
+
             var sampleClass = new SampleClass()
             {
                 Id = 1,
                 SomeValue = "Some string value",
                 NestedClassId = 1000,
+                NestedValue = 
+                
                 NestedClasses = new List<NestedClass>()
                 {
-                    new NestedClass()
-                    {
-                        Id = 1000,
-                        SomeNestedValue = "Nested text value"
-                    },
+                    
                     new NestedClass()
                     {
                         Id = 1000,

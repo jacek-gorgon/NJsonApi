@@ -54,16 +54,15 @@ namespace NJsonApi.Serialization
 
             if (resourceMapping.Relationships.Any())
             {
-                result.Links = TransformationHelper.CreateLinkRepresentation(resourceMapping, context);
-                result.Included = TransformationHelper.CreateIncludedRepresentation(resourceList, resourceMapping, context);
+                result.Included = TransformationHelper.CreateIncludedRepresentations(resourceList, resourceMapping, context);
             }
 
             return result;
         }
 
-        public IDelta TransformBack(UpdateDocument updateDocument, Configuration config, Type type)
+        public IDelta TransformBack(UpdateDocument updateDocument, Type type, Context context)
         {
-            var mapping = config.GetMapping(type);
+            var mapping = context.Configuration.GetMapping(type);
             var openGeneric = typeof(Delta<>);
             var closedGenericType = openGeneric.MakeGenericType(type);
             var delta = Activator.CreateInstance(closedGenericType) as IDelta;

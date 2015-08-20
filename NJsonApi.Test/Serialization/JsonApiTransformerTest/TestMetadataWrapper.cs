@@ -6,6 +6,7 @@ using NJsonApi.Common.Infrastructure;
 using NJsonApi.Serialization;
 using SoftwareApproach.TestingExtensions;
 using NJsonApi.Serialization.Documents;
+using NJsonApi.Serialization.Representations.Resources;
 
 namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 {
@@ -27,7 +28,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
             // Assert
             result.Data.ShouldNotBeNull();
-            var transformedObject = result.Data as Dictionary<string, object>;
+            var transformedObject = result.Data as SingleResource;
             transformedObject.ShouldNotBeNull();
         }
 
@@ -43,8 +44,8 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectToTransform, context);
 
             // Assert
-            var transformedObject = result.Data as Dictionary<string, object>;
-            transformedObject["id"].ShouldEqual(objectToTransform.Value.Id.ToString());
+            var transformedObject = result.Data as SingleResource;
+            transformedObject.Id.ShouldEqual(objectToTransform.Value.Id.ToString());
         }
 
         [TestMethod]
@@ -60,10 +61,10 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectToTransform, context);
 
             // Assert
-            var transformedObject = result.Data as Dictionary<string, object>;
-            transformedObject["someValue"].ShouldEqual(objectToTransform.Value.SomeValue);
-            transformedObject["date"].ShouldEqual(objectToTransform.Value.DateTime);
-            transformedObject.Keys.Where(k => !reservedKeys.Contains(k)).ShouldHaveCountOf(2);
+            var transformedObject = result.Data as SingleResource;
+            transformedObject.Attributes["someValue"].ShouldEqual(objectToTransform.Value.SomeValue);
+            transformedObject.Attributes["date"].ShouldEqual(objectToTransform.Value.DateTime);
+            transformedObject.Attributes.ShouldHaveCountOf(2);
         }
 
         [TestMethod]
@@ -79,8 +80,8 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
                 .Transform(objectToTransform, context);
 
             // Assert
-            var transformedObject = result.Data as Dictionary<string, object>;
-            transformedObject["href"].ShouldEqual("http://sampleclass/1");
+            var transformedObject = result.Data as SingleResource;
+            transformedObject.Links["self"].ToString().ShouldEqual("http://sampleclass/1");
         }
 
         [TestMethod]
@@ -95,8 +96,8 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectToTransform, context);
 
             // Assert
-            var transformedObject = result.Data as Dictionary<string, object>;
-            transformedObject["type"].ShouldEqual("sampleClasses");
+            var transformedObject = result.Data as SingleResource;
+            transformedObject.Type.ShouldEqual("sampleClasses");
         }
 
         [TestMethod]
