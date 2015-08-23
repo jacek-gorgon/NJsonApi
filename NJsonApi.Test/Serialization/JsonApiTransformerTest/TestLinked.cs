@@ -52,8 +52,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             var result = transformer.Transform(objectToTransform, configuration);
 
             // Assert
-            var resultData = result.Data as SingleResource;
-            var linkedDict = resultData.Links.ShouldNotBeEmpty();
+            var linkedDict = result.Included.ShouldNotBeEmpty();
         }
 
         [TestMethod]

@@ -5,6 +5,8 @@ using FakeItEasy.ExtensionSyntax.Full;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NJsonApi.Serialization;
 using SoftwareApproach.TestingExtensions;
+using NJsonApi.Serialization.Representations.Resources;
+using NJsonApi.Serialization.Representations.Relationships;
 
 namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 {
@@ -31,10 +33,11 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
             // Act
             var result = transformer.Transform(objectToTransform, context);
+            var resource = (SingleResource)result.Data;
 
             // Assert
-            result.Links.ShouldNotBeEmpty();
-            result.Links.First().Key.ShouldEqual("sampleClasses.nestedValues");
+            resource.Relationships.ShouldNotBeEmpty();
+            ((Relationship)resource.Relationships["nestedValues"]).Data.ShouldNotBeNull();
         }
 
         [TestMethod]
@@ -46,10 +49,12 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
             // Act
             var result = transformer.Transform(objectToTransform, context);
+            var resource = (SingleResource)result.Data;
 
             // Assert
-            result.Links.ShouldNotBeEmpty();
-            result.Links.First().Key.ShouldEqual("sampleClasses.nestedValues");
+            resource.Relationships.ShouldNotBeEmpty();
+            var rel = (Relationship)resource.Relationships["nestedValues"];
+            rel.Data.ShouldBeOfType(typeof(NullResourceIdentifier));
         }
 
 
