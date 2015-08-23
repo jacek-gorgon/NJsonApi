@@ -108,7 +108,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Assert
             var transformedObject = result.Data as ResourceCollection;
             transformedObject[0].Links["self"].ToString().ShouldEqual("http://sampleclass/1");
-            transformedObject[1].Links["href"].ToString().ShouldEqual("http://sampleclass/2");
+            transformedObject[1].Links["self"].ToString().ShouldEqual("http://sampleclass/2");
         }
 
         [TestMethod]

@@ -85,16 +85,11 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
                 Id = 1,
                 SomeValue = "Some string value",
                 NestedClassId = 1000,
-                NestedValue = 
-                
+                NestedValue = duplicated,
+
                 NestedClasses = new List<NestedClass>()
                 {
-                    
-                    new NestedClass()
-                    {
-                        Id = 1000,
-                        SomeNestedValue = "Nested text value"
-                    },
+                    duplicated,
                     new NestedClass()
                     {
                         Id = 1001,

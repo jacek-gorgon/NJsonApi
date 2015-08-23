@@ -219,8 +219,11 @@ namespace NJsonApi.Serialization
                             relatedId = linkMapping.ResourceMapping.IdGetter(relatedInstance).ToString();
                     }
                     if (linkMapping.RelatedResourceId != null && relatedId == null)
-                        relatedId = linkMapping.RelatedResourceId(objectGraph).ToString();
-
+                    {
+                        var id = linkMapping.RelatedResourceId(objectGraph);
+                        if (id != null)
+                            relatedId = id.ToString();
+                    }
 
                     // Generating "related" link for to-one relationships
                     if (linkMapping.RelatedUrlTemplate != null && relatedId != null)
