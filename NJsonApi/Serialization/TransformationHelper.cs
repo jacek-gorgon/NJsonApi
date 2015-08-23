@@ -141,7 +141,7 @@ namespace NJsonApi.Serialization
                 var metadataWrapper = objectGraph as IMetaDataWrapper;
                 return metadataWrapper.MetaData;
             }
-            return new Dictionary<string, object>();
+            return null;
         }
 
         public Type GetObjectType(object objectGraph)
@@ -175,12 +175,17 @@ namespace NJsonApi.Serialization
             result.Attributes = resourceMapping.PropertyGetters.ToDictionary(kvp => kvp.Key, kvp => kvp.Value(objectGraph));
 
             if (resourceMapping.UrlTemplate != null)
-                result.Links = new Dictionary<string, ILink>() { { SelfLinkKey, new SimpleLink { Href = urlBuilder.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace(IdPlaceholder, result.Id)) } } };
+                result.Links = CreateLinks(resourceMapping, urlBuilder, result);
 
             if (resourceMapping.Relationships.Any())
                 result.Relationships = CreateRelationships(objectGraph, result.Id, resourceMapping, context);
 
             return result;
+        }
+
+        private static Dictionary<string, ILink> CreateLinks(IResourceMapping resourceMapping, UrlBuilder urlBuilder, SingleResource result)
+        {
+            return new Dictionary<string, ILink>() { { SelfLinkKey, new SimpleLink { Href = urlBuilder.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace(IdPlaceholder, result.Id)) } } };
         }
 
         private ILink GetUrlFromTemplate(string urlTemplate, string routePrefix, string parentId, string relatedId = null)
@@ -197,7 +202,7 @@ namespace NJsonApi.Serialization
 
         public Dictionary<string, IRelationship> CreateRelationships(object objectGraph, string parentId, IResourceMapping resourceMapping, Context context)
         {
-            var links = new Dictionary<string, IRelationship>();
+            var relationships = new Dictionary<string, IRelationship>();
             foreach (var linkMapping in resourceMapping.Relationships)
             {
                 var relationshipName = linkMapping.RelationshipName;
@@ -277,28 +282,7 @@ namespace NJsonApi.Serialization
                 if (relLinks.Self != null || relLinks.Related != null)
                     rel.Links = relLinks;
             }
-            return links;
-        }
-
-        public Dictionary<string, object> CreateIncludedResourceRepresentation(object objectGraph, IResourceMapping resourceMapping, Context context)
-        {
-            var objectDict = new Dictionary<string, object>();
-            var id = resourceMapping.IdGetter(objectGraph).ToString();
-            objectDict["id"] = id;
-            foreach (var propertyGetter in resourceMapping.PropertyGetters)
-            {
-                objectDict[propertyGetter.Key] = propertyGetter.Value(objectGraph);
-            }
-
-            if (resourceMapping.Relationships.Any())
-            {
-                var relationships = CreateRelationships(objectGraph, id, resourceMapping, context);
-                if (relationships.Any())
-                {
-                    objectDict["links"] = relationships;
-                }
-            }
-            return objectDict;
+            return relationships.Any() ? relationships : null;
         }
 
         public void AssureAllMappingsRegistered(Type type, Configuration config)

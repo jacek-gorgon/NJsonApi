@@ -22,7 +22,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             var transformed = sut.Transform(objectToTransform, configuration);
 
             // Act
-            var json = JsonConvert.SerializeObject(transformed, new CompoundDocumentObjectConverter());
+            var json = JsonConvert.SerializeObject(transformed);
 
             // Assert
             json.ShouldNotContain("Data");

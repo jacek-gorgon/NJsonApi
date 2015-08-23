@@ -19,16 +19,16 @@ namespace NJsonApi.Serialization.Documents
         {
         }
 
-        [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "data", NullValueHandling = NullValueHandling.Ignore)]
         public IResourceRepresentation Data { get; set; }
 
-        [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "links", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, ILink> Links { get; set; }
 
-        [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "included", NullValueHandling = NullValueHandling.Ignore)]
         public List<SingleResource> Included { get; set; }
 
-        [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "errors", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, Error> Errors { get; set; }
 
         [JsonExtensionData]

@@ -102,7 +102,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceConfigurationBuilder.cs" />
     <Compile Include="ResourceMapping.cs" />
-    <Compile Include="Serialization\Converters\CompoundDocumentObjectConverter.cs" />
     <Compile Include="Serialization\Representations\Documents\CompoundDocument.cs" />
     <Compile Include="Serialization\Error.cs" />
     <Compile Include="Serialization\JsonApiTransformer.cs" />

@@ -5,7 +5,7 @@ namespace NJsonApi.Serialization.Documents
 {
     public abstract class Document
     {
-        [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "metadata", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, object> Metadata { get; set; }
     }
 }

@@ -26,8 +26,8 @@ namespace NJsonApi.Serialization
             SupportedMediaTypes.Add(new MediaTypeHeaderValue(JSON_API_MIME_TYPE));
             SupportedEncodings.Add(new UTF8Encoding(false, true));
 
-            if(jsonSerializer.Converters.All(x => x.GetType() != typeof (CompoundDocumentObjectConverter)))
-                jsonSerializer.Converters.Add(new CompoundDocumentObjectConverter());
+            //if(jsonSerializer.Converters.All(x => x.GetType() != typeof (CompoundDocumentObjectConverter)))
+            //    jsonSerializer.Converters.Add(new CompoundDocumentObjectConverter());
         }
 
         public override void WriteToStream(Type type, object value, Stream writeStream, HttpContent content)
