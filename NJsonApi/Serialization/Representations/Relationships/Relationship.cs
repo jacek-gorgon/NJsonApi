@@ -9,13 +9,13 @@ namespace NJsonApi.Serialization.Representations.Relationships
 {
     public class Relationship : IRelationship
     {
-        [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "links", NullValueHandling=NullValueHandling.Ignore)]
         public RelationshipLinks Links { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "data", NullValueHandling = NullValueHandling.Ignore)]
         public IResourceLinkage Data { get; set; }
 
-        [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "meta", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, string> Meta { get; set; }
     }
 }

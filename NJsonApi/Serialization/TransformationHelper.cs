@@ -281,6 +281,9 @@ namespace NJsonApi.Serialization
 
                 if (relLinks.Self != null || relLinks.Related != null)
                     rel.Links = relLinks;
+
+                if (rel.Data != null || rel.Links != null)
+                    relationships.Add(relationshipName, rel);
             }
             return relationships.Any() ? relationships : null;
         }

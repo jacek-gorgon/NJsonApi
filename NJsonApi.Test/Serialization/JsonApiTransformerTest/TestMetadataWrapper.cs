@@ -118,7 +118,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectToTransform, context);
 
             // Assert
-            var transformedObjectMetadata = result.Metadata;
+            var transformedObjectMetadata = result.Meta;
             transformedObjectMetadata["Paging"].ShouldEqual(pagingValue);
             transformedObjectMetadata["Count"].ShouldEqual(countValue);
         }

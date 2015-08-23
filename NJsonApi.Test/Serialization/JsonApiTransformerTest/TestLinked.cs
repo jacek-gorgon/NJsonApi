@@ -3,6 +3,7 @@ using FakeItEasy.ExtensionSyntax.Full;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 using NJsonApi.Serialization;
+using NJsonApi.Serialization.Representations.Relationships;
 using NJsonApi.Serialization.Representations.Resources;
 using SoftwareApproach.TestingExtensions;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         }
 
         [TestMethod]
-        public void Creates_one_to_one_relation_links()
+        public void Creates_one_to_one_relationship()
         {
             // Arrange
             var context = CreateContext();
@@ -36,11 +37,8 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             var result = transformer.Transform(objectToTransform, context);
 
             // Assert
-            result.Links.ShouldHaveCountOf(1);
-            var resultData = result.Data as Dictionary<string, object>;
-            resultData.Keys.ShouldContain("links");
-
-            // TODO-DD: Asserts
+            var resource = (SingleResource)result.Data;
+            resource.Relationships.ShouldHaveCountOf(1);
         }
 
         [TestMethod]

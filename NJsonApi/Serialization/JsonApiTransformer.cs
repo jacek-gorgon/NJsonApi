@@ -40,7 +40,7 @@ namespace NJsonApi.Serialization
 
             var result = new CompoundDocument
             {
-                Metadata = TransformationHelper.GetMetadata(objectGraph)
+                Meta = TransformationHelper.GetMetadata(objectGraph)
             };
 
             var resource = TransformationHelper.UnwrapResourceObject(objectGraph);
