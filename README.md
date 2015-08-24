@@ -53,63 +53,101 @@ PM> Install-Package NJsonApi
 	}
 ```
 
-... starts returning the {**json:api**} compliant* JSON:
+... starts returning the {**json:api**} compliant JSON:
 ```json
 {
-  "links": {
-    "worlds.continents": {
-      "href": "http://localhost:56827/continents/{id}",
-      "type": "continents"
-    }
-  },
-  "linked": {
-    "continents": [
-      {
-        "id": "1",
-        "name": "Hello Europe",
-        "worldId": 1,
-        "links": {
-          "world": "1"
-        }
-      },
-      {
-        "id": "2",
-        "name": "Hello America",
-        "worldId": 1,
-        "links": {
-          "world": "1"
-        }
-      },
-      {
-        "id": "3",
-        "name": "Hello Asia",
-        "worldId": 1,
-        "links": {
-          "world": "1"
+  "data": {
+    "id": "1",
+    "type": "worlds",
+    "attributes": {
+      "name": "Hello"
+    },
+    "relationships": {
+      "continents": {
+        "data": [
+          {
+            "id": "1",
+            "type": "continents"
+          },
+          {
+            "id": "2",
+            "type": "continents"
+          },
+          {
+            "id": "3",
+            "type": "continents"
+          }
+        ],
+        "meta": {
+          "count": "3"
         }
       }
-    ],
-    "worlds": []
+    },
+    "links": {
+      "self": "http://localhost:56827/worlds/1"
+    }
   },
-  "worlds": [
+  "included": [
     {
-      "href": "http://localhost:56827/worlds/1",
       "id": "1",
-      "type": "worlds",
-      "name": "Hello",
+      "type": "continents",
+      "attributes": {
+        "name": "Hello Europe",
+        "worldId": 1
+      },
+      "relationships": {
+        "world": {
+          "data": {
+            "id": "1",
+            "type": "worlds"
+          }
+        }
+      },
       "links": {
-        "continents": [
-          "1",
-          "2",
-          "3"
-        ]
+        "self": "http://localhost:56827/continents/1"
+      }
+    },
+    {
+      "id": "2",
+      "type": "continents",
+      "attributes": {
+        "name": "Hello America",
+        "worldId": 1
+      },
+      "relationships": {
+        "world": {
+          "data": {
+            "id": "1",
+            "type": "worlds"
+          }
+        }
+      },
+      "links": {
+        "self": "http://localhost:56827/continents/2"
+      }
+    },
+    {
+      "id": "3",
+      "type": "continents",
+      "attributes": {
+        "name": "Hello Asia",
+        "worldId": 1
+      },
+      "relationships": {
+        "world": {
+          "data": {
+            "id": "1",
+            "type": "worlds"
+          }
+        }
+      },
+      "links": {
+        "self": "http://localhost:56827/continents/3"
       }
     }
   ]
 }
 ```
-
-* the output complies with an outdated RC1 version, bringing it up to version 1.0 is in the TODO
 
 ## Sample project included
 Play around with the working NJsonApi.HelloWorld sample project.
