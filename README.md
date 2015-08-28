@@ -1,6 +1,8 @@
 # NJsonApi
 The .NET server implementation of the {**json:api**} standard. 
 
+> The library is in the process of upgrading to spec version 1.0. Some features are not yet compatibile with the current version of spec!
+
 Spawned as an internal project used in production environment, the package is now available in the open thanks to courtesy of [**SocialCee**](http://socialcee.com)! Further development, including updating to {**json:api**} 1.0 will take place here.
 ## Quick start
 After installing the package:
