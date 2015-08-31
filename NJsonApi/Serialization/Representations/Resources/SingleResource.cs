@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using NJsonApi.Serialization.Converters;
+using NJsonApi.Serialization.Representations.Relationships;
 using NJsonApi.Serialization.Representations.Resources;
 using System.Collections.Generic;
 
@@ -16,6 +18,7 @@ namespace NJsonApi.Serialization.Representations.Resources
         public Dictionary<string, object> Attributes { get; set; }
 
         [JsonProperty(PropertyName = "relationships", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(ConcreteConverter<Relationship>))]
         public Dictionary<string, IRelationship> Relationships { get; set; }
 
         [JsonProperty(PropertyName = "links", NullValueHandling = NullValueHandling.Ignore)]

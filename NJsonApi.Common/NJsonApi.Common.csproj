@@ -43,7 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\CollectionDelta.cs" />
     <Compile Include="Infrastructure\Delta.cs" />
+    <Compile Include="Infrastructure\IdAndTypeComparer.cs" />
     <Compile Include="Infrastructure\IDelta.cs" />
     <Compile Include="Infrastructure\IMetaDataWrapper.cs" />
     <Compile Include="Infrastructure\MetaDataWrapper.cs" />

@@ -66,6 +66,8 @@
     <Compile Include="Conventions\IRelationshipUrlConvention.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="SerializationDirection.cs" />
+    <Compile Include="Serialization\Converters\ConcreteConverter.cs" />
+    <Compile Include="Serialization\Converters\RelationshipDataConverter.cs" />
     <Compile Include="Serialization\Converters\SerializationAwareConverter.cs" />
     <Compile Include="Serialization\Converters\ISerializationAware.cs" />
     <Compile Include="Serialization\Representations\Documents\Document.cs" />
@@ -124,7 +126,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if $(ConfigurationName) == Release (call $(ProjectDir)makeNugetPackage.bat $(SolutionDir))</PostBuildEvent>
+    <PostBuildEvent>if $(ConfigurationName) == Release (call "$(ProjectDir)makeNugetPackage.bat" "$(SolutionDir)")</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
