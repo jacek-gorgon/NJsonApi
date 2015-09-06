@@ -2,16 +2,16 @@
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace NJsonApi.Utils
+namespace NJsonApi.Common.Utils
 {
     public static class ExpressionUtils
     {
-        public static PropertyInfo GetPropertyInfoFromExpression<TMain, TProperty>(Expression<Func<TMain, TProperty>> propertyExpression)
+        public static PropertyInfo GetPropertyInfo(this LambdaExpression propertyExpression)
         {
             var expression = propertyExpression.Body;
-            if (expression is UnaryExpression) 
+            if (expression is UnaryExpression)
                 expression = ((UnaryExpression)expression).Operand;
-            
+
             var me = expression as MemberExpression;
 
             if (me == null || !(me.Member is PropertyInfo))
@@ -54,6 +54,21 @@ namespace NJsonApi.Utils
             );
 
             return convertedExpression;
+        }
+
+        public static Func<TInstance, TResult> ToCompiledGetterFunc<TInstance, TResult>(this PropertyInfo pi)
+        {
+            var mi = pi.GetGetMethod();
+            var parameter = Expression.Parameter(typeof(TInstance));
+            return Expression.Lambda<Func<TInstance, TResult>>(Expression.Call(parameter, mi), parameter).Compile();
+        }
+
+        public static Action<TInstance, TValue> ToCompiledSetterAction<TInstance, TValue>(this PropertyInfo pi)
+        {
+            var mi = pi.GetSetMethod();
+            var instanceParameter = Expression.Parameter(typeof(TInstance));
+            var valueParameter = Expression.Parameter(typeof(TValue));
+            return Expression.Lambda<Action<TInstance, TValue>>(Expression.Call(instanceParameter, mi, valueParameter), instanceParameter, valueParameter).Compile();
         }
     }
 }

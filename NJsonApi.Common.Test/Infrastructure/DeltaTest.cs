@@ -15,13 +15,13 @@ namespace NJsonApi.Common.Test.Infrastructure
             var simpleObject = new SimpleTestClass();
             var classUnderTest = new Delta<SimpleTestClass>();
 
-            classUnderTest.AddFilter(t => t.Prop1NotIncluded);
+            classUnderTest.FilterOut(t => t.Prop1NotIncluded);
             classUnderTest.ObjectPropertyValues = new Dictionary<string, object>()
                                          {
                                            {"Prop2","b"}
                                          };
             //Act
-            classUnderTest.Apply(simpleObject);
+            classUnderTest.ApplySimpleProperties(simpleObject);
             //Assert
             simpleObject.Prop2.ShouldNotBeNull();
             simpleObject.Prop2.ShouldEqual("b");
@@ -35,14 +35,14 @@ namespace NJsonApi.Common.Test.Infrastructure
             var simpleObject = new SimpleTestClass();
             var objectUnderTest = new Delta<SimpleTestClass>();
 
-            objectUnderTest.AddFilter(t => t.Prop1NotIncluded);
+            objectUnderTest.FilterOut(t => t.Prop1NotIncluded);
             objectUnderTest.ObjectPropertyValues = new Dictionary<string, object>()
                                          {
                                            {"Prop2","b"},
                                            {"Prop1NotIncluded",5} 
                                          };
             //Act
-            objectUnderTest.Apply(simpleObject);
+            objectUnderTest.ApplySimpleProperties(simpleObject);
             //Assert
             simpleObject.Prop2.ShouldNotBeNull();
             simpleObject.Prop2.ShouldEqual("b");
@@ -56,8 +56,8 @@ namespace NJsonApi.Common.Test.Infrastructure
             var simpleObject = new SimpleTestClass();
             var objectUnderTest = new Delta<SimpleTestClass>();
             //Act
-            objectUnderTest.AddFilter(t => t.Prop1NotIncluded);
-            objectUnderTest.Apply(simpleObject);
+            objectUnderTest.FilterOut(t => t.Prop1NotIncluded);
+            objectUnderTest.ApplySimpleProperties(simpleObject);
             //Assert
             simpleObject.Prop1NotIncluded.ShouldBeNull();
             simpleObject.Prop1.ShouldBeNull();

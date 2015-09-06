@@ -6,8 +6,8 @@ namespace NJsonApi.Common.Infrastructure
 {
     public interface IDelta<T> : IDelta
     {
-        void AddFilter<TProperty>(params Expression<Func<T, TProperty>>[] filter);
-        void Apply(T inputObject);
+        void FilterOut<TProperty>(params Expression<Func<T, TProperty>>[] filter);
+        void ApplySimpleProperties(T inputObject);
     }
 
     public interface IDelta

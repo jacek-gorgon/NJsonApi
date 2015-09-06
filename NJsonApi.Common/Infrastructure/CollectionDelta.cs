@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace NJsonApi.Common.Infrastructure
 {
-    public class CollectionDelta<TElement>
+    public class CollectionDelta
+    {
+
+    }
+
+    public class CollectionDelta<TElement> : CollectionDelta
     {
         public List<TElement> Elements { get; set; }
 

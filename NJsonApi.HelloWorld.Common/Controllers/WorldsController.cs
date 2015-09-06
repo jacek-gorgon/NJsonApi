@@ -41,7 +41,7 @@ namespace NJsonApi.HelloWorld.Common.Controllers
         public World Put([FromBody]Delta<World> worldDelta, [FromUri]int id)
         {
             var world = Get(id);
-            worldDelta.Apply(world);
+            worldDelta.ApplySimpleProperties(world);
             return world;
         }
     }
