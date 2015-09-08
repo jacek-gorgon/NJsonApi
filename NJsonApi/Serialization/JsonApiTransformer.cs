@@ -101,7 +101,7 @@ namespace NJsonApi.Serialization
                         var multipleIDs = (MultipleResourceIdentifiers)rel.Data;
                         var colProp = relMapping.RelatedCollectionProperty;
 
-                        relMapping.RelatedCollectionProperty.GetValue()
+                        relMapping.RelatedCollectionProperty.GetValue();
                         
                         if (property != null)
                         {

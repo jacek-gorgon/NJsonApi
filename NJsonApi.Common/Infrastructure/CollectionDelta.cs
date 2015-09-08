@@ -1,19 +1,19 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NJsonApi.Common.Infrastructure
 {
-    public class CollectionDelta
+    public class CollectionDelta<TElement> : ICollectionDelta<TElement>
     {
-
-    }
-
-    public class CollectionDelta<TElement> : CollectionDelta
-    {
-        public List<TElement> Elements { get; set; }
+        public IEnumerable<TElement> Elements { get; set; }
+        
+        IEnumerable ICollectionDelta.Elements
+        {
+            get { return Elements; }
+            set { Elements = value.Cast<TElement>().ToList(); }
+        }
 
         private IEqualityComparer<TElement> EqualityComparer;
 
@@ -46,6 +46,11 @@ namespace NJsonApi.Common.Infrastructure
         public IEnumerable<TElement> UnchangedElements(ICollection<TElement> input)
         {
             return Elements.Intersect(input, EqualityComparer);
+        }
+
+        public void Apply(ICollection input)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -65,10 +65,21 @@ namespace NJsonApi.Common.Utils
 
         public static Action<TInstance, TValue> ToCompiledSetterAction<TInstance, TValue>(this PropertyInfo pi)
         {
+            if (!typeof(TValue).IsAssignableFrom(pi.PropertyType) && !pi.PropertyType.IsAssignableFrom(typeof(TValue)))
+                throw new InvalidOperationException($"Unsupported type combination: {typeof(TValue)} and {pi.GetType()}.");
+
             var mi = pi.GetSetMethod();
+
             var instanceParameter = Expression.Parameter(typeof(TInstance));
             var valueParameter = Expression.Parameter(typeof(TValue));
-            return Expression.Lambda<Action<TInstance, TValue>>(Expression.Call(instanceParameter, mi, valueParameter), instanceParameter, valueParameter).Compile();
+            Expression valueExpression = valueParameter;
+
+            if (pi.PropertyType != typeof(TValue))
+                valueExpression = Expression.Convert(valueExpression, pi.PropertyType);
+
+            var body = Expression.Call(instanceParameter, mi, valueParameter);
+
+            return Expression.Lambda<Action<TInstance, TValue>>(body, instanceParameter, valueParameter).Compile();
         }
     }
 }

@@ -13,22 +13,24 @@ namespace NJsonApi.Common.Infrastructure
         private readonly Dictionary<string, Action<T, object>> currentTypeSetters;
         private static Dictionary<string, Action<T, object>> typeSettersTemplates;
 
-        private static Dictionary<string, CollectionInfo<T>> currentCollectionInfos;
+        private readonly Dictionary<string, CollectionInfo<T>> currentCollectionInfos;
         private static Dictionary<string, CollectionInfo<T>> collectionInfoTemplates;
 
         public Dictionary<string, object> ObjectPropertyValues { get; set; }
-        private Dictionary<string, object> CollectionDeltas { get; set; }
+        private Dictionary<string, ICollectionDelta> CollectionDeltas { get; set; }
 
         public Delta()
         {
             if (typeSettersTemplates == null)
                 typeSettersTemplates = ScanForProperties();
-            if (currentCollectionInfos == null)
-                currentCollectionInfos = ScanForCollections();
+            if (collectionInfoTemplates == null)
+                collectionInfoTemplates = ScanForCollections();
 
             currentTypeSetters = typeSettersTemplates.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            currentCollectionInfos = collectionInfoTemplates.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            
             ObjectPropertyValues = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-            CollectionDeltas = new Dictionary<string, object>();
+            CollectionDeltas = new Dictionary<string, ICollectionDelta>();
         }
 
         public void FilterOut<TProperty>(params Expression<Func<T, TProperty>>[] filter)
@@ -36,6 +38,7 @@ namespace NJsonApi.Common.Infrastructure
             foreach (var f in filter)
             {
                 currentTypeSetters.Remove(f.GetPropertyInfo().Name);
+                currentCollectionInfos.Remove(f.GetPropertyInfo().Name);
             }
         }
 
@@ -81,23 +84,23 @@ namespace NJsonApi.Common.Infrastructure
                         info.Setter(inputObject, existingCollection);
                     }
 
-                    info.Setter(inputObject, (ICollection)colDelta.Value);
-                    var newCol = colDelta.Value as ICollection;
-                    
+                    colDelta.Value.Apply(existingCollection);
                 }
             }
         }
 
-        public CollectionDelta<TElement> Collection<TElement>(Expression<Func<T, ICollection<TElement>>> collectionProperty)
+        public ICollectionDelta<TElement> Collection<TElement>(Expression<Func<T, ICollection<TElement>>> collectionProperty)
         {
-            CollectionDelta<TElement> delta;
-            CollectionDeltas.TryGetValue(collectionProperty.GetPropertyInfo().Name)
+            ICollectionDelta delta;
+            CollectionDeltas.TryGetValue(collectionProperty.GetPropertyInfo().Name, out delta);
+            return delta as ICollectionDelta<TElement>;
         }
 
         public T ToObject()
         {
             var t = new T();
             ApplySimpleProperties(t);
+            ApplyCollections(t);
             return t;
         }
 
