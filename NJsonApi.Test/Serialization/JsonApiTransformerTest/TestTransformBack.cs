@@ -4,7 +4,6 @@ using NJsonApi.Test.TestModel;
 using NJsonApi.Serialization;
 using SoftwareApproach.TestingExtensions;
 using System.Collections.Generic;
-using NJsonApi.Serialization.Representations.Resources;
 
 namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 {
@@ -16,13 +15,9 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         {
             var updateDocument = new UpdateDocument()
             {
-                Data = new SingleResource
+                Data = new Dictionary<string, object>()
                 {
-                    Attributes = new Dictionary<string, object>
-                    {
-                        { "id", 123 },
-                        { "title", "someTitle" }
-                    }
+                    { "posts", JObject.Parse("{ \"_id\":123, \"title\": \"someTitle\" }") }
                 }
             };
 
@@ -45,13 +40,15 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         public void Transform_UpdateDocument_To_Delta_OneField()
         {
             // Arrange
-            var updateDocument = new UpdateDocument()
+            var updateDocument = new UpdateDocument
             {
-                Data = new SingleResource
+                Data = new Dictionary<string, object>
                 {
-                    Attributes = new Dictionary<string, object>
                     {
-                        { "title", "Food" }
+                        "posts", JObject.FromObject(new PostUpdateOneField()
+                        {
+                            Title = "Food"
+                        })
                     }
                 }
             };
@@ -75,18 +72,20 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         public void Transform_UpdateDocument_To_Delta_TwoFields()
         {
             // Arrange
-            var updateDocument = new UpdateDocument()
+            var updateDocument = new UpdateDocument
             {
-                Data = new SingleResource
+                Data = new Dictionary<string, object>
                 {
-                    Attributes = new Dictionary<string, object>
                     {
-                        { "title", "Food" },
-                        { "authorId", "0" },
+                        "posts", JObject.FromObject(new PostUpdateTwoFields()
+                        {
+                            Title = "Food",
+                            AuthorId = 0
+                        })
                     }
                 }
             };
-            
+
             var configuration = (new ConfigurationBuilder())
                 .Resource<Post>()
                 .WithSimpleProperty(x => x.AuthorId)

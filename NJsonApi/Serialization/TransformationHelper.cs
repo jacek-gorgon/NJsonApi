@@ -294,7 +294,39 @@ namespace NJsonApi.Serialization
             {
                 throw new MissingMappingException(type);
             }
-        }                
+        }
+
+        public object GetCollection(JToken value, IRelationshipMapping mapping)
+        {
+            IList resultValue;
+
+            if (!(value is JArray))
+                throw new InvalidOperationException("Json array expected.");
+
+            try
+            {
+                var array = (JArray)value;
+                var listOfItems = array
+                    .ToObject<List<string>>()
+                    .Select(id =>
+                    {
+                        var obj = Activator.CreateInstance(mapping.ResourceMapping.ResourceRepresentationType);
+                        mapping.ResourceMapping.IdSetter(obj, id);
+                        return obj;
+                    });
+
+                resultValue = (IList)Activator.CreateInstance(mapping.RelatedCollectionProperty.PropertyType);
+                foreach (var item in listOfItems)
+                {
+                    resultValue.Add(item);
+                }
+            }
+            catch
+            {
+                resultValue = null;
+            }
+            return resultValue;
+        }
 
         public object GetValue(JToken value, Type returnType)
         {

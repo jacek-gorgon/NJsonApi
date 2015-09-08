@@ -6,8 +6,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NJsonApi.Common.Infrastructure;
 using NJsonApi.Serialization.Documents;
-using NJsonApi.Serialization.Representations;
-using NJsonApi.Serialization.Representations.Relationships;
 
 namespace NJsonApi.Serialization
 {
@@ -74,49 +72,70 @@ namespace NJsonApi.Serialization
                 return null;
             }
 
+            var resourceKey = mapping.ResourceType;
+            if (!updateDocument.Data.ContainsKey(resourceKey))
+            {
+                return delta;
+            }
+
+            var resource = updateDocument.Data[resourceKey] as JObject;
+            if (resource == null)
+            {
+                return delta;
+            }
+
             // Scan the data for which properties are only set
             foreach (var propertySetter in mapping.PropertySettersExpressions)
             {
-                object value;
-                updateDocument.Data.Attributes.TryGetValue(propertySetter.Key, out value);
-                if (value != null)
-                    delta.ObjectPropertyValues.Add(propertySetter.Key, value);
+                JToken value;
+                resource.TryGetValue(propertySetter.Key, StringComparison.CurrentCultureIgnoreCase, out value);
+                if (value == null)
+                {
+                    continue;
+                }
+                // Set only the properties that are present
+                var methodCallExpression = propertySetter.Value.Body as MethodCallExpression;
+                if (methodCallExpression != null)
+                {
+                    Type returnType = methodCallExpression.Arguments[0].Type;
+
+                    var resultValue = TransformationHelper.GetValue(value, returnType);
+
+                    string key = propertySetter.Key.TrimStart('_');
+                    delta.ObjectPropertyValues.Add(key, resultValue);
+                }
             }
 
-            if (updateDocument.Data.Relationships != null)
-            {
-                foreach (var relMapping in mapping.Relationships)
-                {
-                    IRelationship irel;
-                    updateDocument.Data.Relationships.TryGetValue(relMapping.RelationshipName, out irel);
-                    Relationship rel = irel as Relationship;
+            JToken linksToken;
+            resource.TryGetValue("links", StringComparison.CurrentCultureIgnoreCase, out linksToken);
+            JObject links = linksToken as JObject;
 
-                    if (rel == null)
+            if (links != null)
+            {
+                foreach (var link in mapping.Relationships)
+                {
+                    JToken value;
+                    links.TryGetValue(link.RelationshipName, StringComparison.CurrentCultureIgnoreCase, out value);
+                    if (value == null)
                     {
                         continue;
                     }
 
-                    if (relMapping.IsCollection && rel.Data is MultipleResourceIdentifiers)
+                    if (link.IsCollection)
                     {
-                        var multipleIDs = (MultipleResourceIdentifiers)rel.Data;
-                        var colProp = relMapping.RelatedCollectionProperty;
-
-                        relMapping.RelatedCollectionProperty.GetValue()
-                        
+                        var property = link.RelatedCollectionProperty;
                         if (property != null)
                         {
-                            var resultValue = TransformationHelper.GetCollection(value, relMapping);
+                            var resultValue = TransformationHelper.GetCollection(value, link);
 
-                            string key = relMapping.RelationshipName.TrimStart('_');
+                            string key = link.RelationshipName.TrimStart('_');
                             delta.ObjectPropertyValues.Add(key, resultValue);
-                        }
-                    }
-                    else if (!relMapping.IsCollection && rel.Data is SingleResourceIdentifier)
-                    {
-                        delta.ObjectPropertyValues.Add(relMapping.ParentResourceNavigationPropertyName, TransformationHelper.GetValue(value, relMapping.ParentResourceNavigationPropertyType));
+                        }    
                     }
                     else
-                        throw new InvalidOperationException("");
+                    {
+                        delta.ObjectPropertyValues.Add(link.ParentResourceNavigationPropertyName, TransformationHelper.GetValue(value, link.ParentResourceNavigationPropertyType));
+                    }
                 }
             }
 
