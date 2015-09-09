@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
-using NJsonApi.Utils;
+using NJsonApi.Common.Utils;
 
 namespace NJsonApi.Conventions.Impl
 {
@@ -8,7 +8,7 @@ namespace NJsonApi.Conventions.Impl
     {
         public Expression<Func<TMain, object>> GetIdExpression<TMain, TLinkedResource>(Expression<Func<TMain, TLinkedResource>> linkedResourceExpression)
         {
-            var resourcePi = ExpressionUtils.GetPropertyInfoFromExpression(linkedResourceExpression);
+            var resourcePi = linkedResourceExpression.GetPropertyInfo();
             var idPropertyName = GetIdPropertyNameFromPropertyName(resourcePi.Name);
             var idPi = typeof(TMain).GetProperty(idPropertyName);
             if (idPi == null)

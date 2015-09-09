@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NJsonApi.Utils;
+using NJsonApi.Common.Utils;
 
 namespace NJsonApi
 {

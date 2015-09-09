@@ -8,12 +8,12 @@ namespace NJsonApi.Common.Test.Utils
 {
     [TestClass]
     public class ExpressionUtilsTest
-    {
+    {        
         [TestMethod]
         public void ToCompiledSetterAction_ReturnsWorkingDelegate()
         {
             var foo = new Foo();
-            var action = typeof(Foo).GetProperty("Bar").ToCompiledSetterAction<Foo, string>();
+            var action = typeof(Foo).GetProperty(nameof(foo.Bar)).ToCompiledSetterAction<Foo, string>();
             action(foo, "bar");
             foo.Bar.ShouldEqual("bar");
         }
@@ -26,9 +26,46 @@ namespace NJsonApi.Common.Test.Utils
                 Bar = "bar"
             };
 
-            var function = typeof(Foo).GetProperty("Bar").ToCompiledGetterFunc<Foo, string>();
+            var function = typeof(Foo).GetProperty(nameof(foo.Bar)).ToCompiledGetterFunc<Foo, string>();
             var value = function(foo);
             value.ShouldEqual("bar");
+
+            var del = typeof(Foo).GetProperty(nameof(foo.Bar)).ToCompiledGetterDelegate(typeof(Foo), typeof(string));
+        }
+
+        [TestMethod]
+        public void ToCompiledSetterAction_GivenDerivedType_ReturnsWorkingDelegate()
+        {
+            var foo = new Foo();
+            var action = typeof(Foo).GetProperty(nameof(foo.Baz)).ToCompiledSetterAction<Foo, string>();
+            action(foo, "baz");
+            foo.Baz.ShouldEqual("baz");
+        }
+
+        [TestMethod]
+        public void ToCompiledSetterAction_GivenBaseType_ReturnsWorkingDelegate()
+        {
+            var foo = new Foo();
+            var action = typeof(Foo).GetProperty(nameof(foo.Bar)).ToCompiledSetterAction<Foo, object>();
+            action(foo, "bar");
+            foo.Bar.ShouldEqual("bar");
+        }
+
+        [TestMethod]
+        public void ToCompiledSetterAction_GivenBaseTypeAndInvalidObject_ThrowsInvalidCastException()
+        {
+            var foo = new Foo();
+            var action = typeof(Foo).GetProperty(nameof(foo.Bar)).ToCompiledSetterAction<Foo, object>();
+            Testing.ShouldThrowException<InvalidCastException>(() => action(foo, new object()), "InvalidCastException expected.");
+        }
+
+        [TestMethod]
+        public void ToCompiledSetterAction_GivenMismatchedType_ThrowsInvalidOperationException()
+        {
+            var foo = new Foo();
+            var pi = typeof(Foo).GetProperty(nameof(foo.Bar));
+            
+            Testing.ShouldThrowException<InvalidOperationException>(() => pi.ToCompiledSetterAction<Foo, int>(), "InvalidOperationException expected.");
         }
 
         [TestMethod]
@@ -65,6 +102,7 @@ namespace NJsonApi.Common.Test.Utils
         private class Foo
         {
             public string Bar { get; set; }
+            public object Baz { get; set; }
         }
     }
 }

@@ -100,7 +100,7 @@
     <Compile Include="IRelationshipMapping.cs" />
     <Compile Include="IResourceConfigurationBuilder.cs" />
     <Compile Include="IResourceMapping.cs" />
-    <Compile Include="LinkMapping.cs" />
+    <Compile Include="RelationshipMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceConfigurationBuilder.cs" />
     <Compile Include="ResourceMapping.cs" />

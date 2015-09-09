@@ -1,4 +1,4 @@
-﻿
+﻿using NJsonApi.Common.Infrastructure;
 using System;
 using System.Reflection;
 
@@ -14,7 +14,7 @@ namespace NJsonApi
         ResourceInclusionRules InclusionRule { get; set; }
 
         IResourceMapping ResourceMapping { get; set; }
-        PropertyInfo RelatedCollectionProperty { get; set; }
+        IPropertyHandle RelatedCollectionProperty { get; set; }
         Func<object, object> RelatedResource { get; }
         Func<object, object> RelatedResourceId { get; }
 

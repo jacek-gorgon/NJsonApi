@@ -13,5 +13,6 @@ namespace NJsonApi.Common.Infrastructure
     public interface IDelta
     {
         Dictionary<string, object> ObjectPropertyValues { get; set; }
+        Dictionary<string, ICollectionDelta> CollectionDeltas { get; set; }
     }
 }

@@ -101,15 +101,15 @@ namespace NJsonApi.Serialization
                         var multipleIDs = (MultipleResourceIdentifiers)rel.Data;
                         var colProp = relMapping.RelatedCollectionProperty;
 
-                        relMapping.RelatedCollectionProperty.GetValue();
+                        //relMapping.RelatedCollectionProperty RelatedCollectionProperty.GetValue();
                         
-                        if (property != null)
-                        {
-                            var resultValue = TransformationHelper.GetCollection(value, relMapping);
+                        //if (property != null)
+                        //{
+                        //    var resultValue = TransformationHelper.GetCollection(value, relMapping);
 
-                            string key = relMapping.RelationshipName.TrimStart('_');
-                            delta.ObjectPropertyValues.Add(key, resultValue);
-                        }
+                        //    string key = relMapping.RelationshipName.TrimStart('_');
+                        //    delta.ObjectPropertyValues.Add(key, resultValue);
+                        //}
                     }
                     else if (!relMapping.IsCollection && rel.Data is SingleResourceIdentifier)
                     {

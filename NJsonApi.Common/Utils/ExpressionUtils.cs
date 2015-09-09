@@ -56,30 +56,40 @@ namespace NJsonApi.Common.Utils
             return convertedExpression;
         }
 
-        public static Func<TInstance, TResult> ToCompiledGetterFunc<TInstance, TResult>(this PropertyInfo pi)
+        public static Delegate ToCompiledGetterDelegate(this PropertyInfo pi, Type tInstance, Type tResult)
         {
             var mi = pi.GetGetMethod();
-            var parameter = Expression.Parameter(typeof(TInstance));
-            return Expression.Lambda<Func<TInstance, TResult>>(Expression.Call(parameter, mi), parameter).Compile();
+            var parameter = Expression.Parameter(tInstance);
+            return Expression.Lambda(Expression.Call(parameter, mi), parameter).Compile();
+        }
+
+        public static Func<TInstance, TResult> ToCompiledGetterFunc<TInstance, TResult>(this PropertyInfo pi)
+        {
+            return (Func<TInstance, TResult>)ToCompiledGetterDelegate(pi, typeof(TInstance), typeof(TResult));
+        }
+
+        public static Delegate ToCompiledSetterDelegate(this PropertyInfo pi, Type tInstance, Type tValue)
+        {
+            if (!tValue.IsAssignableFrom(pi.PropertyType) && !pi.PropertyType.IsAssignableFrom(tValue))
+                throw new InvalidOperationException($"Unsupported type combination: {tValue} and {pi.GetType()}.");
+
+            var mi = pi.GetSetMethod();
+
+            var instanceParameter = Expression.Parameter(tInstance);
+            var valueParameter = Expression.Parameter(tValue);
+            Expression valueExpression = valueParameter;
+
+            if (pi.PropertyType != tValue)
+                valueExpression = Expression.Convert(valueExpression, pi.PropertyType);
+
+            var body = Expression.Call(instanceParameter, mi, valueExpression);
+
+            return Expression.Lambda(body, instanceParameter, valueParameter).Compile();
         }
 
         public static Action<TInstance, TValue> ToCompiledSetterAction<TInstance, TValue>(this PropertyInfo pi)
         {
-            if (!typeof(TValue).IsAssignableFrom(pi.PropertyType) && !pi.PropertyType.IsAssignableFrom(typeof(TValue)))
-                throw new InvalidOperationException($"Unsupported type combination: {typeof(TValue)} and {pi.GetType()}.");
-
-            var mi = pi.GetSetMethod();
-
-            var instanceParameter = Expression.Parameter(typeof(TInstance));
-            var valueParameter = Expression.Parameter(typeof(TValue));
-            Expression valueExpression = valueParameter;
-
-            if (pi.PropertyType != typeof(TValue))
-                valueExpression = Expression.Convert(valueExpression, pi.PropertyType);
-
-            var body = Expression.Call(instanceParameter, mi, valueParameter);
-
-            return Expression.Lambda<Action<TInstance, TValue>>(body, instanceParameter, valueParameter).Compile();
+            return (Action<TInstance, TValue>)ToCompiledSetterDelegate(pi, typeof(TInstance), typeof(TValue));
         }
     }
 }

@@ -7,6 +7,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NJsonApi.Conventions;
 using NJsonApi.Utils;
+using NJsonApi.Common.Utils;
+using NJsonApi.Common.Infrastructure;
 
 namespace NJsonApi
 {
@@ -44,20 +46,20 @@ namespace NJsonApi
         public ResourceConfigurationBuilder<TResource> WithIdSelector(Expression<Func<TResource, object>> expression)
         {
             ConstructedMetadata.IdGetter = ExpressionUtils.CompileToObjectTypedFunction(expression);
-            ConstructedMetadata.IdSetter = CreateIdSetter(ExpressionUtils.GetPropertyInfoFromExpression(expression));
+            ConstructedMetadata.IdSetter = CreateIdSetter(expression.GetPropertyInfo());
             return this;
         }
 
         public ResourceConfigurationBuilder<TResource> WithSimpleProperty(Expression<Func<TResource, object>> propertyAccessor)
         {
-            var propertyInfo = ExpressionUtils.GetPropertyInfoFromExpression(propertyAccessor);
+            var propertyInfo = propertyAccessor.GetPropertyInfo();
             AddProperty(propertyInfo, typeof(TResource));
             return this;
         }
 
         public ResourceConfigurationBuilder<TResource> WithSimpleProperty(Expression<Func<TResource, object>> propertyAccessor, SerializationDirection direction)
         {
-            var propertyInfo = ExpressionUtils.GetPropertyInfoFromExpression(propertyAccessor);
+            var propertyInfo = propertyAccessor.GetPropertyInfo();
             RemoveProperty(propertyInfo);
             AddProperty(propertyInfo, typeof(TResource), direction);
             return this;
@@ -65,7 +67,7 @@ namespace NJsonApi
 
         public ResourceConfigurationBuilder<TResource> IgnoreProperty(Expression<Func<TResource, object>> propertyAccessor)
         {
-            var pi = ExpressionUtils.GetPropertyInfoFromExpression(propertyAccessor);
+            var pi = propertyAccessor.GetPropertyInfo();
             RemoveProperty(pi);
             return this;
         }
@@ -192,7 +194,7 @@ namespace NJsonApi
             if (typeof(TNested).Name == "Array")
                 throw new NotSupportedException("Array type is not supported!");
 
-            var propertyInfo = ExpressionUtils.GetPropertyInfoFromExpression(objectAccessor);
+            var propertyInfo = objectAccessor.GetPropertyInfo();
 
             var isCollection = typeof(IEnumerable).IsAssignableFrom(propertyInfo.PropertyType);
 
@@ -202,13 +204,13 @@ namespace NJsonApi
             if (linkedResourceType == null) linkedResourceType = ResourceTypeConvention.GetResourceTypeFromRepresentationType(linkedType);
             if (idAccessor == null) idAccessor = LinkIdConvention.GetIdExpression(objectAccessor);
 
-            var link = new LinkMapping<TResource, TNested>
+            var link = new RelationshipMapping<TResource, TNested>
             {
                 RelationshipName = linkName,
                 ResourceIdGetter = idAccessor,
                 ResourceGetter = ExpressionUtils.CompileToObjectTypedExpression(objectAccessor),
                 IsCollection = isCollection,
-                RelatedCollectionProperty = isCollection ? propertyInfo : null,
+                RelatedCollectionProperty = isCollection ? new PropertyHandle<TResource, TNested>(objectAccessor) : null,
                 RelatedBaseType = linkedType,
                 RelatedBaseResourceType = linkedResourceType,
                 InclusionRule = inclusionRule

@@ -17,7 +17,7 @@ namespace NJsonApi.Common.Infrastructure
         private static Dictionary<string, CollectionInfo<T>> collectionInfoTemplates;
 
         public Dictionary<string, object> ObjectPropertyValues { get; set; }
-        private Dictionary<string, ICollectionDelta> CollectionDeltas { get; set; }
+        public Dictionary<string, ICollectionDelta> CollectionDeltas { get; set; }
 
         public Delta()
         {

@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\IPropertyHandle.cs" />
+    <Compile Include="Infrastructure\PropertyHandle.cs" />
     <Compile Include="Infrastructure\CollectionDelta.cs" />
     <Compile Include="Infrastructure\Delta.cs" />
     <Compile Include="Infrastructure\ICollectionDelta.cs" />
