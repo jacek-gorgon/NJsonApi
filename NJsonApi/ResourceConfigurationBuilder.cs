@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NJsonApi.Conventions;
 using NJsonApi.Utils;
+using System.Diagnostics;
 
 namespace NJsonApi
 {
@@ -102,6 +103,41 @@ namespace NJsonApi
             return this;
         }
 
+        public ResourceConfigurationBuilder<TResource> WithSpecifiedSimpleProperties(IList<string> properties)
+        {
+
+            //default resource to pull all fields when none are provided
+            if (properties.Where(a => a.Contains(ConstructedMetadata.ResourceType.ToLower())).Count() == 0)
+            {
+                WithAllSimpleProperties();
+                return this;
+            }
+
+            //check for id existance and add if necessary
+            var idproperty = string.Format("{0}.{1}", ConstructedMetadata.ResourceType.ToLower(), "id");
+            if (!properties.Contains(idproperty))
+            {
+                properties.Add(idproperty);
+            }
+
+            //recurse properties looking for fields that pertain to this resource type
+            foreach (var propertyInfo in typeof(TResource).GetProperties())
+            {
+                if (properties.Select(a => a.ToLower()).Contains(string.Format("{0}.{1}", ConstructedMetadata.ResourceType.ToLower(), propertyInfo.Name.ToLower())))
+                {
+                    if (PropertyScanningConvention.IsPrimaryId(propertyInfo))
+                    {
+                        ConstructedMetadata.IdGetter = propertyInfo.GetValue;
+                        PropertyInfo info = propertyInfo;
+                        ConstructedMetadata.IdSetter = CreateIdSetter(info);
+                    }
+                    else if (!PropertyScanningConvention.IsLinkedResource(propertyInfo) && !PropertyScanningConvention.ShouldIgnore(propertyInfo))
+                        AddProperty(propertyInfo, typeof(TResource));
+                }
+            }
+            return this;
+        }
+
         private static Action<object, string> CreateIdSetter(PropertyInfo info)
         {
             return (o, s) => info.SetValue(o, ParseStringIntoT(info.PropertyType, s));
@@ -167,6 +203,32 @@ namespace NJsonApi
             return this;
         }
 
+        public ResourceConfigurationBuilder<TResource> WithSpecifiedLinkedResources(IList<string> resources)
+        {
+            MethodInfo openMethod = GetType().GetMethod("WithLinkedResource");
+
+            foreach (var propertyInfo in typeof(TResource).GetProperties())
+            {
+                if (resources.Select(a => a.ToLower()).Contains(propertyInfo.Name.ToLower()))
+                {
+                    if (PropertyScanningConvention.IsLinkedResource(propertyInfo) &&
+                        !PropertyScanningConvention.ShouldIgnore(propertyInfo))
+                    {
+                        var nestedType = propertyInfo.PropertyType;
+                        var parameterExp = Expression.Parameter(typeof(TResource));
+                        var propertyExp = Expression.Property(parameterExp, propertyInfo);
+                        var propertyAccessor = Expression.Lambda(propertyExp, parameterExp);
+
+                        // Because the expression is constructed in run-time and we need to invoke the convention that expects
+                        // a compile-time-safe generic method, reflection must be used to invoke it.
+                        MethodInfo closedMethod = openMethod.MakeGenericMethod(nestedType);
+                        closedMethod.Invoke(this, new object[] { propertyAccessor, null, null, null, ResourceInclusionRules.Smart });
+                    }
+                }
+            }
+            return this;
+        }
+
         private Type GetItemType(Type ienumerableType)
         {
             return ienumerableType
@@ -218,6 +280,7 @@ namespace NJsonApi
             return this;
         }
 
+
         private void AddProperty(PropertyInfo propertyInfo, Type type, SerializationDirection direction = SerializationDirection.Both)
         {
             var name = PropertyScanningConvention.GetPropertyName(propertyInfo);
@@ -234,9 +297,9 @@ namespace NJsonApi
 
             if (direction == SerializationDirection.In || direction == SerializationDirection.Both)
             {
-                ConstructedMetadata.PropertySetters[name] = propertyInfo.SetValue;    
+                ConstructedMetadata.PropertySetters[name] = propertyInfo.SetValue;
             }
-            
+
             var instance = Expression.Parameter(typeof(object), "i");
             var argument = Expression.Parameter(typeof(object), "a");
             var setterCall = Expression.Call(
@@ -246,7 +309,7 @@ namespace NJsonApi
 
             Expression<Action<object, object>> expression = Expression.Lambda<Action<object, object>>(setterCall, instance, argument);
 
-            if (direction == SerializationDirection.In  || direction == SerializationDirection.Both)
+            if (direction == SerializationDirection.In || direction == SerializationDirection.Both)
             {
                 ConstructedMetadata.PropertySettersExpressions[name] = expression;
             }

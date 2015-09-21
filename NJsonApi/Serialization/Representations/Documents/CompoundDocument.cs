@@ -43,7 +43,7 @@ namespace NJsonApi.Serialization.Documents
             }
 
             var resourceList = Data as List<Dictionary<string, object>>;
-            var href = resourceList?.FirstOrDefault()?.FirstOrDefault(kvp => kvp.Key == "href").Value as string;
+            var href = resourceList.FirstOrDefault().FirstOrDefault(kvp => kvp.Key == "href").Value as string;
 
             return href ?? string.Empty;
         }
