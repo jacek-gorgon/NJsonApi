@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util-JsonApiSerializer", "Util-JsonApiSerializer\Util-JsonApiSerializer.csproj", "{39073AC4-47C1-4C0E-87E1-E48FA606D165}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util-JsonApiSerializer.Common", "Util-JsonApiSerializer.Common\Util-JsonApiSerializer.Common.csproj", "{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{39073AC4-47C1-4C0E-87E1-E48FA606D165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39073AC4-47C1-4C0E-87E1-E48FA606D165}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39073AC4-47C1-4C0E-87E1-E48FA606D165}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39073AC4-47C1-4C0E-87E1-E48FA606D165}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
