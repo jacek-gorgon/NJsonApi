@@ -53,6 +53,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Infrastructure\DeltaCollectionTests.cs" />
     <Compile Include="Infrastructure\DeltaTest.cs" />
     <Compile Include="Infrastructure\MetadataWrapperTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

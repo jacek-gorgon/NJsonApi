@@ -83,6 +83,7 @@ namespace NJsonApi.Serialization
                     delta.ObjectPropertyValues.Add(propertySetter.Key, value);
             }
 
+            // Relationship updates
             if (updateDocument.Data.Relationships != null)
             {
                 foreach (var relMapping in mapping.Relationships)
@@ -116,7 +117,7 @@ namespace NJsonApi.Serialization
                         delta.ObjectPropertyValues.Add(relMapping.ParentResourceNavigationPropertyName, TransformationHelper.GetValue(value, relMapping.ParentResourceNavigationPropertyType));
                     }
                     else
-                        throw new InvalidOperationException("");
+                        throw new InvalidOperationException();
                 }
             }
 
