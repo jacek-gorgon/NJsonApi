@@ -182,6 +182,7 @@ namespace UtilJsonApiSerializer
         /// </remarks>
         public ResourceConfigurationBuilder<TResource> WithAllLinkedResources()
         {
+
             MethodInfo openMethod = GetType().GetMethod("WithLinkedResource");
 
             foreach (var propertyInfo in typeof(TResource).GetProperties())
