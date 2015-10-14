@@ -53,6 +53,9 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UtilJsonApiSerializer.Common">
+      <HintPath>bin\Release\UtilJsonApiSerializer.Common.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
@@ -115,12 +118,6 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Util-JsonApiSerializer.Common\Util-JsonApiSerializer.Common.csproj">
-      <Project>{59e4c7f0-daa5-462c-bab2-6bd36787d122}</Project>
-      <Name>Util-JsonApiSerializer.Common</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -107,14 +107,14 @@ namespace UtilJsonApiSerializer
         {
 
             //default resource to pull all fields when none are provided
-            if (properties.Where(a => a.Contains(ConstructedMetadata.ResourceType.ToLower())).Count() == 0)
+            if (properties.Count == 0)
             {
                 WithAllSimpleProperties();
                 return this;
             }
 
-            //check for id existance and add if necessary
-            var idproperty = string.Format("{0}.{1}", ConstructedMetadata.ResourceType.ToLower(), "id");
+            ////check for id existance and add if necessary
+            var idproperty = string.Format("{0}", "id");
             if (!properties.Contains(idproperty))
             {
                 properties.Add(idproperty);
@@ -123,7 +123,7 @@ namespace UtilJsonApiSerializer
             //recurse properties looking for fields that pertain to this resource type
             foreach (var propertyInfo in typeof(TResource).GetProperties())
             {
-                if (properties.Select(a => a.ToLower()).Contains(string.Format("{0}.{1}", ConstructedMetadata.ResourceType.ToLower(), propertyInfo.Name.ToLower())))
+                if (properties.Select(a => a.ToLower()).Contains(string.Format("{0}", propertyInfo.Name.ToLower())))
                 {
                     if (PropertyScanningConvention.IsPrimaryId(propertyInfo))
                     {
