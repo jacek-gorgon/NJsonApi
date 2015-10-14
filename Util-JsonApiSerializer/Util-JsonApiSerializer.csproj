@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JsonApiNet, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\msvc-List\source\packages\JsonApiNet.2.0.1.0\lib\net45\JsonApiNet.dll</HintPath>
+      <HintPath>..\packages\JsonApiNet.2.0.1.0\lib\net45\JsonApiNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
