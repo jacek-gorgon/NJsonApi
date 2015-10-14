@@ -24,6 +24,7 @@ namespace UtilJsonApiSerializer
         public ConfigurationBuilder BuildResource<T>(string includedfields, string includedrelationships)
         {
 
+
             var fields = new List<string>();
             var includes = new List<string>();
 
