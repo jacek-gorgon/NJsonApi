@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using Newtonsoft.Json;
 using UtilJsonApiSerializer.Utils;
-
+using System.Linq;
+using UtilJsonApiSerializer.Common.Infrastructure;
 namespace UtilJsonApiSerializer.Conventions.Impl
 {
     public class DefaultPropertyScanningConvention : IPropertyScanningConvention
@@ -35,9 +36,10 @@ namespace UtilJsonApiSerializer.Conventions.Impl
         public virtual bool IsLinkedResource(PropertyInfo pi)
         {
             var type = pi.PropertyType;
-            bool isPrimitiveType = type.IsPrimitive || type.IsValueType || (type == typeof(string) || (type == typeof(DateTime)) || (type == typeof(TimeSpan)) || (type == typeof(DateTimeOffset)));
+            bool isPrimitiveType = Attribute.IsDefined(pi, typeof(SerializeAsPrimitive)) || type.IsPrimitive || type.IsValueType || (type == typeof(string) || (type == typeof(DateTime)) || (type == typeof(TimeSpan)) || (type == typeof(DateTimeOffset)));
             return !isPrimitiveType;
         }
+
 
         /// <summary>
         /// Determines if the property should be ignored during scanning.

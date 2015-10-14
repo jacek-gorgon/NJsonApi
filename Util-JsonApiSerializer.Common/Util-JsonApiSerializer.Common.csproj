@@ -49,6 +49,7 @@
     <Compile Include="Infrastructure\MetaDataWrapper.cs" />
     <Compile Include="Infrastructure\NJsonApiBaseException.cs" />
     <Compile Include="Infrastructure\Patch.cs" />
+    <Compile Include="Infrastructure\SerializeAsPrimitive.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
