@@ -113,7 +113,7 @@ namespace UtilJsonApiSerializer
                 return this;
             }
 
-            ////check for id existance and add if necessary
+            //check for id existance and add if necessary
             var idproperty = string.Format("{0}", "id");
             if (!properties.Contains(idproperty))
             {
