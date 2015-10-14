@@ -1,13 +1,11 @@
-﻿using JsonApiNet;
+﻿
+using JsonApiNet;
 using JsonApiNet.Components;
 using JsonApiNet.Resolvers;
 using System;
 using System.Collections.Generic;
-using UtilJsonApiSerializer;
 using UtilJsonApiSerializer.Serialization;
 using UtilJsonApiSerializer.Serialization.Documents;
-using System.Linq;
-
 namespace UtilJsonApiSerializer
 {
     public class JsonApiSerializer
