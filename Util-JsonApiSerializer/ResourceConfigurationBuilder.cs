@@ -107,7 +107,7 @@ namespace UtilJsonApiSerializer
         {
 
             //default resource to pull all fields when none are provided
-            if (properties.Count == 0)
+            if (properties.Where(a => a.Length > 0).Count() == 0)
             {
                 WithAllSimpleProperties();
                 return this;
