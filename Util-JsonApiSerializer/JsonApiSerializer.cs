@@ -22,6 +22,10 @@ namespace UtilJsonApiSerializer
         public ConfigurationBuilder BuildResource<T>(string includedfields, string includedrelationships)
         {
 
+            //check for existing resource configigurations of this type and remove them if they exist
+            if (SerializerConfiguration.ResourceConfigurationsByType.ContainsKey(typeof(T))) {
+                SerializerConfiguration.ResourceConfigurationsByType.Remove(typeof(T));
+            }
 
             var fields = new List<string>();
             var includes = new List<string>();
