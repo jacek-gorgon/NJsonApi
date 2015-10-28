@@ -8,13 +8,14 @@ using UtilJsonApiSerializer.Serialization;
 using UtilJsonApiSerializer.Serialization.Documents;
 namespace UtilJsonApiSerializer
 {
-    public class JsonApiSerializer
+    public class JsonApiSerializer : IJsonApiSerializer
     {
 
         public ConfigurationBuilder SerializerConfiguration { get; set; }
-        public Dictionary<string,Type> ResolverSettings { get; set; }
+        public Dictionary<string, Type> ResolverSettings { get; set; }
 
-        public JsonApiSerializer(Dictionary<string, Type> resolverSettings) {
+        public JsonApiSerializer(Dictionary<string, Type> resolverSettings)
+        {
             ResolverSettings = resolverSettings;
             SerializerConfiguration = new ConfigurationBuilder();
         }
@@ -23,7 +24,8 @@ namespace UtilJsonApiSerializer
         {
 
             //check for existing resource configigurations of this type and remove them if they exist
-            if (SerializerConfiguration.ResourceConfigurationsByType.ContainsKey(typeof(T))) {
+            if (SerializerConfiguration.ResourceConfigurationsByType.ContainsKey(typeof(T)))
+            {
                 SerializerConfiguration.ResourceConfigurationsByType.Remove(typeof(T));
             }
 
@@ -70,11 +72,11 @@ namespace UtilJsonApiSerializer
 
         public Dictionary<string, object> GetDocumentProperties(string json)
         {
-             var resolver = new StringToTypeResolver(ResolverSettings);
+            var resolver = new StringToTypeResolver(ResolverSettings);
             return JsonApi.Document<JsonApiDocument>(json, resolver).Data[0].Attributes;
         }
 
 
-   
+
     }
 }

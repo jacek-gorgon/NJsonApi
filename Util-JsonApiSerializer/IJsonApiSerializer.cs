@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UtilJsonApiSerializer
 {
-    public interface IJsonApiSpecTransformer
+    public interface IJsonApiSerializer
     {
         //serializer
         object SerializeObject(object obj);
@@ -15,5 +15,7 @@ namespace UtilJsonApiSerializer
 
         Dictionary<string, object> GetDocumentProperties(string json);
 
+        //resource configuration builder
+        ConfigurationBuilder BuildResource<T>(string includedfields, string includedrelationships);
     }
 }
