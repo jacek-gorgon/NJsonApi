@@ -20,7 +20,7 @@ namespace UtilJsonApiSerializer
             SerializerConfiguration = new ConfigurationBuilder();
         }
 
-        public ConfigurationBuilder BuildResource<T>(string includedfields, string includedrelationships)
+        public ConfigurationBuilder BuildResource<T>(string includedfields, string includedrelationships, string linkTemplate)
         {
 
             //check for existing resource configigurations of this type and remove them if they exist
@@ -44,10 +44,13 @@ namespace UtilJsonApiSerializer
                 includes.AddRange(includedrelationships.Split(','));
             }
 
+
+            linkTemplate = linkTemplate ?? "/{type}/{id}";
+
             SerializerConfiguration.Resource<T>()
              .WithSpecifiedSimpleProperties(fields)
              .WithSpecifiedLinkedResources(includes)
-             .WithLinkTemplate("/{type}/{id}");
+             .WithLinkTemplate(linkTemplate);
 
             return SerializerConfiguration;
         }
