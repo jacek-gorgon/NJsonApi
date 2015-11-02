@@ -16,6 +16,6 @@ namespace UtilJsonApiSerializer
         Dictionary<string, object> GetDocumentProperties(string json);
 
         //resource configuration builder
-        ConfigurationBuilder BuildResource<T>(string includedfields, string includedrelationships, string linkTemplate);
+        ConfigurationBuilder BuildResource<T>(string includedfields, string includedrelationships, string linkTemplate = null);
     }
 }

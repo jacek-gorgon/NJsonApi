@@ -107,7 +107,7 @@ namespace UtilJsonApiSerializer
         {
 
             //default resource to pull all fields when none are provided
-            if (properties.Where(a => a.Length > 0).Count() == 0)
+            if (!properties.Where(a => a.Length > 0).Any())
             {
                 WithAllSimpleProperties();
                 return this;
@@ -123,7 +123,27 @@ namespace UtilJsonApiSerializer
             //recurse properties looking for fields that pertain to this resource type
             foreach (var propertyInfo in typeof(TResource).GetProperties())
             {
-                if (properties.Select(a => a.ToLower()).Contains(string.Format("{0}", propertyInfo.Name.ToLower())))
+                //if the resource being built is the parent, filter fields based on properties passed in
+                if (ConfigurationBuilder.ResourceConfigurationsByType.Count == 1)
+                {
+                    if (properties.Select(a => a.ToLower()).Contains(string.Format("{0}", propertyInfo.Name.ToLower())))
+                    {
+                        if (PropertyScanningConvention.IsPrimaryId(propertyInfo))
+                        {
+                            ConstructedMetadata.IdGetter = propertyInfo.GetValue;
+                            PropertyInfo info = propertyInfo;
+                            ConstructedMetadata.IdSetter = CreateIdSetter(info);
+                        }
+
+                        else if (!PropertyScanningConvention.IsLinkedResource(propertyInfo) &&
+                                 !PropertyScanningConvention.ShouldIgnore(propertyInfo))
+                        {
+                            AddProperty(propertyInfo, typeof(TResource));
+                        }
+                    }
+                }
+                //resources that are configured after the parent do not support field filtering
+                else
                 {
                     if (PropertyScanningConvention.IsPrimaryId(propertyInfo))
                     {
@@ -131,8 +151,13 @@ namespace UtilJsonApiSerializer
                         PropertyInfo info = propertyInfo;
                         ConstructedMetadata.IdSetter = CreateIdSetter(info);
                     }
-                    else if (!PropertyScanningConvention.IsLinkedResource(propertyInfo) && !PropertyScanningConvention.ShouldIgnore(propertyInfo))
+
+                    else if (!PropertyScanningConvention.IsLinkedResource(propertyInfo) &&
+                             !PropertyScanningConvention.ShouldIgnore(propertyInfo))
+                    {
                         AddProperty(propertyInfo, typeof(TResource));
+                    }
+
                 }
             }
             return this;

@@ -20,7 +20,7 @@ namespace UtilJsonApiSerializer
             SerializerConfiguration = new ConfigurationBuilder();
         }
 
-        public ConfigurationBuilder BuildResource<T>(string includedfields, string includedrelationships, string linkTemplate)
+        public ConfigurationBuilder BuildResource<T>(string includedfields, string includedrelationships, string linkTemplate = null)
         {
 
             //check for existing resource configigurations of this type and remove them if they exist
