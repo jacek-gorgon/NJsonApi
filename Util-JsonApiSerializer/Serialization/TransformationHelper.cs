@@ -25,6 +25,8 @@ namespace UtilJsonApiSerializer.Serialization
         private const string RelatedIdPlaceholder = "{relatedId}";
         private const string MetaCountAttribute = "count";
         private const string SelfLinkKey = "self";
+        
+        private static string _parentId;
 
         public CompoundDocument HandleException(Exception exception)
         {
@@ -69,10 +71,12 @@ namespace UtilJsonApiSerializer.Serialization
                 representationList.Single();
         }
 
-        public List<SingleResource> CreateIncludedRepresentations(List<object> primaryResourceList, IResourceMapping resourceMapping, Context context)
+        public List<SingleResource> CreateIncludedRepresentations(List<object> primaryResourceList, IResourceMapping resourceMapping, Context context, string parentId)
         {
             var includedList = new List<SingleResource>();
             var alreadyVisitedObjects = new HashSet<object>(primaryResourceList);
+
+            _parentId = parentId;
 
             foreach (var resource in primaryResourceList)
                 AppendIncludedRepresentationRecursive(resource, resourceMapping, includedList, alreadyVisitedObjects, context);
@@ -188,7 +192,7 @@ namespace UtilJsonApiSerializer.Serialization
 
         private static Dictionary<string, ILink> CreateLinks(IResourceMapping resourceMapping, UrlBuilder urlBuilder, SingleResource result)
         {
-            return new Dictionary<string, ILink>() { { SelfLinkKey, new SimpleLink { Href = urlBuilder.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace(TypePlaceholder, result.Type).Replace(IdPlaceholder, result.Id)) } } };
+            return new Dictionary<string, ILink>() { { SelfLinkKey, new SimpleLink { Href = urlBuilder.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace(TypePlaceholder, result.Type).Replace(IdPlaceholder, result.Id).Replace(ParentIdPlaceholder, _parentId)) } } };
         }
 
         private ILink GetUrlFromTemplate(string urlTemplate, string routePrefix, string parentId, string relatedId = null, string parenttype = null, string relationshipName = null)
@@ -286,7 +290,8 @@ namespace UtilJsonApiSerializer.Serialization
                     rel.Links = relLinks;
 
                 if (rel.Data != null || rel.Links != null)
-                    relationships.Add(relationshipName, rel);
+                    if (!relationships.ContainsKey(relationshipName))
+                        relationships.Add(relationshipName, rel);
             }
             return relationships.Any() ? relationships : null;
         }

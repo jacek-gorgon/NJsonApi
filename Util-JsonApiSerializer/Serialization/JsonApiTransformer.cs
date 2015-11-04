@@ -12,6 +12,7 @@ namespace UtilJsonApiSerializer.Serialization
     public class JsonApiTransformer : IJsonApiTransformer
     {
         private JsonSerializer serializer;
+        private string _parentId;
 
         public TransformationHelper TransformationHelper { get; set; }
 
@@ -52,9 +53,11 @@ namespace UtilJsonApiSerializer.Serialization
 
             result.Data = primaryResource;
 
+            _parentId = resourceMapping.IdGetter(resource).ToString();
+
             if (resourceMapping.Relationships.Any())
             {
-                result.Included = TransformationHelper.CreateIncludedRepresentations(resourceList, resourceMapping, context);
+                result.Included = TransformationHelper.CreateIncludedRepresentations(resourceList, resourceMapping, context, _parentId);
             }
 
             return result;

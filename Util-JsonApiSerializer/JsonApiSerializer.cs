@@ -4,6 +4,7 @@ using JsonApiNet.Components;
 using JsonApiNet.Resolvers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using UtilJsonApiSerializer.Serialization;
 using UtilJsonApiSerializer.Serialization.Documents;
 namespace UtilJsonApiSerializer
@@ -20,51 +21,13 @@ namespace UtilJsonApiSerializer
             SerializerConfiguration = new ConfigurationBuilder();
         }
 
-        public ConfigurationBuilder BuildResource<T>(string includedfields, string includedrelationships, string linkTemplate = null)
+        public object SerializeObject(ConfigurationBuilder serializerConfig, object obj)
         {
-
-            //check for existing resource configigurations of this type and remove them if they exist
-            if (SerializerConfiguration.ResourceConfigurationsByType.ContainsKey(typeof(T)))
-            {
-                SerializerConfiguration.ResourceConfigurationsByType.Remove(typeof(T));
-            }
-
-            var fields = new List<string>();
-            var includes = new List<string>();
-
-            //include fields
-            if (!string.IsNullOrEmpty(includedfields))
-            {
-                fields.AddRange(includedfields.Split(','));
-            }
-
-            //include relationships
-            if (!string.IsNullOrEmpty(includedrelationships))
-            {
-                includes.AddRange(includedrelationships.Split(','));
-            }
-
-
-            linkTemplate = linkTemplate ?? "/{type}/{id}";
-
-            SerializerConfiguration.Resource<T>()
-             .WithSpecifiedSimpleProperties(fields)
-             .WithSpecifiedLinkedResources(includes)
-             .WithLinkTemplate(linkTemplate);
-
-            return SerializerConfiguration;
-        }
-
-        public object SerializeObject(object obj)
-        {
-
-            var config = SerializerConfiguration.Build();
-
+            var config = serializerConfig.Build();
             var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
             CompoundDocument result = sut.Transform(obj, new Context() { Configuration = config, RoutePrefix = string.Empty });
 
             return result;
-
         }
 
         public T DeserializeObject<T>(string json)

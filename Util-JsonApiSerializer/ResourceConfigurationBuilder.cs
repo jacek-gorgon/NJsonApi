@@ -103,11 +103,12 @@ namespace UtilJsonApiSerializer
             return this;
         }
 
-        public ResourceConfigurationBuilder<TResource> WithSpecifiedSimpleProperties(IList<string> properties)
+        public ResourceConfigurationBuilder<TResource> WithSpecifiedSimpleProperties(string properties)
         {
+            var props = properties.ToLower().Split(',').ToList();
 
             //default resource to pull all fields when none are provided
-            if (!properties.Where(a => a.Length > 0).Any())
+            if (!props.Any(a => a.Length > 0))
             {
                 WithAllSimpleProperties();
                 return this;
@@ -115,35 +116,15 @@ namespace UtilJsonApiSerializer
 
             //check for id existance and add if necessary
             var idproperty = string.Format("{0}", "id");
-            if (!properties.Contains(idproperty))
+            if (!props.Contains(idproperty))
             {
-                properties.Add(idproperty);
+                props.Add(idproperty);
             }
 
             //recurse properties looking for fields that pertain to this resource type
             foreach (var propertyInfo in typeof(TResource).GetProperties())
             {
-                //if the resource being built is the parent, filter fields based on properties passed in
-                if (ConfigurationBuilder.ResourceConfigurationsByType.Count == 1)
-                {
-                    if (properties.Select(a => a.ToLower()).Contains(string.Format("{0}", propertyInfo.Name.ToLower())))
-                    {
-                        if (PropertyScanningConvention.IsPrimaryId(propertyInfo))
-                        {
-                            ConstructedMetadata.IdGetter = propertyInfo.GetValue;
-                            PropertyInfo info = propertyInfo;
-                            ConstructedMetadata.IdSetter = CreateIdSetter(info);
-                        }
-
-                        else if (!PropertyScanningConvention.IsLinkedResource(propertyInfo) &&
-                                 !PropertyScanningConvention.ShouldIgnore(propertyInfo))
-                        {
-                            AddProperty(propertyInfo, typeof(TResource));
-                        }
-                    }
-                }
-                //resources that are configured after the parent do not support field filtering
-                else
+                if (props.Select(a => a.ToLower()).Contains(string.Format("{0}", propertyInfo.Name.ToLower())))
                 {
                     if (PropertyScanningConvention.IsPrimaryId(propertyInfo))
                     {
@@ -157,7 +138,6 @@ namespace UtilJsonApiSerializer
                     {
                         AddProperty(propertyInfo, typeof(TResource));
                     }
-
                 }
             }
             return this;
@@ -223,37 +203,39 @@ namespace UtilJsonApiSerializer
                     // Because the expression is constructed in run-time and we need to invoke the convention that expects
                     // a compile-time-safe generic method, reflection must be used to invoke it.
                     MethodInfo closedMethod = openMethod.MakeGenericMethod(nestedType);
-                    closedMethod.Invoke(this, new object[] { propertyAccessor, null, null, null, ResourceInclusionRules.Smart });
+                    closedMethod.Invoke(this, new object[] { propertyAccessor, null, null, null, ResourceInclusionRules.Smart, null, null });
                 }
             }
             return this;
         }
 
-        public ResourceConfigurationBuilder<TResource> WithSpecifiedLinkedResources(IList<string> resources)
-        {
-            MethodInfo openMethod = GetType().GetMethod("WithLinkedResource");
+        //public ResourceConfigurationBuilder<TResource> WithSpecifiedLinkedResources(string resources, string selfUrlTemplate)
+        //{
+        //    MethodInfo openMethod = GetType().GetMethod("WithLinkedResource");
 
-            foreach (var propertyInfo in typeof(TResource).GetProperties())
-            {
-                if (resources.Select(a => a.ToLower()).Contains(propertyInfo.Name.ToLower()))
-                {
-                    if (PropertyScanningConvention.IsLinkedResource(propertyInfo) &&
-                        !PropertyScanningConvention.ShouldIgnore(propertyInfo))
-                    {
-                        var nestedType = propertyInfo.PropertyType;
-                        var parameterExp = Expression.Parameter(typeof(TResource));
-                        var propertyExp = Expression.Property(parameterExp, propertyInfo);
-                        var propertyAccessor = Expression.Lambda(propertyExp, parameterExp);
+        //    var res = resources.Split(',').ToList();
 
-                        // Because the expression is constructed in run-time and we need to invoke the convention that expects
-                        // a compile-time-safe generic method, reflection must be used to invoke it.
-                        MethodInfo closedMethod = openMethod.MakeGenericMethod(nestedType);
-                        closedMethod.Invoke(this, new object[] { propertyAccessor, null, null, null, ResourceInclusionRules.Smart });
-                    }
-                }
-            }
-            return this;
-        }
+        //    foreach (var propertyInfo in typeof(TResource).GetProperties())
+        //    {
+        //        if (res.Select(a => a.ToLower()).Contains(propertyInfo.Name.ToLower()))
+        //        {
+        //            if (PropertyScanningConvention.IsLinkedResource(propertyInfo) &&
+        //                !PropertyScanningConvention.ShouldIgnore(propertyInfo))
+        //            {
+        //                var nestedType = propertyInfo.PropertyType;
+        //                var parameterExp = Expression.Parameter(typeof(TResource));
+        //                var propertyExp = Expression.Property(parameterExp, propertyInfo);
+        //                var propertyAccessor = Expression.Lambda(propertyExp, parameterExp);
+
+        //                // Because the expression is constructed in run-time and we need to invoke the convention that expects
+        //                // a compile-time-safe generic method, reflection must be used to invoke it.
+        //                MethodInfo closedMethod = openMethod.MakeGenericMethod(nestedType);
+        //                closedMethod.Invoke(this, new object[] { propertyAccessor, null, null, null, ResourceInclusionRules.Smart, selfUrlTemplate });
+        //            }
+        //        }
+        //    }
+        //    return this;
+        //}
 
         private Type GetItemType(Type ienumerableType)
         {
@@ -275,34 +257,39 @@ namespace UtilJsonApiSerializer
         /// 
         /// Supply a custom implementations to alter behavior.
         /// </remarks>
-        public ResourceConfigurationBuilder<TResource> WithLinkedResource<TNested>(Expression<Func<TResource, TNested>> objectAccessor, Expression<Func<TResource, object>> idAccessor = null, string linkedResourceType = null, string linkName = null, ResourceInclusionRules inclusionRule = ResourceInclusionRules.Smart) where TNested : class
+        public ResourceConfigurationBuilder<TResource> WithLinkedResource<TNested>(Expression<Func<TResource, TNested>> objectAccessor, Expression<Func<TResource, object>> idAccessor = null, string linkedResourceType = null, string linkName = null, ResourceInclusionRules inclusionRule = ResourceInclusionRules.Smart, string smartUrlTemplate = null, string requestedIncludes = null) where TNested : class
         {
-            if (typeof(TNested).Name == "Array")
-                throw new NotSupportedException("Array type is not supported!");
-
-            var propertyInfo = ExpressionUtils.GetPropertyInfoFromExpression(objectAccessor);
-
-            var isCollection = typeof(IEnumerable).IsAssignableFrom(propertyInfo.PropertyType);
-
-            var linkedType = isCollection ? GetItemType(typeof(TNested)) : typeof(TNested);
-
-            if (linkName == null) linkName = LinkNameConvention.GetLinkNameFromExpression(objectAccessor);
-            if (linkedResourceType == null) linkedResourceType = ResourceTypeConvention.GetResourceTypeFromRepresentationType(linkedType);
-            if (idAccessor == null) idAccessor = LinkIdConvention.GetIdExpression(objectAccessor);
-
-            var link = new LinkMapping<TResource, TNested>
+            var includes = requestedIncludes.ToLower().Split(',').ToList() ?? new List<string>();
+            if (includes.Contains(linkName.ToLower()))
             {
-                RelationshipName = linkName,
-                ResourceIdGetter = idAccessor,
-                ResourceGetter = ExpressionUtils.CompileToObjectTypedExpression(objectAccessor),
-                IsCollection = isCollection,
-                RelatedCollectionProperty = isCollection ? propertyInfo : null,
-                RelatedBaseType = linkedType,
-                RelatedBaseResourceType = linkedResourceType,
-                InclusionRule = inclusionRule
-            };
+                if (typeof(TNested).Name == "Array")
+                    throw new NotSupportedException("Array type is not supported!");
 
-            ConstructedMetadata.Relationships.Add(link);
+                var propertyInfo = ExpressionUtils.GetPropertyInfoFromExpression(objectAccessor);
+
+                var isCollection = typeof(IEnumerable).IsAssignableFrom(propertyInfo.PropertyType);
+
+                var linkedType = isCollection ? GetItemType(typeof(TNested)) : typeof(TNested);
+
+                if (linkName == null) linkName = LinkNameConvention.GetLinkNameFromExpression(objectAccessor);
+                if (linkedResourceType == null) linkedResourceType = ResourceTypeConvention.GetResourceTypeFromRepresentationType(linkedType);
+                if (idAccessor == null) idAccessor = LinkIdConvention.GetIdExpression(objectAccessor);
+
+                var link = new LinkMapping<TResource, TNested>
+                {
+                    RelationshipName = linkName,
+                    ResourceIdGetter = idAccessor,
+                    ResourceGetter = ExpressionUtils.CompileToObjectTypedExpression(objectAccessor),
+                    IsCollection = isCollection,
+                    RelatedCollectionProperty = isCollection ? propertyInfo : null,
+                    RelatedBaseType = linkedType,
+                    RelatedBaseResourceType = linkedResourceType,
+                    InclusionRule = inclusionRule,
+                    SelfUrlTemplate = smartUrlTemplate
+                };
+
+                ConstructedMetadata.Relationships.Add(link);
+            }
             return this;
         }
 
