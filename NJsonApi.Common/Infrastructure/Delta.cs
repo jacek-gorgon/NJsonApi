@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Threading;
 using NJsonApi.Common.Utils;
 
 namespace NJsonApi.Common.Infrastructure
@@ -55,14 +58,18 @@ namespace NJsonApi.Common.Infrastructure
             ObjectPropertyValues.TryGetValue(propertyInfo.Name, out val);
             return (TProperty)val;
         }
-
+        public static string ToProperCase(string the_string)
+        {
+            return the_string.Substring(0, 1).ToUpper() + the_string.Substring(1);
+        }
         public void ApplySimpleProperties(T inputObject)
         {
             if (ObjectPropertyValues == null) return;
             foreach (var objectPropertyNameValue in ObjectPropertyValues)
             {
                 Action<T, object> setter;
-                currentTypeSetters.TryGetValue(objectPropertyNameValue.Key, out setter);
+
+                currentTypeSetters.TryGetValue(ToProperCase(objectPropertyNameValue.Key), out setter);
                 if (setter != null)
                     setter(inputObject, objectPropertyNameValue.Value);
             }
@@ -71,10 +78,11 @@ namespace NJsonApi.Common.Infrastructure
         public void ApplyCollections(T inputObject)
         {
             if (ObjectPropertyValues == null) return;
+            CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
             foreach (var colDelta in CollectionDeltas)
             {
                 CollectionInfo<T> info;
-                currentCollectionInfos.TryGetValue(colDelta.Key, out info);
+                currentCollectionInfos.TryGetValue(ToProperCase(colDelta.Key), out info);
                 if (info != null)
                 {
                     var existingCollection = info.Getter(inputObject);

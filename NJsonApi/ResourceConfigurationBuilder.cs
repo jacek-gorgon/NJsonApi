@@ -163,7 +163,7 @@ namespace NJsonApi
                     // Because the expression is constructed in run-time and we need to invoke the convention that expects
                     // a compile-time-safe generic method, reflection must be used to invoke it.
                     MethodInfo closedMethod = openMethod.MakeGenericMethod(nestedType);
-                    closedMethod.Invoke(this, new object[] { propertyAccessor, null, null, null, ResourceInclusionRules.Smart });
+                    closedMethod.Invoke(this, new object[] { propertyAccessor, null, null, null, ResourceInclusionRules.Smart, null, null });
                 }
             }
             return this;
@@ -189,7 +189,7 @@ namespace NJsonApi
         /// 
         /// Supply a custom implementations to alter behavior.
         /// </remarks>
-        public ResourceConfigurationBuilder<TResource> WithLinkedResource<TNested>(Expression<Func<TResource, TNested>> objectAccessor, Expression<Func<TResource, object>> idAccessor = null, string linkedResourceType = null, string linkName = null, ResourceInclusionRules inclusionRule = ResourceInclusionRules.Smart) where TNested : class
+        public ResourceConfigurationBuilder<TResource> WithLinkedResource<TNested>(Expression<Func<TResource, TNested>> objectAccessor, Expression<Func<TResource, object>> idAccessor = null, string linkedResourceType = null, string linkName = null, ResourceInclusionRules inclusionRule = ResourceInclusionRules.Smart, string relatedURLTemplate = null, string selfURLTemplate = null) where TNested : class
         {
             if (typeof(TNested).Name == "Array")
                 throw new NotSupportedException("Array type is not supported!");
@@ -213,8 +213,11 @@ namespace NJsonApi
                 RelatedCollectionProperty = isCollection ? new PropertyHandle<TResource, TNested>(objectAccessor) : null,
                 RelatedBaseType = linkedType,
                 RelatedBaseResourceType = linkedResourceType,
+                RelatedUrlTemplate = relatedURLTemplate,
+                SelfUrlTemplate = selfURLTemplate,
                 InclusionRule = inclusionRule
             };
+
 
             ConstructedMetadata.Relationships.Add(link);
             return this;
@@ -236,9 +239,9 @@ namespace NJsonApi
 
             if (direction == SerializationDirection.In || direction == SerializationDirection.Both)
             {
-                ConstructedMetadata.PropertySetters[name] = propertyInfo.SetValue;    
+                ConstructedMetadata.PropertySetters[name] = propertyInfo.SetValue;
             }
-            
+
             var instance = Expression.Parameter(typeof(object), "i");
             var argument = Expression.Parameter(typeof(object), "a");
             var setterCall = Expression.Call(
@@ -248,7 +251,7 @@ namespace NJsonApi
 
             Expression<Action<object, object>> expression = Expression.Lambda<Action<object, object>>(setterCall, instance, argument);
 
-            if (direction == SerializationDirection.In  || direction == SerializationDirection.Both)
+            if (direction == SerializationDirection.In || direction == SerializationDirection.Both)
             {
                 ConstructedMetadata.PropertySettersExpressions[name] = expression;
             }

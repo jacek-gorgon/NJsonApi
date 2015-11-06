@@ -50,7 +50,7 @@ namespace NJsonApi.Common.Infrastructure
 
         public void Apply(ICollection input)
         {
-            throw new NotImplementedException();
+            Apply(input as ICollection<TElement>);
         }
     }
 }
