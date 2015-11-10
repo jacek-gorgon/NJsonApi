@@ -25,8 +25,6 @@ namespace UtilJsonApiSerializer.Serialization
         private const string RelatedIdPlaceholder = "{relatedId}";
         private const string MetaCountAttribute = "count";
         private const string SelfLinkKey = "self";
-        
-        private static string _parentId;
 
         public CompoundDocument HandleException(Exception exception)
         {
@@ -71,12 +69,10 @@ namespace UtilJsonApiSerializer.Serialization
                 representationList.Single();
         }
 
-        public List<SingleResource> CreateIncludedRepresentations(List<object> primaryResourceList, IResourceMapping resourceMapping, Context context, string parentId)
+        public List<SingleResource> CreateIncludedRepresentations(List<object> primaryResourceList, IResourceMapping resourceMapping, Context context)
         {
             var includedList = new List<SingleResource>();
             var alreadyVisitedObjects = new HashSet<object>(primaryResourceList);
-
-            _parentId = parentId;
 
             foreach (var resource in primaryResourceList)
                 AppendIncludedRepresentationRecursive(resource, resourceMapping, includedList, alreadyVisitedObjects, context);
@@ -182,7 +178,10 @@ namespace UtilJsonApiSerializer.Serialization
             result.Attributes = resourceMapping.PropertyGetters.ToDictionary(kvp => kvp.Key, kvp => kvp.Value(objectGraph));
 
             if (resourceMapping.UrlTemplate != null)
-                result.Links = CreateLinks(resourceMapping, urlBuilder, result);
+            {
+                var parentId = resourceMapping.IdGetter(objectGraph).ToString();
+                result.Links = CreateLinks(resourceMapping, urlBuilder, result, parentId);
+            }
 
             if (resourceMapping.Relationships.Any())
                 result.Relationships = CreateRelationships(objectGraph, result.Id, resourceMapping, context, result.Type);
@@ -190,9 +189,9 @@ namespace UtilJsonApiSerializer.Serialization
             return result;
         }
 
-        private static Dictionary<string, ILink> CreateLinks(IResourceMapping resourceMapping, UrlBuilder urlBuilder, SingleResource result)
+        private static Dictionary<string, ILink> CreateLinks(IResourceMapping resourceMapping, UrlBuilder urlBuilder, SingleResource result, string parentId = null)
         {
-            return new Dictionary<string, ILink>() { { SelfLinkKey, new SimpleLink { Href = urlBuilder.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace(TypePlaceholder, result.Type).Replace(IdPlaceholder, result.Id).Replace(ParentIdPlaceholder, _parentId)) } } };
+            return new Dictionary<string, ILink>() { { SelfLinkKey, new SimpleLink { Href = urlBuilder.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace(TypePlaceholder, result.Type).Replace(IdPlaceholder, result.Id).Replace(ParentIdPlaceholder, parentId)) } } };
         }
 
         private ILink GetUrlFromTemplate(string urlTemplate, string routePrefix, string parentId, string relatedId = null, string parenttype = null, string relationshipName = null)
