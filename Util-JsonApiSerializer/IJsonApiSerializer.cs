@@ -10,10 +10,5 @@ namespace UtilJsonApiSerializer
     {
         //serializer
         object SerializeObject(ConfigurationBuilder serializerConfig, object obj);
-        //deserializer
-        T DeserializeObject<T>(string json);
-
-        Dictionary<string, object> GetDocumentProperties(string json);
-
     }
 }
