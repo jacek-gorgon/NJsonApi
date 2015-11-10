@@ -259,8 +259,8 @@ namespace UtilJsonApiSerializer
         /// </remarks>
         public ResourceConfigurationBuilder<TResource> WithLinkedResource<TNested>(Expression<Func<TResource, TNested>> objectAccessor, Expression<Func<TResource, object>> idAccessor = null, string linkedResourceType = null, string linkName = null, ResourceInclusionRules inclusionRule = ResourceInclusionRules.Smart, string smartUrlTemplate = null, string requestedIncludes = null) where TNested : class
         {
-            var includes = requestedIncludes.ToLower().Split(',').ToList() ?? new List<string>();
-            if (includes.Contains(linkName.ToLower()))
+            var includes = requestedIncludes == null ? new List<string>() : requestedIncludes.ToLower().Split(',').ToList();
+            if (requestedIncludes == null || (linkName != null && includes.Contains(linkName.ToLower())))
             {
                 if (typeof(TNested).Name == "Array")
                     throw new NotSupportedException("Array type is not supported!");
