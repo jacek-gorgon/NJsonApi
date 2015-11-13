@@ -130,7 +130,7 @@ namespace UtilJsonApiSerializer.Serialization
 
                             string key = link.RelationshipName.TrimStart('_');
                             delta.ObjectPropertyValues.Add(key, resultValue);
-                        }    
+                        }
                     }
                     else
                     {

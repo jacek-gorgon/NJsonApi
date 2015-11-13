@@ -25,6 +25,7 @@ namespace UtilJsonApiSerializer.Serialization
         private const string RelatedIdPlaceholder = "{relatedId}";
         private const string MetaCountAttribute = "count";
         private const string SelfLinkKey = "self";
+        private string _parentId = string.Empty;
 
         public CompoundDocument HandleException(Exception exception)
         {
@@ -73,15 +74,26 @@ namespace UtilJsonApiSerializer.Serialization
         {
             var includedList = new List<SingleResource>();
             var alreadyVisitedObjects = new HashSet<object>(primaryResourceList);
-
             foreach (var resource in primaryResourceList)
+            {
+                try
+                {
+                    _parentId = resourceMapping.IdGetter(resource).ToString();
+                }
+                catch (Exception)
+                {
+                    _parentId = string.Empty;
+                }
+                
                 AppendIncludedRepresentationRecursive(resource, resourceMapping, includedList, alreadyVisitedObjects, context);
+            }
 
             return includedList;
         }
 
         public void AppendIncludedRepresentationRecursive(object resource, IResourceMapping resourceMapping, List<SingleResource> includedList, HashSet<object> alreadyVisitedObjects, Context context)
         {
+
             resourceMapping.Relationships
                 .Where(rm => rm.InclusionRule != ResourceInclusionRules.ForceOmit)
                 .SelectMany(rm => UnifyObjectsToList(rm.RelatedResource(resource)), (rm, o) => new
@@ -179,8 +191,7 @@ namespace UtilJsonApiSerializer.Serialization
 
             if (resourceMapping.UrlTemplate != null)
             {
-                var parentId = resourceMapping.IdGetter(objectGraph).ToString();
-                result.Links = CreateLinks(resourceMapping, urlBuilder, result, parentId);
+                result.Links = CreateLinks(resourceMapping, urlBuilder, result, _parentId);
             }
 
             if (resourceMapping.Relationships.Any())
