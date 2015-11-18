@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using System.Collections;
 
 namespace NJsonApi.Serialization.Converters
 {
@@ -16,12 +18,23 @@ namespace NJsonApi.Serialization.Converters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            return serializer.Deserialize<T>(reader);
+            JObject obj = JObject.Load(reader);
+            var target = Activator.CreateInstance(objectType);
+            if (objectType.GetInterfaces().Contains(typeof(IDictionary)))
+            {
+                foreach (JProperty child in obj.Children())
+                {
+                    objectType.GetMethod("Add").Invoke(target, new object[2] { child.Name, child.Value.ToObject<T>() });
+                }
+            }
+            return target;
+
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             serializer.Serialize(writer, value);
         }
+
     }
 }

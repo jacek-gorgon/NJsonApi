@@ -10,6 +10,7 @@ using System.Web.Http;
 using NJsonApi.Common.Infrastructure;
 using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Converters;
+using Newtonsoft.Json.Serialization;
 
 namespace NJsonApi.Serialization
 {
@@ -25,7 +26,7 @@ namespace NJsonApi.Serialization
             configuration = cfg;
             SupportedMediaTypes.Add(new MediaTypeHeaderValue(JSON_API_MIME_TYPE));
             SupportedEncodings.Add(new UTF8Encoding(false, true));
-
+            this.jsonSerializer.ContractResolver = new CamelCasePropertyNamesContractResolver();
             //if(jsonSerializer.Converters.All(x => x.GetType() != typeof (CompoundDocumentObjectConverter)))
             //    jsonSerializer.Converters.Add(new CompoundDocumentObjectConverter());
         }

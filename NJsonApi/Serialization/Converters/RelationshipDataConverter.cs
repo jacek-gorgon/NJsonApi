@@ -15,9 +15,9 @@ namespace NJsonApi.Serialization.Converters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            JObject obj = JObject.Load(reader);
+            JToken obj = JToken.Load(reader);
             switch (obj.Type)
-            {
+            {   
                 case JTokenType.Object:
                     return obj.ToObject<SingleResourceIdentifier>();
                 case JTokenType.Array:
@@ -29,6 +29,7 @@ namespace NJsonApi.Serialization.Converters
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
+            serializer.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
             serializer.Serialize(writer, value);
         }
     }

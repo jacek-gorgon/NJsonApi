@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Http;
@@ -91,7 +93,7 @@ namespace NJsonApi.Serialization
                     IRelationship irel;
                     updateDocument.Data.Relationships.TryGetValue(relMapping.RelationshipName, out irel);
                     Relationship rel = irel as Relationship;
-
+                    var relatedTypeMapping = context.Configuration.GetMapping(relMapping.RelatedBaseType);
                     if (rel == null)
                     {
                         continue;
@@ -100,8 +102,21 @@ namespace NJsonApi.Serialization
                     if (relMapping.IsCollection && rel.Data is MultipleResourceIdentifiers)
                     {
                         var multipleIDs = (MultipleResourceIdentifiers)rel.Data;
-                        var colProp = relMapping.RelatedCollectionProperty;
-
+                        var openGenericCollection = typeof(CollectionDelta<>);
+                        var closedGenericTypeCollection = openGenericCollection.MakeGenericType(relMapping.RelatedBaseType);
+                        var collection = Activator.CreateInstance(closedGenericTypeCollection, relatedTypeMapping.IdGetter) as ICollectionDelta;
+                        var openGenericList = typeof(List<>);
+                        var closedGenericTypeList = openGenericList.MakeGenericType(relMapping.RelatedBaseType);
+                        collection.Elements = Activator.CreateInstance(closedGenericTypeList) as IList;
+                        foreach (var id in multipleIDs)
+                        {
+                            var colProp = relMapping.RelatedCollectionProperty;
+                            
+                            var newInstance = Activator.CreateInstance(relMapping.RelatedBaseType);
+                            relatedTypeMapping.IdSetter(newInstance, id.Id);
+                            (collection.Elements as IList).Add(newInstance);
+                        }
+                        delta.CollectionDeltas.Add(relMapping.RelationshipName, collection);
                         //relMapping.RelatedCollectionProperty RelatedCollectionProperty.GetValue();
                         
                         //if (property != null)
@@ -114,7 +129,10 @@ namespace NJsonApi.Serialization
                     }
                     else if (!relMapping.IsCollection && rel.Data is SingleResourceIdentifier)
                     {
-                        delta.ObjectPropertyValues.Add(relMapping.ParentResourceNavigationPropertyName, TransformationHelper.GetValue(value, relMapping.ParentResourceNavigationPropertyType));
+                        var singleId = rel.Data as SingleResourceIdentifier;
+                        var instance = Activator.CreateInstance(relMapping.RelatedBaseType);
+                        relatedTypeMapping.IdSetter(instance, singleId.Id);
+                        delta.ObjectPropertyValues.Add(relMapping.RelationshipName, instance);
                     }
                     else
                         throw new InvalidOperationException();
