@@ -129,7 +129,10 @@ namespace NJsonApi.Serialization
                     }
                     else if (!relMapping.IsCollection && rel.Data is SingleResourceIdentifier)
                     {
-                       // delta.ObjectPropertyValues.Add(relMapping.ParentResourceNavigationPropertyName, TransformationHelper.GetValue(value, relMapping.ParentResourceNavigationPropertyType));
+                        var singleId = rel.Data as SingleResourceIdentifier;
+                        var instance = Activator.CreateInstance(relMapping.RelatedBaseType);
+                        relatedTypeMapping.IdSetter(instance, singleId.Id);
+                        delta.ObjectPropertyValues.Add(relMapping.RelationshipName, instance);
                     }
                     else
                         throw new InvalidOperationException();
