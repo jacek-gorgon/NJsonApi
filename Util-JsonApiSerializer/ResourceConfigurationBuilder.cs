@@ -239,11 +239,8 @@ namespace UtilJsonApiSerializer
 
         private Type GetItemType(Type ienumerableType)
         {
-            return ienumerableType
-                .GetInterfaces()
-                .Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                .Select(t => t.GetGenericArguments()[0])
-                .SingleOrDefault();
+            return ienumerableType.GetGenericArguments()[0];
+    
         }
 
         /// <summary>
