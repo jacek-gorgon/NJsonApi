@@ -105,6 +105,11 @@ namespace UtilJsonApiSerializer
 
         public ResourceConfigurationBuilder<TResource> WithSpecifiedSimpleProperties(string properties)
         {
+            if (properties == null)
+            {
+                properties = string.Empty;
+            }
+
             var props = properties.ToLower().Split(',').ToList();
 
             //default resource to pull all fields when none are provided
@@ -240,7 +245,7 @@ namespace UtilJsonApiSerializer
         private Type GetItemType(Type ienumerableType)
         {
             return ienumerableType.GetGenericArguments()[0];
-    
+
         }
 
         /// <summary>
