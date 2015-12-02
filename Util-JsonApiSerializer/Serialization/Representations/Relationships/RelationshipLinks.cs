@@ -10,9 +10,9 @@ namespace UtilJsonApiSerializer.Serialization.Representations.Relationships
     public class RelationshipLinks
     {
         [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
-        public ILink Self { get; set; }
+        public ILink self { get; set; }
 
         [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
-        public ILink Related { get; set; }
+        public ILink related { get; set; }
     }
 }
