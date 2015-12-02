@@ -228,7 +228,7 @@ namespace UtilJsonApiSerializer.Serialization
 
                 // Generating "self" link
                 if (linkMapping.SelfUrlTemplate != null)
-                    relLinks.Self = GetUrlFromTemplate(linkMapping.SelfUrlTemplate, context.RoutePrefix, parentId, null, parentresourcetype, relationshipName);
+                    relLinks.self = GetUrlFromTemplate(linkMapping.SelfUrlTemplate, context.RoutePrefix, parentId, null, parentresourcetype, relationshipName);
 
                 if (!linkMapping.IsCollection)
                 {
@@ -249,7 +249,7 @@ namespace UtilJsonApiSerializer.Serialization
 
                     // Generating "related" link for to-one relationships
                     if (linkMapping.RelatedUrlTemplate != null && relatedId != null)
-                        relLinks.Related = GetUrlFromTemplate(linkMapping.RelatedUrlTemplate, context.RoutePrefix, parentId, relatedId, parentresourcetype, relationshipName);
+                        relLinks.related = GetUrlFromTemplate(linkMapping.RelatedUrlTemplate, context.RoutePrefix, parentId, relatedId, parentresourcetype, relationshipName);
 
 
                     if (linkMapping.InclusionRule != ResourceInclusionRules.ForceOmit)
@@ -269,7 +269,7 @@ namespace UtilJsonApiSerializer.Serialization
                 {
                     // Generating "related" link for to-many relationships
                     if (linkMapping.RelatedUrlTemplate != null)
-                        relLinks.Related = GetUrlFromTemplate(linkMapping.RelatedUrlTemplate, context.RoutePrefix, parentId, null, parentresourcetype, relationshipName);
+                        relLinks.related = GetUrlFromTemplate(linkMapping.RelatedUrlTemplate, context.RoutePrefix, parentId, null, parentresourcetype, relationshipName);
 
                     IEnumerable relatedInstance = null;
                     if (linkMapping.RelatedResource != null)
@@ -296,7 +296,7 @@ namespace UtilJsonApiSerializer.Serialization
                         rel.Meta = new Dictionary<string, string> { { MetaCountAttribute, ((MultipleResourceIdentifiers)rel.Data).Count.ToString() } };
                 }
 
-                if (relLinks.Self != null || relLinks.Related != null)
+                if (relLinks.self != null || relLinks.related != null)
                     rel.Links = relLinks;
 
                 if (rel.Data != null || rel.Links != null)
