@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Web.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using UtilJsonApiSerializer.Serialization;
 
 namespace UtilJsonApiSerializer
@@ -41,7 +42,7 @@ namespace UtilJsonApiSerializer
             var serializer = GetJsonSerializer();
             var helper = new TransformationHelper();
             var transformer = new JsonApiTransformer { Serializer = serializer, TransformationHelper = helper };
-
+            
             var filter = new JsonApiActionFilter(transformer, this);
             configuration.Filters.Add(filter);
 
@@ -52,6 +53,7 @@ namespace UtilJsonApiSerializer
         private static JsonSerializer GetJsonSerializer()
         {
             var serializerSettings = new JsonSerializerSettings();
+            serializerSettings.ContractResolver= new CamelCasePropertyNamesContractResolver();
             serializerSettings.Converters.Add(new IsoDateTimeConverter());
             serializerSettings.Converters.Add(new StringEnumConverter() { CamelCaseText = true});
 #if DEBUG

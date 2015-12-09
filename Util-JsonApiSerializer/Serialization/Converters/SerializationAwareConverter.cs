@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using Newtonsoft.Json.Serialization;
 
 namespace UtilJsonApiSerializer.Serialization.Converters
 {
@@ -25,6 +26,7 @@ namespace UtilJsonApiSerializer.Serialization.Converters
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
+            serializer.ContractResolver= new CamelCasePropertyNamesContractResolver();
             ((ISerializationAware)value).Serialize(writer);
         }
     }
