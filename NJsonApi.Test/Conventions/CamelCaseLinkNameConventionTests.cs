@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NJsonApi.Test.TestModel;
-using NJsonApi.Conventions.Impl;
+using UtilJsonApiSerializer.Conventions.Impl;
 using SoftwareApproach.TestingExtensions;
+using UtilJsonApiSerializer.Test.TestModel;
 
-namespace NJsonApi.Test.Conventions
+namespace UtilJsonApiSerializer.Test.Conventions
 {
     [TestClass]
     public class CamelCaseLinkNameConventionTests
