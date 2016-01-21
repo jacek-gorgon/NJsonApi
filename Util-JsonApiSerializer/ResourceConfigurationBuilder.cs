@@ -318,12 +318,12 @@ namespace UtilJsonApiSerializer
             var instance = Expression.Parameter(typeof(object), "i");
             var argument = Expression.Parameter(typeof(object), "a");
 
-            if (propertyInfo.SetMethod != null)
+            if (propertyInfo.SetMethod != null && propertyInfo.SetMethod.IsPublic)
             {
                 var setterCall = Expression.Call(
-              Expression.Convert(instance, propertyInfo.DeclaringType),
-              propertyInfo.GetSetMethod(),
-              Expression.Convert(argument, propertyInfo.PropertyType));
+                  Expression.Convert(instance, propertyInfo.DeclaringType),
+                  propertyInfo.GetSetMethod(),
+                  Expression.Convert(argument, propertyInfo.PropertyType));
 
                 Expression<Action<object, object>> expression = Expression.Lambda<Action<object, object>>(setterCall, instance, argument);
 
