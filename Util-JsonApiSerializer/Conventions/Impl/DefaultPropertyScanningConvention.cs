@@ -38,7 +38,11 @@ namespace UtilJsonApiSerializer.Conventions.Impl
             if(Attribute.IsDefined(pi, typeof(SerializeAsPrimitive))) return true;
 
             var attrs = pi.GetCustomAttributes(true).ToDictionary(a => a.GetType().Name, a => a);
-            return attrs.ContainsKey("SerializeAsPrimitive");
+            foreach(string name in attrs.Keys)
+            {
+                if(name.ToLower().Contains("serializeasprimitive")) return true;
+            }
+            return false;
         }
 
         /// <summary>
