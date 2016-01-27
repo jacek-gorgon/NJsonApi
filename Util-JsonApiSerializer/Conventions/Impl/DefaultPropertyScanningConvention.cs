@@ -29,6 +29,17 @@ namespace UtilJsonApiSerializer.Conventions.Impl
         {
             return propertyInfo.Name == "Id";
         }
+        
+        /// <summary>
+        /// Looks for "SerializeAsPrimitive" using reflection, with the idea being that such an attribute may be re-defined in projects that don't reference this one
+        /// </summary>
+        private bool IsMarkedSerializeAsPrimitive(PropertyInfo pi)
+        {
+            if(Attribute.IsDefined(pi, typeof(SerializeAsPrimitive))) return true;
+
+            var attrs = pi.GetCustomAttributes(true).ToDictionary(a => a.GetType().Name, a => a);
+            return attrs.ContainsKey("SerializeAsPrimitive");
+        }
 
         /// <summary>
         /// Used to distinguish simple properties (serialized in-line) from linked resources (side-loaded in "linked" section).
@@ -36,7 +47,7 @@ namespace UtilJsonApiSerializer.Conventions.Impl
         public virtual bool IsLinkedResource(PropertyInfo pi)
         {
             var type = pi.PropertyType;
-            bool isPrimitiveType = Attribute.IsDefined(pi, typeof(SerializeAsPrimitive)) || type.IsPrimitive || type.IsValueType || (type == typeof(string) || (type == typeof(DateTime)) || (type == typeof(TimeSpan)) || (type == typeof(DateTimeOffset)));
+            bool isPrimitiveType = IsMarkedSerializeAsPrimitive(pi) || type.IsPrimitive || type.IsValueType || (type == typeof(string) || (type == typeof(DateTime)) || (type == typeof(TimeSpan)) || (type == typeof(DateTimeOffset)));
             return !isPrimitiveType;
         }
 
