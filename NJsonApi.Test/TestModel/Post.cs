@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace NJsonApi.Test.TestModel
+namespace UtilJsonApiSerializer.Test.TestModel
 {
     public class Post
     {

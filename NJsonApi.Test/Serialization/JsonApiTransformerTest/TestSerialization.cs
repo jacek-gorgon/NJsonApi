@@ -1,12 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using NJsonApi.Serialization;
-using NJsonApi.Serialization.Converters;
+using UtilJsonApiSerializer.Serialization;
+using UtilJsonApiSerializer.Serialization.Converters;
 using SoftwareApproach.TestingExtensions;
 using System;
 using System.Collections.Generic;
 
-namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
+namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
 {
     [TestClass]
     public class TestSerialization

@@ -2,14 +2,14 @@
 using FakeItEasy.ExtensionSyntax.Full;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
-using NJsonApi.Serialization;
-using NJsonApi.Serialization.Representations.Relationships;
-using NJsonApi.Serialization.Representations.Resources;
+using UtilJsonApiSerializer.Serialization;
+using UtilJsonApiSerializer.Serialization.Representations.Relationships;
+using UtilJsonApiSerializer.Serialization.Representations.Resources;
 using SoftwareApproach.TestingExtensions;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
+namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
 {
     [TestClass]
     public class TestLinked

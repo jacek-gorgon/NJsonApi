@@ -56,7 +56,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NJsonApi.Common\NJsonApi.Common.csproj">
+    <ProjectReference Include="..\Util-JsonApiSerializer.Common\Util-JsonApiSerializer.Common.csproj">
       <Project>{59e4c7f0-daa5-462c-bab2-6bd36787d122}</Project>
       <Name>NJsonApi.Common</Name>
     </ProjectReference>
