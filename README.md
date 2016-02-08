@@ -18,7 +18,7 @@ PM> Install-Package NJsonApi
         public string Name { get; set; }
         public List<Continent> Continents { get; set; }
     }
-	
+
 	public class Continent
     {
         public int Id { get; set; }
@@ -36,7 +36,7 @@ PM> Install-Package NJsonApi
 		.Resource<World>()
 		.WithAllProperties()
 		.WithLinkTemplate("/worlds/{id}");
-		
+
 	configBuilder
 		.Resource<Continent>()
 		.WithAllProperties()
@@ -151,9 +151,7 @@ PM> Install-Package NJsonApi
 }
 ```
 
-## Sample project included
-Play around with the working NJsonApi.HelloWorld sample project.
+## Sample projects included
+NJsonApi can be hosted in IIS (see the NJsonApi.HelloWorld example) or OWIN/Katana hosted in an example console application (NJsonApi.Console.Katana).
 
-Use a browser and explore the related resource thanks to HATEOAS...
-
-... or run Fiddler and load the included session file for a full test bench.
+Use a browser and explore the related resource thanks to HATEOAS or run Fiddler and load the included session file for a full test bench.
