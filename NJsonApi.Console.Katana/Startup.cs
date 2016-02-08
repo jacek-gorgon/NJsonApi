@@ -19,6 +19,7 @@ namespace NJsonApi.Console.Katana
         private void ConfigureWebApi(IAppBuilder app)
         {
             var config = new HttpConfiguration();
+            config.Formatters.Clear();
 
             var webApiRoute = config.Routes.MapHttpRoute(
                 "DefaultApi",
