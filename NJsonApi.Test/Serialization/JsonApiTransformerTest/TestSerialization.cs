@@ -106,12 +106,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             conf.AddMapping(nestedClassMapping);
             conf.AddMapping(deeplyNestedMapping);
 
-            return new Context
-            {
-                Configuration = conf,
-                RoutePrefix = string.Empty
-            };
-
+            return new Context(conf, new Uri("http://fakehost:1234/", UriKind.Absolute));
         }
 
         class SampleClass

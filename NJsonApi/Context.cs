@@ -8,7 +8,20 @@ namespace NJsonApi
 {
     public class Context
     {
-        public Configuration Configuration { get; set; }
-        public string RoutePrefix { get; set; }
+        public Context(Configuration configuration, Uri requestUri)
+        {
+            Configuration = configuration;
+            RequestUri = requestUri;
+        }
+
+        public Configuration Configuration { get; private set; }
+        public Uri RequestUri { get; private set; }
+        public string BaseUri {
+            get
+            {
+                var baseUri = new Uri(RequestUri.GetLeftPart(UriPartial.Authority), UriKind.Absolute);
+                return baseUri.AbsoluteUri;
+            }
+        }
     }
 }

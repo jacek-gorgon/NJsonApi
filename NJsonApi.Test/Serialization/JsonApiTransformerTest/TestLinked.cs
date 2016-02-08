@@ -6,6 +6,7 @@ using NJsonApi.Serialization;
 using NJsonApi.Serialization.Representations.Relationships;
 using NJsonApi.Serialization.Representations.Resources;
 using SoftwareApproach.TestingExtensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -117,13 +118,13 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         private Context CreateContext()
         {
             var conf = new Configuration();
-            var sampleClassMapping = new ResourceMapping<SampleClass>(c => c.Id, "http://sampleClass/{id}");
+            var sampleClassMapping = new ResourceMapping<SampleClass>(c => c.Id, "/sampleClass/{id}");
             sampleClassMapping.ResourceType = "sampleClasses";
             sampleClassMapping.AddPropertyGetter("someValue", c => c.SomeValue);
             sampleClassMapping.AddPropertyGetter("nestedValue", c => c.NestedValue);
 
 
-            var nestedClassMapping = new ResourceMapping<NestedClass>(c => c.Id, "nested/{id}");
+            var nestedClassMapping = new ResourceMapping<NestedClass>(c => c.Id, "/nested/{id}");
             nestedClassMapping.ResourceType = "nestedClasses";
             nestedClassMapping.AddPropertyGetter("someNestedValue", c => c.SomeNestedValue);
 
@@ -140,22 +141,17 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             conf.AddMapping(sampleClassMapping);
             conf.AddMapping(nestedClassMapping);
 
-            return new Context
-            {
-                Configuration = conf,
-                RoutePrefix = appUrl
-            };
-
+            return new Context(conf, new Uri(appUrl));
         }
 
         private Context CreateOneToManyConfigurationContext()
         {
             var conf = new Configuration();
-            var sampleClassMapping = new ResourceMapping<SampleClass>(c => c.Id, "http://sampleClass/{id}");
+            var sampleClassMapping = new ResourceMapping<SampleClass>(c => c.Id, "/sampleClass/{id}");
             sampleClassMapping.ResourceType = "sampleClasses";
             sampleClassMapping.AddPropertyGetter("someValue", c => c.SomeValue);
 
-            var nestedClassMapping = new ResourceMapping<NestedClass>(c => c.Id, "http://nested/{id}");
+            var nestedClassMapping = new ResourceMapping<NestedClass>(c => c.Id, "/nested/{id}");
             nestedClassMapping.ResourceType = "nestedClasses";
             nestedClassMapping.AddPropertyGetter("someNestedValue", c => c.SomeNestedValue);
 
@@ -173,12 +169,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             conf.AddMapping(sampleClassMapping);
             conf.AddMapping(nestedClassMapping);
 
-            return new Context
-            {
-                Configuration = conf,
-                RoutePrefix = appUrl
-            };
-
+            return new Context(conf, new Uri(appUrl));
         }
 
         class SampleClass

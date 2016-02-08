@@ -1,8 +1,9 @@
-﻿namespace NJsonApi.Serialization
+﻿using System;
+
+namespace NJsonApi.Serialization
 {
     public interface IUrlBuilder
     {
-        string RoutePrefix { set; get; }
-        string GetFullyQualifiedUrl(string urlTemplate);
+        string GetFullyQualifiedUrl(Context context, string urlTemplate);
     }
 }

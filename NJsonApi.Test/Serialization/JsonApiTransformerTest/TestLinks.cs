@@ -112,12 +112,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             conf.AddMapping(sampleClassMapping);
             conf.AddMapping(nestedClassMapping);
 
-            return new Context
-            {
-                Configuration = conf,
-                RoutePrefix = appUrl
-            };
-
+            return new Context(conf, new Uri(appUrl, UriKind.Absolute));
         }
 
         class SampleClass

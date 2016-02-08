@@ -47,11 +47,7 @@ namespace NJsonApi.Serialization
             }
             catch (Exception exception)
             {
-                var context = new Context
-                {
-                    Configuration = configuration,
-                    RoutePrefix = string.Empty
-                };
+                var context = new Context(configuration, actionContext.Request.RequestUri);
 
                 executedContext = new HttpActionExecutedContext(actionContext, exception);
                 if (executedContext.Response == null)
@@ -90,11 +86,7 @@ namespace NJsonApi.Serialization
                 if (updateDocument != null)
                 {
                     var resultType = updateDocument.Type.GetGenericArguments()[0];
-                    var context = new Context
-                    {
-                        Configuration = configuration,
-                        RoutePrefix = GetRoutePrefix(actionContext)
-                    };
+                    var context = new Context(configuration, actionContext.Request.RequestUri);
 
                     var result = jsonApiTransformer.TransformBack(updateDocument.UpdateDocument, resultType, context);
                     actionContext.ActionArguments[argument.Key] = result;
@@ -110,11 +102,8 @@ namespace NJsonApi.Serialization
                 if (objectContent != null && objectContent.Formatter.GetType() == typeof(JsonApiFormatter))
                 {
                     var value = objectContent.Value;
-                    var context = new Context
-                    {
-                        Configuration = configuration,
-                        RoutePrefix = GetRoutePrefix(actionExecutedContext)
-                    };
+                    var context = new Context(configuration, actionExecutedContext.Request.RequestUri);
+                    
                     var transformed = jsonApiTransformer.Transform(value, context);
 
                     var jsonApiFormatter = new JsonApiFormatter(configuration, jsonApiTransformer.Serializer);
@@ -127,43 +116,6 @@ namespace NJsonApi.Serialization
             {
                 // Different kinds of unsupported requests may end up here. Ideally, these should be programmed against to avoid throwing.
             }
-        }
-
-        private string GetRoutePrefix(HttpActionContext context)
-        {
-            return null;
-        }
-
-        private string GetRoutePrefix(HttpActionExecutedContext actionExecutedContext)
-        {
-            var result = String.Empty;
-
-            if (System.Web.HttpContext.Current == null)
-            {
-                result += "http://localhost/";
-            }
-
-            //var routeData = actionExecutedContext.Request.GetRouteData();
-            //if (routeData != null)
-            //{
-            //    if (routeData.Route != null && routeData.Route.DataTokens != null &&
-            //        routeData.Route.DataTokens["actions"] != null)
-            //    {
-            //        var descriptor = ((HttpActionDescriptor[])routeData.Route.DataTokens["actions"])[0].ControllerDescriptor;
-            //        var routePrefixAttribute = descriptor.GetCustomAttributes<RoutePrefixAttribute>().FirstOrDefault();                    
-            //        if (routePrefixAttribute != null)
-            //        {
-            //            var prefix = routePrefixAttribute.Prefix;
-            //            foreach (var kvp in routeData.Values)
-            //            {
-            //                prefix = prefix.Replace("{" + kvp.Key + "}", kvp.Value.ToString());
-            //            }
-            //            result += prefix;
-            //        }
-            //    }
-            //}
-
-            return result;
         }
 
         private static void HandlePostRequests(HttpActionExecutedContext actionExecutedContext, CompoundDocument transformed)

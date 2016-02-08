@@ -4,6 +4,7 @@ using NJsonApi.Test.TestModel;
 using NJsonApi.Serialization;
 using SoftwareApproach.TestingExtensions;
 using System.Collections.Generic;
+using System;
 
 namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 {
@@ -26,7 +27,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
                 .WithSimpleProperty(x => x.AuthorId)
                 .WithSimpleProperty(x => x.Id)
                 .WithSimpleProperty(x => x.Title);
-            var context = new Context { Configuration = configuration.ConfigurationBuilder.Build() };
+            var context = new Context(configuration.ConfigurationBuilder.Build(), new Uri("http://fakehost:1234", UriKind.Absolute));
             var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
 
             // Act
@@ -58,7 +59,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
                 .WithSimpleProperty(x => x.AuthorId)
                 .WithSimpleProperty(x => x.Id)
                 .WithSimpleProperty(x => x.Title);
-            var context = new Context { Configuration = configuration.ConfigurationBuilder.Build() };
+            var context = new Context(configuration.ConfigurationBuilder.Build(), new Uri("http://fakehost:1234", UriKind.Absolute));
             var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
 
             // Act
@@ -90,7 +91,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
                 .Resource<Post>()
                 .WithSimpleProperty(x => x.AuthorId)
                 .WithSimpleProperty(x => x.Title);
-            var context = new Context { Configuration = configuration.ConfigurationBuilder.Build() };
+            var context = new Context(configuration.ConfigurationBuilder.Build(), new Uri("http://fakehost:1234", UriKind.Absolute));
             var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
 
 

@@ -176,13 +176,9 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             mapping.AddPropertyGetter("someValue", c => c.SomeValue);
             mapping.AddPropertyGetter("date", c => c.DateTime);
             conf.AddMapping(mapping);
+            var requestUri = new Uri("http://fakeUri:1234/fakecontroller");
 
-            return new Context
-            {
-                Configuration = conf,
-                RoutePrefix = string.Empty
-            };
-
+            return new Context(conf, requestUri);
         }
 
         class SampleClass
