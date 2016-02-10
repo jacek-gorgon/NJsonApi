@@ -96,7 +96,7 @@ namespace NJsonApi
         {
             return ienumerableType
                 .GetInterfaces()
-                .Where(t => t.IsGenericType == true && t.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                .Where(t => t.GetTypeInfo().IsGenericType == true && t.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 .Select(t => t.GetGenericArguments()[0])
                 .SingleOrDefault();
         }

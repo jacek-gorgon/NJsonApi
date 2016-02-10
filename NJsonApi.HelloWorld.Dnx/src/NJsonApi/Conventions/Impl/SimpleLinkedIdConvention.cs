@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using NJsonApi.Utils;
+using System.Reflection;
 
 namespace NJsonApi.Conventions.Impl
 {

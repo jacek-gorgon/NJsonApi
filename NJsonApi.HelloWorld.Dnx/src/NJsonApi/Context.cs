@@ -19,7 +19,9 @@ namespace NJsonApi
         public string BaseUri {
             get
             {
-                var baseUri = new Uri(RequestUri.GetLeftPart(UriPartial.Authority), UriKind.Absolute);
+
+                var authority = (UriComponents.Scheme | UriComponents.UserInfo | UriComponents.Host | UriComponents.Port);
+                var baseUri = new Uri(RequestUri.GetComponents(authority, UriFormat.SafeUnescaped));
                 return baseUri.AbsoluteUri;
             }
         }

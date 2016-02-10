@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NJsonApi.Common.Infrastructure;
@@ -25,10 +24,10 @@ namespace NJsonApi.Serialization
         {
             Type innerObjectType = TransformationHelper.GetObjectType(objectGraph);
 
-            if (objectGraph is HttpError)
-            {
-                return TransformationHelper.HandleHttpError(objectGraph as HttpError);
-            }
+            //if (objectGraph is HttpError)
+            //{
+            //    return TransformationHelper.HandleHttpError(objectGraph as HttpError);
+            //}
 
             if (objectGraph is Exception)
             {

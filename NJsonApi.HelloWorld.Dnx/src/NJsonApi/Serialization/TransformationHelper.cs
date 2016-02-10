@@ -4,13 +4,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Web.Http;
 using NJsonApi.Common.Infrastructure;
 using NJsonApi.Exceptions;
 using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Representations;
 using NJsonApi.Serialization.Representations.Relationships;
 using NJsonApi.Serialization.Representations.Resources;
+using System.Reflection;
 
 namespace NJsonApi.Serialization
 {
@@ -37,26 +37,12 @@ namespace NJsonApi.Serialization
                     {
                         Id = scfException.Id.ToString(),
                         Title = scfException.Message,
-                        Status = ((int)scfException.GetHttpStatusCode()).ToString(CultureInfo.InvariantCulture),
+                        Status = (scfException.GetHttpStatusCode()).ToString(CultureInfo.InvariantCulture),
                     }}
                 }
             };
 
             return compoundDocument;
-        }
-
-        public CompoundDocument HandleHttpError(HttpError error)
-        {
-            return new CompoundDocument
-            {
-                Errors = new Dictionary<string, Error>
-                {
-                    { "Internal server error", new Error
-                    {
-                        Status = error.Message,
-                    }}
-                }
-            };
         }
 
         public IResourceRepresentation ChooseProperResourceRepresentation(object resource, IEnumerable<SingleResource> representationList)
@@ -118,7 +104,7 @@ namespace NJsonApi.Serialization
                 throw new NotSupportedException(string.Format("Error while serializing type {0}. IEnumerable<MetaDataWrapper<>> is not supported.", innerObjectType));
             }
 
-            if (typeof(IEnumerable).IsAssignableFrom(innerObjectType) && !innerObjectType.IsGenericType)
+            if (typeof(IEnumerable).IsAssignableFrom(innerObjectType) && !innerObjectType.GetTypeInfo().IsGenericType)
             {
                 throw new NotSupportedException(string.Format("Error while serializing type {0}. Non generic IEnumerable are not supported.", innerObjectType));
             }
@@ -152,7 +138,7 @@ namespace NJsonApi.Serialization
                 objectType = objectGraph.GetType().GetGenericArguments()[0];
             }
 
-            if (typeof(IEnumerable).IsAssignableFrom(objectType) && objectType.IsGenericType)
+            if (typeof(IEnumerable).IsAssignableFrom(objectType) && objectType.GetTypeInfo().IsGenericType)
             {
                 objectType = objectType.GetGenericArguments()[0];
             }

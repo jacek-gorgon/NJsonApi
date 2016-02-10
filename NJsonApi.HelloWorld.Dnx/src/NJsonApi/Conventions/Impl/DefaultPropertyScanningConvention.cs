@@ -35,7 +35,7 @@ namespace NJsonApi.Conventions.Impl
         public virtual bool IsLinkedResource(PropertyInfo pi)
         {
             var type = pi.PropertyType;
-            bool isPrimitiveType = type.IsPrimitive || type.IsValueType || (type == typeof(string) || (type == typeof(DateTime)) || (type == typeof(TimeSpan)) || (type == typeof(DateTimeOffset)));
+            bool isPrimitiveType = type.GetTypeInfo().IsPrimitive || type.GetTypeInfo().IsValueType || (type == typeof(string) || (type == typeof(DateTime)) || (type == typeof(TimeSpan)) || (type == typeof(DateTimeOffset)));
             return !isPrimitiveType;
         }
 

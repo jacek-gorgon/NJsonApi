@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Web.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using NJsonApi.Serialization;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNet.Mvc.Formatters;
+using System.Reflection;
 
 namespace NJsonApi
 {
@@ -21,7 +23,7 @@ namespace NJsonApi
 
         public bool IsMappingRegistered(Type type)
         {
-            if (typeof(IEnumerable).IsAssignableFrom(type) && type.IsGenericType)
+            if (typeof(IEnumerable).IsAssignableFrom(type) && type.GetTypeInfo().IsGenericType)
             {
                 return resourcesMappingsByType.ContainsKey(type.GetGenericArguments()[0]);
             }
@@ -36,17 +38,28 @@ namespace NJsonApi
             return mapping;
         }
 
-        public void Apply(HttpConfiguration configuration)
+        public void Apply(IServiceCollection services)
         {
             var serializer = GetJsonSerializer();
             var helper = new TransformationHelper();
             var transformer = new JsonApiTransformer { Serializer = serializer, TransformationHelper = helper };
 
             var filter = new JsonApiActionFilter(transformer, this);
-            configuration.Filters.Add(filter);
 
-            var formatter = new JsonApiFormatter(this, serializer);
-            configuration.Formatters.Add(formatter);
+            services.AddMvc(
+                config =>
+                    {
+                        config.Filters.Add(filter);
+                        config.OutputFormatters.Insert(0, GetJsonOutputFormatter());
+
+                        // TODO Input formatter required for the complex Delta binding
+                    });
+        }
+
+        private static IOutputFormatter GetJsonOutputFormatter()
+        {
+            var jsonOutputFormatter = new JsonOutputFormatter();
+            return jsonOutputFormatter;
         }
 
         private static JsonSerializer GetJsonSerializer()
