@@ -52,5 +52,10 @@ namespace NJsonApi.HelloWorld.Dnx.Models
             Worlds = new List<World> { w };
             Continents = new List<Continent> { c1, c2, c3 };
         }
+
+        public static int GetNextId()
+        {
+            return Worlds.Max(w => w.Id) + 1;
+        }
     }
 }

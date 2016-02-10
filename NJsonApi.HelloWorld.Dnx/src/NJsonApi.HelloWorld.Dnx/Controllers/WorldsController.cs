@@ -22,10 +22,9 @@ namespace NJsonApi.HelloWorld.Dnx.Controllers
         }
 
         [HttpPost]
-        public World Post([FromBody]Delta<World> worldDelta)
+        public World Post(World world)
         {
-            var world = worldDelta.ToObject();
-            world.Id = StaticPersistentStore.Worlds.Max(w => w.Id) + 1;
+            world.Id = StaticPersistentStore.GetNextId();
             StaticPersistentStore.Worlds.Add(world);
             return world;
         }
