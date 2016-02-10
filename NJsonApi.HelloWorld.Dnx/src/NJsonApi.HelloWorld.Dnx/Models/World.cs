@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
-namespace NJsonApi.HelloWorld.Common.Models
+namespace NJsonApi.HelloWorld.Dnx.Models
 {
     public class World
     {

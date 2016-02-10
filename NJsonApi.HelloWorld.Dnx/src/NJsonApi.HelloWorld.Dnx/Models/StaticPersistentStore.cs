@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
-namespace NJsonApi.HelloWorld.Common.Models
+namespace NJsonApi.HelloWorld.Dnx.Models
 {
     /// <summary>
     /// Primitive backing store for persistence.
@@ -15,7 +14,6 @@ namespace NJsonApi.HelloWorld.Common.Models
 
         static StaticPersistentStore()
         {
-            // Primitive data seed
             var w = new World
             {
                 Id = 1,

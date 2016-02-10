@@ -27,7 +27,7 @@ namespace NJsonApi.HelloWorld.Dnx
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            var nJsonApiConfig = new Configuration();
+            var nJsonApiConfig = NJsonApiConfiguration.BuildConfiguration();
             nJsonApiConfig.Apply(services);
         }
 
