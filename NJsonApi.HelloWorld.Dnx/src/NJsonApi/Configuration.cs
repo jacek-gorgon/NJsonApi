@@ -7,6 +7,7 @@ using NJsonApi.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNet.Mvc.Formatters;
 using System.Reflection;
+using Microsoft.Net.Http.Headers;
 
 namespace NJsonApi
 {
@@ -43,23 +44,16 @@ namespace NJsonApi
             var serializer = GetJsonSerializer();
             var helper = new TransformationHelper();
             var transformer = new JsonApiTransformer { Serializer = serializer, TransformationHelper = helper };
-
-            var filter = new JsonApiActionFilter(transformer, this);
+            var actionFilter = new JsonApiActionFilter(transformer, this);
 
             services.AddMvc(
-                config =>
+                options =>
                     {
-                        config.Filters.Add(filter);
-                        config.OutputFormatters.Insert(0, GetJsonOutputFormatter());
-
-                        // TODO Input formatter required for the complex Delta binding
+                        options.Filters.Add(actionFilter);
+                        options.OutputFormatters.Insert(0, new JsonOutputFormatter());
+                        options.InputFormatters.Insert(0, new JsonApiInputFormatter(serializer, this, transformer));
+                        options.FormatterMappings.SetMediaTypeMappingForFormat("JsonApi", MediaTypeHeaderValue.Parse("application/vnd.api+json"));
                     });
-        }
-
-        private static IOutputFormatter GetJsonOutputFormatter()
-        {
-            var jsonOutputFormatter = new JsonOutputFormatter();
-            return jsonOutputFormatter;
         }
 
         private static JsonSerializer GetJsonSerializer()

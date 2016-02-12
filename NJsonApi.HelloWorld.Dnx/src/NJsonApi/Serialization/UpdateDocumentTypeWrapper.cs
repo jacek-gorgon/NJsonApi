@@ -2,6 +2,7 @@ using System;
 
 namespace NJsonApi.Serialization
 {
+    // TODO can we deprecate this now?
     public class UpdateDocumentTypeWrapper
     {
         public UpdateDocument UpdateDocument { get; private set; }
