@@ -321,7 +321,7 @@ namespace NJsonApi.Serialization
                 }
                 else
                 {
-                    resultValue = Convert.ChangeType(value, returnType);
+                    resultValue = value.ToObject(returnType);
                 }
             }
             catch

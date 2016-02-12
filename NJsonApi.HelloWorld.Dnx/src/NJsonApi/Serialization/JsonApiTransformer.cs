@@ -71,17 +71,19 @@ namespace NJsonApi.Serialization
                 return null;
             }
 
-            var resourceKey = mapping.ResourceType;
+            var resourceKey = "data";
             if (!updateDocument.Data.ContainsKey(resourceKey))
             {
                 return delta;
             }
 
-            var resource = updateDocument.Data[resourceKey] as JObject;
-            if (resource == null)
+            var jsonApiDocument = updateDocument.Data[resourceKey] as JObject;
+            if (jsonApiDocument == null)
             {
                 return delta;
             }
+
+            var resource = jsonApiDocument["attributes"] as JObject;
 
             // Scan the data for which properties are only set
             foreach (var propertySetter in mapping.PropertySettersExpressions)
@@ -106,7 +108,7 @@ namespace NJsonApi.Serialization
             }
 
             JToken linksToken;
-            resource.TryGetValue("links", StringComparison.CurrentCultureIgnoreCase, out linksToken);
+            jsonApiDocument.TryGetValue("links", StringComparison.CurrentCultureIgnoreCase, out linksToken);
             JObject links = linksToken as JObject;
 
             if (links != null)
