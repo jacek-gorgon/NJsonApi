@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NJsonApi.Common.Infrastructure;
-using SoftwareApproach.TestingExtensions;
+using Xunit;
 
 namespace NJsonApi.Common.Test.Infrastructure
 {
-    [TestClass]
     public class MetadataWrapperTest
     {
-        [TestMethod]
+        [Fact]
         public void MetadataWrapper_using_ctor_string_ok()
         {
             // Arrange
@@ -18,11 +16,11 @@ namespace NJsonApi.Common.Test.Infrastructure
             var sut = new MetaDataWrapper<string>(testString);
 
             // Assert
-            sut.Value.ShouldEqual(testString);
-            sut.MetaData.ShouldBeEmpty();
+            Assert.Equal(sut.Value, testString);
+            Assert.Empty(sut.MetaData);
         }
 
-        [TestMethod]
+        [Fact]
         public void MetadataWrapper_add_result_collection_ok()
         {
             // Arrange
@@ -32,8 +30,8 @@ namespace NJsonApi.Common.Test.Infrastructure
             var sut = new MetaDataWrapper<List<string>>(testsStrings);
 
             // Assert
-            sut.MetaData.ShouldBeEmpty();
-            sut.Value.ShouldEqual(testsStrings);
+            Assert.Equal(sut.Value, testsStrings);
+            Assert.Empty(sut.MetaData);
         }
     }
 }

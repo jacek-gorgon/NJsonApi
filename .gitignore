@@ -22,6 +22,11 @@ bld/
 [Bb]in/
 [Oo]bj/
 
+# Visual Studio 2015/DNX files
+[Aa]tifacts/
+[Pp]ackages/
+[Tt]ools/
+
 # Visual Studo 2015 cache/options directory
 .vs/
 

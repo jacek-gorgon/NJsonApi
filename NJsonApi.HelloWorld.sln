@@ -3,56 +3,62 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.HelloWorld", "NJsonApi.HelloWorld\NJsonApi.HelloWorld.csproj", "{6C015953-8FA9-4505-94D7-EE345FA60C79}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D8C78AB9-A711-41EC-98D8-39B8F16A9550}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi", "NJsonApi\NJsonApi.csproj", "{39073AC4-47C1-4C0E-87E1-E48FA606D165}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AE03C07F-9402-47DE-8826-3FEF19424382}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.Common", "NJsonApi.Common\NJsonApi.Common.csproj", "{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NJsonApi.HelloWorld", "src\NJsonApi.HelloWorld\NJsonApi.HelloWorld.xproj", "{148CCFEF-502B-4C2B-B38F-90320918A128}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.HelloWorld.Common", "NJsonApi.HelloWorld.Common\NJsonApi.HelloWorld.Common.csproj", "{244CA8C7-6AB9-459E-A531-DBF25EA30DE0}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NJsonApi", "src\NJsonApi\NJsonApi.xproj", "{2FA32B71-2BAD-4F4D-85A3-48743CEC489C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.Common.Test", "NJsonApi.Common.Test\NJsonApi.Common.Test.csproj", "{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NJsonApi.Common", "src\NJsonApi.Common\NJsonApi.Common.xproj", "{4D915EA0-2CCE-42FA-8E5B-37163BFA6374}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.Test", "NJsonApi.Test\NJsonApi.Test.csproj", "{D893BD32-7E79-44DB-AC75-423102B69816}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{71C72B2D-DCF8-4B03-A759-5CA9F7E6594C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.Console.Katana", "NJsonApi.Console.Katana\NJsonApi.Console.Katana.csproj", "{8592E372-6F0C-4FB0-8948-D082878D7ED9}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NJsonApi.Common.Test", "test\NJsonApi.Common.Test\NJsonApi.Common.Test.xproj", "{9D5E8179-9866-4545-BC9C-DE61C3EFD2F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Net Core 1 Only|Any CPU = Net Core 1 Only|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6C015953-8FA9-4505-94D7-EE345FA60C79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6C015953-8FA9-4505-94D7-EE345FA60C79}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6C015953-8FA9-4505-94D7-EE345FA60C79}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6C015953-8FA9-4505-94D7-EE345FA60C79}.Release|Any CPU.Build.0 = Release|Any CPU
-		{39073AC4-47C1-4C0E-87E1-E48FA606D165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{39073AC4-47C1-4C0E-87E1-E48FA606D165}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{39073AC4-47C1-4C0E-87E1-E48FA606D165}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{39073AC4-47C1-4C0E-87E1-E48FA606D165}.Release|Any CPU.Build.0 = Release|Any CPU
-		{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}.Release|Any CPU.Build.0 = Release|Any CPU
-		{244CA8C7-6AB9-459E-A531-DBF25EA30DE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{244CA8C7-6AB9-459E-A531-DBF25EA30DE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{244CA8C7-6AB9-459E-A531-DBF25EA30DE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{244CA8C7-6AB9-459E-A531-DBF25EA30DE0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D893BD32-7E79-44DB-AC75-423102B69816}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D893BD32-7E79-44DB-AC75-423102B69816}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D893BD32-7E79-44DB-AC75-423102B69816}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D893BD32-7E79-44DB-AC75-423102B69816}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8592E372-6F0C-4FB0-8948-D082878D7ED9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8592E372-6F0C-4FB0-8948-D082878D7ED9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8592E372-6F0C-4FB0-8948-D082878D7ED9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8592E372-6F0C-4FB0-8948-D082878D7ED9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{148CCFEF-502B-4C2B-B38F-90320918A128}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{148CCFEF-502B-4C2B-B38F-90320918A128}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{148CCFEF-502B-4C2B-B38F-90320918A128}.Net Core 1 Only|Any CPU.ActiveCfg = Debug|Any CPU
+		{148CCFEF-502B-4C2B-B38F-90320918A128}.Net Core 1 Only|Any CPU.Build.0 = Debug|Any CPU
+		{148CCFEF-502B-4C2B-B38F-90320918A128}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{148CCFEF-502B-4C2B-B38F-90320918A128}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FA32B71-2BAD-4F4D-85A3-48743CEC489C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FA32B71-2BAD-4F4D-85A3-48743CEC489C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FA32B71-2BAD-4F4D-85A3-48743CEC489C}.Net Core 1 Only|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FA32B71-2BAD-4F4D-85A3-48743CEC489C}.Net Core 1 Only|Any CPU.Build.0 = Debug|Any CPU
+		{2FA32B71-2BAD-4F4D-85A3-48743CEC489C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FA32B71-2BAD-4F4D-85A3-48743CEC489C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D915EA0-2CCE-42FA-8E5B-37163BFA6374}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D915EA0-2CCE-42FA-8E5B-37163BFA6374}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D915EA0-2CCE-42FA-8E5B-37163BFA6374}.Net Core 1 Only|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D915EA0-2CCE-42FA-8E5B-37163BFA6374}.Net Core 1 Only|Any CPU.Build.0 = Debug|Any CPU
+		{4D915EA0-2CCE-42FA-8E5B-37163BFA6374}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D915EA0-2CCE-42FA-8E5B-37163BFA6374}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D5E8179-9866-4545-BC9C-DE61C3EFD2F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D5E8179-9866-4545-BC9C-DE61C3EFD2F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D5E8179-9866-4545-BC9C-DE61C3EFD2F0}.Net Core 1 Only|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D5E8179-9866-4545-BC9C-DE61C3EFD2F0}.Net Core 1 Only|Any CPU.Build.0 = Debug|Any CPU
+		{9D5E8179-9866-4545-BC9C-DE61C3EFD2F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D5E8179-9866-4545-BC9C-DE61C3EFD2F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{148CCFEF-502B-4C2B-B38F-90320918A128} = {D8C78AB9-A711-41EC-98D8-39B8F16A9550}
+		{2FA32B71-2BAD-4F4D-85A3-48743CEC489C} = {D8C78AB9-A711-41EC-98D8-39B8F16A9550}
+		{4D915EA0-2CCE-42FA-8E5B-37163BFA6374} = {D8C78AB9-A711-41EC-98D8-39B8F16A9550}
+		{9D5E8179-9866-4545-BC9C-DE61C3EFD2F0} = {71C72B2D-DCF8-4B03-A759-5CA9F7E6594C}
 	EndGlobalSection
 EndGlobal

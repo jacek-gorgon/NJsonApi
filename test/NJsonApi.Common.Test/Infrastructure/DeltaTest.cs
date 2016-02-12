@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NJsonApi.Common.Infrastructure;
-using SoftwareApproach.TestingExtensions;
+using Xunit;
 
 namespace NJsonApi.Common.Test.Infrastructure
 {
-    [TestClass]
     public class DeltaTest
     {
-        [TestMethod]
+        [Fact]
         public void SimpleTestOfFunction()
         {
             //Arange
@@ -22,13 +20,14 @@ namespace NJsonApi.Common.Test.Infrastructure
                                          };
             //Act
             classUnderTest.Apply(simpleObject);
+
             //Assert
-            simpleObject.Prop2.ShouldNotBeNull();
-            simpleObject.Prop2.ShouldEqual("b");
-            simpleObject.Prop1NotIncluded.ShouldBeNull();
+            Assert.NotNull(simpleObject.Prop2);
+            Assert.Equal(simpleObject.Prop2, "b");
+            Assert.Null(simpleObject.Prop1NotIncluded);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestNotIncludedProperties()
         {
             //Arrange
@@ -43,35 +42,38 @@ namespace NJsonApi.Common.Test.Infrastructure
                                          };
             //Act
             objectUnderTest.Apply(simpleObject);
+
             //Assert
-            simpleObject.Prop2.ShouldNotBeNull();
-            simpleObject.Prop2.ShouldEqual("b");
-            simpleObject.Prop1NotIncluded.ShouldBeNull();
+            Assert.NotNull(simpleObject.Prop2);
+            Assert.Equal(simpleObject.Prop2, "b");
+            Assert.Null(simpleObject.Prop1NotIncluded);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestEmptyPropertiesValues()
         {
             //Arrange
             var simpleObject = new SimpleTestClass();
             var objectUnderTest = new Delta<SimpleTestClass>();
+
             //Act
             objectUnderTest.AddFilter(t => t.Prop1NotIncluded);
             objectUnderTest.Apply(simpleObject);
+
             //Assert
-            simpleObject.Prop1NotIncluded.ShouldBeNull();
-            simpleObject.Prop1.ShouldBeNull();
-            simpleObject.Prop2.ShouldBeNull();
+            Assert.Null(simpleObject.Prop1NotIncluded);
+            Assert.Null(simpleObject.Prop1);
+            Assert.Null(simpleObject.Prop2);
         }
     }
 
-    public class SimpleTestClass
+    internal class SimpleTestClass
     {
         public string Prop1 { get; set; }
         public string Prop2 { get; set; }
         public int? Prop1NotIncluded { get; set; }
     }
-    public class SecondSimpleTestClass
+    internal class SecondSimpleTestClass
     {
         public string Prop1 { get; set; }
         public string Prop2 { get; set; }
