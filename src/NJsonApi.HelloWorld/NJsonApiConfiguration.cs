@@ -1,10 +1,6 @@
-﻿using NJsonApi.HelloWorld.Dnx.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using NJsonApi.HelloWorld.Models;
 
-namespace NJsonApi.HelloWorld.Dnx
+namespace NJsonApi.HelloWorld
 {
     public static class NJsonApiConfiguration
     {

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace NJsonApi.HelloWorld.Dnx
+namespace NJsonApi.HelloWorld
 {
     public class Startup
     {

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNet.Mvc;
-using NJsonApi.HelloWorld.Dnx.Models;
+using NJsonApi.HelloWorld.Models;
 
-namespace NJsonApi.HelloWorld.Dnx.Controllers
+namespace NJsonApi.HelloWorld.Controllers
 {
     [Route("api/[controller]")]
     public class ContinentsController : Controller

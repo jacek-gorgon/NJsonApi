@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NJsonApi.Common.Infrastructure;
-using NJsonApi.HelloWorld.Dnx.Models;
+using NJsonApi.HelloWorld.Models;
 using Microsoft.AspNet.Mvc;
 
-namespace NJsonApi.HelloWorld.Dnx.Controllers
+namespace NJsonApi.HelloWorld.Controllers
 {
     [Route("api/[controller]")]
     public class WorldsController : Controller
