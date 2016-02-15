@@ -153,6 +153,6 @@ You will need to download the code and build the NJsonApi.sln yourself, the nuge
 ```
 
 ## Sample projects included
-NJsonApi can be hosted in IIS (see the NJsonApi.HelloWorld example) or OWIN/Katana hosted in an example console application (NJsonApi.Console.Katana).
+NJsonApi runs in .Net Core 1.0 (also known as DNX, ASP.NET 5, dnxcore50). This makes NJsonApi Linux/OSX ready.
 
 Use a browser and explore the related resource thanks to HATEOAS or run Fiddler and load the included session file for a full test bench.
