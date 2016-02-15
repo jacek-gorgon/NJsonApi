@@ -1,0 +1,22 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "NJsonApi.Common.Test Test Library",
+  "authors": [ "Rob Lang" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "dnxcore50": {
+    }
+  },
+  "dependencies": {
+    "NJsonApi": "1.0.0-*",
+    "NJsonApi.Common": "1.0.0-*",
+    "xunit": "2.2.0-beta1-build3239",
+    "xunit.runner.dnx": "2.1.0-rc1-build204",
+    "xunit.runner.visualstudio": "2.2.0-beta1-build1144"
+  },
+  "commands": {
+    "test": "xunit.runner.dnx"
+  }
+}
