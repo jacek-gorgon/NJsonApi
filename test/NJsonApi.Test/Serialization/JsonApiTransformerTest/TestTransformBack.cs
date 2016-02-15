@@ -16,39 +16,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             {
                 Data = new Dictionary<string, object>()
                 {
-                    { "posts", JObject.Parse("{ \"_id\":123, \"title\": \"someTitle\" }") }
-                }
-            };
-
-            var configuration = (new ConfigurationBuilder())
-                .Resource<Post>()
-                .WithSimpleProperty(x => x.AuthorId)
-                .WithSimpleProperty(x => x.Id)
-                .WithSimpleProperty(x => x.Title);
-            var context = new Context(configuration.ConfigurationBuilder.Build(), new Uri("http://fakehost:1234", UriKind.Absolute));
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
-
-            // Act
-            var resultDelta = sut.TransformBack(updateDocument, typeof(Post), context);
-
-            // Assert
-            Assert.True(resultDelta.ObjectPropertyValues.ContainsKey("id"));
-        }
-
-        [Fact]
-        public void Transform_UpdateDocument_To_Delta_OneField()
-        {
-            // Arrange
-            var updateDocument = new UpdateDocument
-            {
-                Data = new Dictionary<string, object>
-                {
-                    {
-                        "posts", JObject.FromObject(new PostUpdateOneField()
-                        {
-                            Title = "Food"
-                        })
-                    }
+                    { "data", JObject.Parse("{ \"id\":123, \"type\":\"post\", \"attributes\" : { \"title\": \"someTitle\" }}") }
                 }
             };
 
@@ -73,15 +41,9 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var updateDocument = new UpdateDocument
             {
-                Data = new Dictionary<string, object>
+                Data = new Dictionary<string, object>()
                 {
-                    {
-                        "posts", JObject.FromObject(new PostUpdateTwoFields()
-                        {
-                            Title = "Food",
-                            AuthorId = 0
-                        })
-                    }
+                    { "data", JObject.Parse("{ \"id\":123, \"type\":\"post\", \"attributes\" : { \"title\": \"someTitle\", \"authorId\" : \"1234\"}}") }
                 }
             };
 

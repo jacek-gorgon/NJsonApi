@@ -102,7 +102,7 @@ namespace NJsonApi.Test
             Assert.Equal(resourceConfigurationForAuthor.ConstructedMetadata.PropertyGetters.Count, 1);
             Assert.Equal(resourceConfigurationForAuthor.ConstructedMetadata.PropertySetters.Count, 1);
             Assert.Null(resourceConfigurationForAuthor.ConstructedMetadata.IdGetter);
-            Assert.Contains(resourceConfigurationForAuthor.ConstructedMetadata.ResourceType, "author");
+            Assert.Contains("author", resourceConfigurationForAuthor.ConstructedMetadata.ResourceType);
         }
 
         class ClassWithReserveredKeys
@@ -217,7 +217,7 @@ namespace NJsonApi.Test
             AssertResourceConfigurationHasValuesForWithSimpleProperty(resourceConfigurationForPost);
 
             result = resourceConfigurationForPost.ConstructedMetadata;
-            Assert.Contains(result.ResourceType, "post");
+            Assert.Contains("post", result.ResourceType);
             Assert.Equal(result.PropertyGetters["title"].Invoke(post), postTitle);
 
             resourceConfigurationForPost.ConstructedMetadata.PropertySetters["title"].Invoke(post, postTitleModifed);

@@ -1,14 +1,15 @@
 # NJsonApi
-The .NET server implementation of the {**json:api**} standard. 
+The .NET server implementation of the {**json:api**} standard running on .NET Core 1.0 (DNX/vNext/OWIN).
 
-> The library is in the process of upgrading to spec version 1.0. Some features are not yet compatibile with the current version of spec!
+> This library is not a complete implementation of the JSONApi 1.0 specification and is under heavy development.
 
+## History
 Spawned as an internal project used in production environment, the package is now available in the open thanks to courtesy of [**SocialCee**](http://socialcee.com)! Further development, including updating to {**json:api**} 1.0 will take place here.
+
+Forked from the work done by https://github.com/jacek-gorgon/NJsonApi
+
 ## Quick start
-After installing the package:
-```
-PM> Install-Package NJsonApi
-```
+You will need to download the code and build the NJsonApi.sln yourself, the nuget package is not part of this branch.
 
 ... given the two POCOs:
 ```cs

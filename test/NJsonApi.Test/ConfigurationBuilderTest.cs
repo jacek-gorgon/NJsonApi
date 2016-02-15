@@ -382,10 +382,6 @@ namespace NJsonApi.Test
             Assert.Equal(authorLinks.Count, 1);
             Assert.Equal(authorLinks[0].RelationshipName, "posts");
             Assert.Equal(authorLinks[0].ResourceMapping.PropertyGetters.Count, 1);
-
-            Assert.True(authorLinks[0].ResourceMapping.Relationships
-                        .All(r => r.RelationshipName == resourceConfigurationForComment.ConstructedMetadata.ResourceType));
-
         }
     }
 }
