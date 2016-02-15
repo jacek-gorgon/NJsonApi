@@ -1,46 +1,44 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi", "NJsonApi\NJsonApi.csproj", "{39073AC4-47C1-4C0E-87E1-E48FA606D165}"
-	ProjectSection(ProjectDependencies) = postProject
-		{59E4C7F0-DAA5-462C-BAB2-6BD36787D122} = {59E4C7F0-DAA5-462C-BAB2-6BD36787D122}
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E164FB4C-6030-46B0-830A-567DAB14BC9A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB5426D9-B31D-4A61-B5B2-48508DECB8E4}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.Common", "NJsonApi.Common\NJsonApi.Common.csproj", "{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NJsonApi", "src\NJsonApi\NJsonApi.xproj", "{2FA32B71-2BAD-4F4D-85A3-48743CEC489C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.Common.Test", "NJsonApi.Common.Test\NJsonApi.Common.Test.csproj", "{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.Test", "NJsonApi.Test\NJsonApi.Test.csproj", "{D893BD32-7E79-44DB-AC75-423102B69816}"
-	ProjectSection(ProjectDependencies) = postProject
-		{39073AC4-47C1-4C0E-87E1-E48FA606D165} = {39073AC4-47C1-4C0E-87E1-E48FA606D165}
-	EndProjectSection
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NJsonApi.Common", "src\NJsonApi.Common\NJsonApi.Common.xproj", "{4D915EA0-2CCE-42FA-8E5B-37163BFA6374}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Net Core 1 Only|Any CPU = Net Core 1 Only|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{39073AC4-47C1-4C0E-87E1-E48FA606D165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{39073AC4-47C1-4C0E-87E1-E48FA606D165}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{39073AC4-47C1-4C0E-87E1-E48FA606D165}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{39073AC4-47C1-4C0E-87E1-E48FA606D165}.Release|Any CPU.Build.0 = Release|Any CPU
-		{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}.Release|Any CPU.Build.0 = Release|Any CPU
-		{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D893BD32-7E79-44DB-AC75-423102B69816}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D893BD32-7E79-44DB-AC75-423102B69816}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D893BD32-7E79-44DB-AC75-423102B69816}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D893BD32-7E79-44DB-AC75-423102B69816}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FA32B71-2BAD-4F4D-85A3-48743CEC489C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FA32B71-2BAD-4F4D-85A3-48743CEC489C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FA32B71-2BAD-4F4D-85A3-48743CEC489C}.Net Core 1 Only|Any CPU.ActiveCfg = Net Core 1 Only|Any CPU
+		{2FA32B71-2BAD-4F4D-85A3-48743CEC489C}.Net Core 1 Only|Any CPU.Build.0 = Net Core 1 Only|Any CPU
+		{2FA32B71-2BAD-4F4D-85A3-48743CEC489C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FA32B71-2BAD-4F4D-85A3-48743CEC489C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D915EA0-2CCE-42FA-8E5B-37163BFA6374}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D915EA0-2CCE-42FA-8E5B-37163BFA6374}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D915EA0-2CCE-42FA-8E5B-37163BFA6374}.Net Core 1 Only|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D915EA0-2CCE-42FA-8E5B-37163BFA6374}.Net Core 1 Only|Any CPU.Build.0 = Debug|Any CPU
+		{4D915EA0-2CCE-42FA-8E5B-37163BFA6374}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D915EA0-2CCE-42FA-8E5B-37163BFA6374}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2FA32B71-2BAD-4F4D-85A3-48743CEC489C} = {E164FB4C-6030-46B0-830A-567DAB14BC9A}
+		{4D915EA0-2CCE-42FA-8E5B-37163BFA6374} = {E164FB4C-6030-46B0-830A-567DAB14BC9A}
 	EndGlobalSection
 EndGlobal
