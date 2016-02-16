@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace NJsonApi.Test
+namespace NJsonApi.Test.Configuration
 {
     public class ConfigurationTest
     {

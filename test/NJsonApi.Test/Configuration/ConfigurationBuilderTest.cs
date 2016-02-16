@@ -8,7 +8,7 @@ using NJsonApi.Conventions;
 using NJsonApi.Conventions.Impl;
 using Xunit;
 
-namespace NJsonApi.Test
+namespace NJsonApi.Test.Configuration
 {
     public class ConfigurationBuilderTest
     {

@@ -1,7 +1,7 @@
 ﻿using NJsonApi.Test.TestModel;
 using Xunit;
 
-namespace NJsonApi.Test
+namespace NJsonApi.Test.Configuration
 {
     public class ResourceConfigurationBuilderTest
     {
