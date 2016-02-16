@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using NJsonApi.Common.Infrastructure;
+using NJsonApi.Infrastructure;
 using Xunit;
 
-namespace NJsonApi.Common.Test.Infrastructure
+namespace NJsonApi.Test.Infrastructure
 {
     public class MetadataWrapperTest
     {

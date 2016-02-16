@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NJsonApi.Common.Infrastructure;
+using NJsonApi.Infrastructure;
 using NJsonApi.HelloWorld.Models;
 using Microsoft.AspNet.Mvc;
 

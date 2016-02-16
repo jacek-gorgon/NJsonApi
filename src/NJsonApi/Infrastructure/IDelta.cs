@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace NJsonApi.Common.Infrastructure
+namespace NJsonApi.Infrastructure
 {
     public interface IDelta<T> : IDelta
     {

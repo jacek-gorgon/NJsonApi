@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace NJsonApi.Common.Infrastructure
+namespace NJsonApi.Infrastructure
 {
     public class Patch
     {

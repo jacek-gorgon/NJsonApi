@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using NJsonApi.Common.Infrastructure;
+using NJsonApi.Infrastructure;
 using NJsonApi.Serialization;
 using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Representations.Resources;

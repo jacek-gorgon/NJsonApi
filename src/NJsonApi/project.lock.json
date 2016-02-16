@@ -1012,19 +1012,6 @@
           "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         }
       },
-      "NJsonApi.Common/1.0.0": {
-        "type": "project",
-        "framework": ".NETPlatform,Version=v5.4",
-        "dependencies": {
-          "Microsoft.CSharp": "4.0.1-beta-23516",
-          "Newtonsoft.Json": "8.0.2",
-          "System.Collections": "4.0.11-beta-23516",
-          "System.Linq": "4.0.1-beta-23516",
-          "System.Runtime": "4.0.21-beta-23516",
-          "System.Runtime.Serialization.Primitives": "4.0.11-beta-23409",
-          "System.Threading": "4.0.11-beta-23516"
-        }
-      },
       "System.Collections/4.0.11-beta-23516": {
         "type": "package",
         "dependencies": {
@@ -1478,19 +1465,6 @@
         },
         "compile": {
           "ref/dotnet5.1/System.Runtime.Loader.dll": {}
-        }
-      },
-      "System.Runtime.Serialization.Primitives/4.0.11-beta-23409": {
-        "type": "package",
-        "dependencies": {
-          "System.Resources.ResourceManager": "4.0.0",
-          "System.Runtime": "4.0.20"
-        },
-        "compile": {
-          "ref/dotnet/System.Runtime.Serialization.Primitives.dll": {}
-        },
-        "runtime": {
-          "lib/dotnet/System.Runtime.Serialization.Primitives.dll": {}
         }
       },
       "System.Security.Claims/4.0.1-beta-23516": {
@@ -2728,19 +2702,6 @@
           "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         }
       },
-      "NJsonApi.Common/1.0.0": {
-        "type": "project",
-        "framework": ".NETPlatform,Version=v5.4",
-        "dependencies": {
-          "Microsoft.CSharp": "4.0.1-beta-23516",
-          "Newtonsoft.Json": "8.0.2",
-          "System.Collections": "4.0.11-beta-23516",
-          "System.Linq": "4.0.1-beta-23516",
-          "System.Runtime": "4.0.21-beta-23516",
-          "System.Runtime.Serialization.Primitives": "4.0.11-beta-23409",
-          "System.Threading": "4.0.11-beta-23516"
-        }
-      },
       "runtime.any.System.Linq.Expressions/4.0.11-beta-23516": {
         "type": "package",
         "compile": {
@@ -3398,19 +3359,6 @@
         },
         "runtime": {
           "lib/dotnet/System.Runtime.Numerics.dll": {}
-        }
-      },
-      "System.Runtime.Serialization.Primitives/4.0.11-beta-23409": {
-        "type": "package",
-        "dependencies": {
-          "System.Resources.ResourceManager": "4.0.0",
-          "System.Runtime": "4.0.20"
-        },
-        "compile": {
-          "ref/dotnet/System.Runtime.Serialization.Primitives.dll": {}
-        },
-        "runtime": {
-          "lib/dotnet/System.Runtime.Serialization.Primitives.dll": {}
         }
       },
       "System.Security.Claims/4.0.1-beta-23516": {
@@ -4690,19 +4638,6 @@
           "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         }
       },
-      "NJsonApi.Common/1.0.0": {
-        "type": "project",
-        "framework": ".NETPlatform,Version=v5.4",
-        "dependencies": {
-          "Microsoft.CSharp": "4.0.1-beta-23516",
-          "Newtonsoft.Json": "8.0.2",
-          "System.Collections": "4.0.11-beta-23516",
-          "System.Linq": "4.0.1-beta-23516",
-          "System.Runtime": "4.0.21-beta-23516",
-          "System.Runtime.Serialization.Primitives": "4.0.11-beta-23409",
-          "System.Threading": "4.0.11-beta-23516"
-        }
-      },
       "runtime.any.System.Linq.Expressions/4.0.11-beta-23516": {
         "type": "package",
         "compile": {
@@ -5362,19 +5297,6 @@
           "lib/dotnet/System.Runtime.Numerics.dll": {}
         }
       },
-      "System.Runtime.Serialization.Primitives/4.0.11-beta-23409": {
-        "type": "package",
-        "dependencies": {
-          "System.Resources.ResourceManager": "4.0.0",
-          "System.Runtime": "4.0.20"
-        },
-        "compile": {
-          "ref/dotnet/System.Runtime.Serialization.Primitives.dll": {}
-        },
-        "runtime": {
-          "lib/dotnet/System.Runtime.Serialization.Primitives.dll": {}
-        }
-      },
       "System.Security.Claims/4.0.1-beta-23516": {
         "type": "package",
         "dependencies": {
@@ -5644,10 +5566,6 @@
     }
   },
   "libraries": {
-    "NJsonApi.Common/1.0.0": {
-      "type": "project",
-      "path": "../NJsonApi.Common/project.json"
-    },
     "Humanizer.Core/2.0.1": {
       "type": "package",
       "sha512": "NmkXfa0KvvalERU9vMOnRa/8QnkjH8bIWakxCXcYDyYiYhhkxB67AYR10UregyKdjXXGS+prTBMNfbFdp0zmow==",
@@ -8437,38 +8355,6 @@
         "System.Runtime.Numerics.nuspec"
       ]
     },
-    "System.Runtime.Serialization.Primitives/4.0.11-beta-23409": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "AQywM01eG8EgYde/RRrJDVdHmOOI3KkgK9GEjLQqvTLsrWsamNHN/j7Pxwa3XX7klSSrfDpvTNfUl40855idVg==",
-      "files": [
-        "lib/dotnet/de/System.Runtime.Serialization.Primitives.xml",
-        "lib/dotnet/es/System.Runtime.Serialization.Primitives.xml",
-        "lib/dotnet/fr/System.Runtime.Serialization.Primitives.xml",
-        "lib/dotnet/it/System.Runtime.Serialization.Primitives.xml",
-        "lib/dotnet/ja/System.Runtime.Serialization.Primitives.xml",
-        "lib/dotnet/ko/System.Runtime.Serialization.Primitives.xml",
-        "lib/dotnet/ru/System.Runtime.Serialization.Primitives.xml",
-        "lib/dotnet/System.Runtime.Serialization.Primitives.dll",
-        "lib/dotnet/System.Runtime.Serialization.Primitives.xml",
-        "lib/dotnet/zh-hans/System.Runtime.Serialization.Primitives.xml",
-        "lib/dotnet/zh-hant/System.Runtime.Serialization.Primitives.xml",
-        "lib/MonoAndroid10/_._",
-        "lib/MonoTouch10/_._",
-        "lib/net46/_._",
-        "lib/xamarinios10/_._",
-        "lib/xamarinmac20/_._",
-        "ref/dotnet/System.Runtime.Serialization.Primitives.dll",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/net46/_._",
-        "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._",
-        "System.Runtime.Serialization.Primitives.4.0.11-beta-23409.nupkg",
-        "System.Runtime.Serialization.Primitives.4.0.11-beta-23409.nupkg.sha512",
-        "System.Runtime.Serialization.Primitives.nuspec"
-      ]
-    },
     "System.Security.Claims/4.0.1-beta-23516": {
       "type": "package",
       "serviceable": true,
@@ -9213,8 +9099,7 @@
     "": [
       "Humanizer.Core >= 2.0.1",
       "Microsoft.AspNet.Mvc >= 6.0.0-rc1-final",
-      "Newtonsoft.Json >= 8.0.2",
-      "NJsonApi.Common >= 1.0.0-*"
+      "Newtonsoft.Json >= 8.0.2"
     ],
     ".NETPlatform,Version=v5.4": [
       "Microsoft.CSharp >= 4.0.1-beta-23516",

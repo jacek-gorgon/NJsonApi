@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace NJsonApi.Common.Infrastructure
+namespace NJsonApi.Infrastructure
 {
     public class Delta<T> : IDelta<T> where T : new()
     {

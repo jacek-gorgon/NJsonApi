@@ -1,6 +1,6 @@
 using System;
 using Newtonsoft.Json;
-using NJsonApi.Common.Infrastructure;
+using NJsonApi.Infrastructure;
 using NJsonApi.Serialization.Documents;
 
 namespace NJsonApi.Serialization

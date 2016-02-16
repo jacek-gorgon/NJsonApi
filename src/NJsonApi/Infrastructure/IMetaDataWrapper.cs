@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace NJsonApi.Common.Infrastructure
+namespace NJsonApi.Infrastructure
 {
     public interface IMetaDataWrapper
     {

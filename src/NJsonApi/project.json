@@ -19,10 +19,6 @@
   "dependencies": {
     "Humanizer.Core": "2.0.1",
     "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
-    "Newtonsoft.Json": "8.0.2",
-    "NJsonApi.Common": "1.0.0-*"
+    "Newtonsoft.Json": "8.0.2"
   },
-  "configurations": {
-    "Net Core 1 Only": { }
-  }
 }

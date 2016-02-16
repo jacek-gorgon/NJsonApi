@@ -3,7 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NJsonApi.Common.Infrastructure;
+using NJsonApi.Infrastructure;
 using NJsonApi.Serialization.Documents;
 
 namespace NJsonApi.Serialization
