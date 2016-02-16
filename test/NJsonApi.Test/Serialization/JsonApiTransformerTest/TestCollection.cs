@@ -167,7 +167,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
         private Context CreateContext()
         {
-            var conf = new Configuration();
+            var conf = new NJsonApi.Configuration();
             var mapping = new ResourceMapping<SampleClass>(c => c.Id, "http://sampleClass/{id}");
             mapping.ResourceType = "sampleClasses";
             mapping.AddPropertyGetter("someValue", c => c.SomeValue);

@@ -30,7 +30,7 @@ namespace NJsonApi.Test.Configuration
 
             sampleMapping.AddPropertyGetter("value", c => c.Value);
 
-            var conf = new Configuration();
+            var conf = new NJsonApi.Configuration();
 
             // Act
             conf.AddMapping(sampleMapping);

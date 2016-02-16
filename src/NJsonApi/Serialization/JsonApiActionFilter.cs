@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Http.Extensions;
 using Microsoft.AspNet.Mvc.Filters;
 using Microsoft.AspNet.Mvc;
 
@@ -28,7 +29,7 @@ namespace NJsonApi.Serialization
         {
             var responseResult = (ObjectResult)context.Result;
 
-            var jsonApiContext = new Context(configuration, new Uri(context.HttpContext.Request.Host.Value));
+            var jsonApiContext = new Context(configuration, new Uri(context.HttpContext.Request.GetDisplayUrl()));
             responseResult.Value = jsonApiTransformer.Transform(responseResult.Value, jsonApiContext);
 
             // TODO ensure that the response code is correct for the type of action we've performed (by default)

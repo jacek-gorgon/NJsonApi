@@ -112,7 +112,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
         private Context CreateContext()
         {
-            var conf = new Configuration();
+            var conf = new NJsonApi.Configuration();
             var sampleClassMapping = new ResourceMapping<SampleClass>(c => c.Id, "/sampleClass/{id}");
             sampleClassMapping.ResourceType = "sampleClasses";
             sampleClassMapping.AddPropertyGetter("someValue", c => c.SomeValue);
@@ -141,7 +141,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
         private Context CreateOneToManyConfigurationContext()
         {
-            var conf = new Configuration();
+            var conf = new NJsonApi.Configuration();
             var sampleClassMapping = new ResourceMapping<SampleClass>(c => c.Id, "/sampleClass/{id}");
             sampleClassMapping.ResourceType = "sampleClasses";
             sampleClassMapping.AddPropertyGetter("someValue", c => c.SomeValue);
