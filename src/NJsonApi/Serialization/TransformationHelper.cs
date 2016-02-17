@@ -59,7 +59,8 @@ namespace NJsonApi.Serialization
 
             foreach (var resource in primaryResourceList)
             {
-                AppendIncludedRepresentationRecursive(resource, resourceMapping, includedList, alreadyVisitedObjects, context);
+                includedList.AddRange(
+                    AppendIncludedRepresentationRecursive(resource, resourceMapping, alreadyVisitedObjects, context));
             }
 
             return includedList;
@@ -67,6 +68,8 @@ namespace NJsonApi.Serialization
 
         public List<SingleResource> AppendIncludedRepresentationRecursive(object resource, IResourceMapping resourceMapping, HashSet<object> alreadyVisitedObjects, Context context)
         {
+            var includedResources = new List<SingleResource>();
+
             foreach(var relationship in resourceMapping.Relationships)
             {
                 if (relationship.InclusionRule == ResourceInclusionRules.ForceOmit)
@@ -75,32 +78,26 @@ namespace NJsonApi.Serialization
                 }
 
                 var relatedResources = UnifyObjectsToList(relationship.RelatedResource(resource));
+                
+                foreach(var relatedResource in relatedResources)
+                {
+                    if (alreadyVisitedObjects.Contains(relatedResource))
+                    {
+                        continue;
+                    }
 
+                    alreadyVisitedObjects.Add(relatedResource);
+                    includedResources.Add(
+                        CreateResourceRepresentation(relatedResource, relationship.ResourceMapping, context));
+
+                    includedResources.AddRange(
+                        AppendIncludedRepresentationRecursive(relatedResource, relationship.ResourceMapping, alreadyVisitedObjects, context));
+                }
             }
 
-            return new List<SingleResource>();
+            return includedResources;
         }
-
-        public void AppendIncludedRepresentationRecursive(object resource, IResourceMapping resourceMapping, List<SingleResource> includedList, HashSet<object> alreadyVisitedObjects, Context context)
-        {
-            resourceMapping.Relationships
-                .Where(rm => rm.InclusionRule != ResourceInclusionRules.ForceOmit)
-                .SelectMany(rm => UnifyObjectsToList(rm.RelatedResource(resource)), (rm, o) => new
-                {
-                    Mapping = rm,
-                    RelatedResourceInstance = o,
-                })
-                .Where(x => !alreadyVisitedObjects.Contains(x.RelatedResourceInstance))
-                .ToList()
-                .ForEach(x =>
-                {
-                    alreadyVisitedObjects.Add(x.RelatedResourceInstance);
-                    includedList.Add(CreateResourceRepresentation(x.RelatedResourceInstance, x.Mapping.ResourceMapping, context));
-                    AppendIncludedRepresentationRecursive(x.RelatedResourceInstance, x.Mapping.ResourceMapping, includedList, alreadyVisitedObjects, context);
-                });
-        }
-
-
+        
         public List<object> UnifyObjectsToList(object nestedObject)
         {
             var list = new List<object>();

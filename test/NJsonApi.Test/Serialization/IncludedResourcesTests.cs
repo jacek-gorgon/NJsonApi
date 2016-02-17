@@ -38,7 +38,7 @@ namespace NJsonApi.Test.Serialization
             var transformationHelper = new TransformationHelper();
 
             // Act
-            transformationHelper.AppendIncludedRepresentationRecursive(source, mapping, result, alreadyVisitedObjects, context);
+            result = transformationHelper.AppendIncludedRepresentationRecursive(source, mapping, alreadyVisitedObjects, context);
 
             // Assert
             Assert.NotNull(result.Single(x => x.Id == "1" && x.Type == "comments"));
@@ -80,7 +80,7 @@ namespace NJsonApi.Test.Serialization
             // Act
             foreach (var source in sourceList)
             {
-                transformationHelper.AppendIncludedRepresentationRecursive(source, mapping, result, alreadyVisitedObjects, context);
+                result.AddRange(transformationHelper.AppendIncludedRepresentationRecursive(source, mapping, alreadyVisitedObjects, context));
             }
 
             // Assert
