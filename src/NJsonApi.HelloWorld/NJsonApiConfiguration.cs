@@ -18,6 +18,11 @@ namespace NJsonApi.HelloWorld
                 .WithAllProperties()
                 .WithLinkTemplate("api/continents/{id}");
 
+            configBuilder
+                .Resource<Country>()
+                .WithAllProperties()
+                .WithLinkTemplate("api/countries/{id}");
+
             var nJsonApiConfig = configBuilder.Build();
             return nJsonApiConfig;
         }
