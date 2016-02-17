@@ -14,7 +14,7 @@ using System.Reflection;
 
 namespace NJsonApi.Serialization
 {
-    public class TransformationHelper
+    internal class TransformationHelper
     {
         public const int RecursionDepthLimit = 10;
         private const string IdPlaceholder = "{id}";
@@ -66,7 +66,7 @@ namespace NJsonApi.Serialization
             return includedList;
         }
 
-        public List<SingleResource> AppendIncludedRepresentationRecursive(object resource, IResourceMapping resourceMapping, HashSet<object> alreadyVisitedObjects, Context context)
+        private List<SingleResource> AppendIncludedRepresentationRecursive(object resource, IResourceMapping resourceMapping, HashSet<object> alreadyVisitedObjects, Context context)
         {
             var includedResources = new List<SingleResource>();
 

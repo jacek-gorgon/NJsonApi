@@ -22,13 +22,10 @@ namespace NJsonApi.Test.Serialization
                 .WithComment(2, "Comment Two")
                 .Build();
 
-            var sourceList = new List<Post>()
+            var sourceList = new List<object>()
             {
                 source
             };
-
-            var result = new List<SingleResource>();
-            var alreadyVisitedObjects = new HashSet<object>(sourceList);
 
             var config = TestModelConfigurationBuilder.BuilderForEverything.Build();
 
@@ -38,7 +35,7 @@ namespace NJsonApi.Test.Serialization
             var transformationHelper = new TransformationHelper();
 
             // Act
-            result = transformationHelper.AppendIncludedRepresentationRecursive(source, mapping, alreadyVisitedObjects, context);
+            var result = transformationHelper.CreateIncludedRepresentations(sourceList, mapping, context);
 
             // Assert
             Assert.NotNull(result.Single(x => x.Id == "1" && x.Type == "comments"));
@@ -61,14 +58,11 @@ namespace NJsonApi.Test.Serialization
                 .WithAuthor(duplicateAuthor)
                 .Build();
 
-            var sourceList = new List<Post>()
+            var sourceList = new List<object>()
             {
                 firstSource,
                 secondSource
             };
-
-            var result = new List<SingleResource>();
-            var alreadyVisitedObjects = new HashSet<object>(sourceList);
 
             var config = TestModelConfigurationBuilder.BuilderForEverything.Build();
 
@@ -78,10 +72,7 @@ namespace NJsonApi.Test.Serialization
             var transformationHelper = new TransformationHelper();
 
             // Act
-            foreach (var source in sourceList)
-            {
-                result.AddRange(transformationHelper.AppendIncludedRepresentationRecursive(source, mapping, alreadyVisitedObjects, context));
-            }
+            var result = transformationHelper.CreateIncludedRepresentations(sourceList, mapping, context);
 
             // Assert
             Assert.Equal(1, result.Count(x => 

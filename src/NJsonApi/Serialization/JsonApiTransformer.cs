@@ -12,7 +12,7 @@ namespace NJsonApi.Serialization
     {
         private JsonSerializer serializer;
 
-        public TransformationHelper TransformationHelper { get; set; }
+        internal TransformationHelper TransformationHelper { get; set; }
 
         public JsonSerializer Serializer
         {

@@ -21,3 +21,4 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("2fa32b71-2bad-4f4d-85a3-48743cec489c")]
+[assembly: InternalsVisibleTo("NJsonApi.Test")] 
