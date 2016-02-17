@@ -58,9 +58,27 @@ namespace NJsonApi.Serialization
             var alreadyVisitedObjects = new HashSet<object>(primaryResourceList);
 
             foreach (var resource in primaryResourceList)
+            {
                 AppendIncludedRepresentationRecursive(resource, resourceMapping, includedList, alreadyVisitedObjects, context);
+            }
 
             return includedList;
+        }
+
+        public List<SingleResource> AppendIncludedRepresentationRecursive(object resource, IResourceMapping resourceMapping, HashSet<object> alreadyVisitedObjects, Context context)
+        {
+            foreach(var relationship in resourceMapping.Relationships)
+            {
+                if (relationship.InclusionRule == ResourceInclusionRules.ForceOmit)
+                {
+                    continue;
+                }
+
+                var relatedResources = UnifyObjectsToList(relationship.RelatedResource(resource));
+
+            }
+
+            return new List<SingleResource>();
         }
 
         public void AppendIncludedRepresentationRecursive(object resource, IResourceMapping resourceMapping, List<SingleResource> includedList, HashSet<object> alreadyVisitedObjects, Context context)

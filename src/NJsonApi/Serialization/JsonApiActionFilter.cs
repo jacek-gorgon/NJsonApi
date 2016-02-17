@@ -21,10 +21,7 @@ namespace NJsonApi.Serialization
             this.configuration = configuration;
         }
 
-        public void OnActionExecuting(ActionExecutingContext context)
-        {
-        }
-
+        public void OnActionExecuting(ActionExecutingContext context) { }
         public void OnActionExecuted(ActionExecutedContext context)
         {
             var responseResult = (ObjectResult)context.Result;

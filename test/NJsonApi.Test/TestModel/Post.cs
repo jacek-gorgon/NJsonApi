@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace NJsonApi.Test.TestModel
 {
-    public class Post
+    internal class Post
     {
         public int Id { get; set; }
         public string Title { get; set; }

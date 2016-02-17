@@ -70,7 +70,6 @@ namespace NJsonApi
             return this;
         }
 
-
         public ResourceConfigurationBuilder<TResource> WithLinkTemplate(string link)
         {
             ConstructedMetadata.UrlTemplate = link;
@@ -99,6 +98,11 @@ namespace NJsonApi
                 else if (!PropertyScanningConvention.IsLinkedResource(propertyInfo) && !PropertyScanningConvention.ShouldIgnore(propertyInfo))
                     AddProperty(propertyInfo, typeof(TResource));
             }
+            return this;
+        }
+
+        public ResourceConfigurationBuilder<TResource> WithLinkedChildResources()
+        {
             return this;
         }
 
