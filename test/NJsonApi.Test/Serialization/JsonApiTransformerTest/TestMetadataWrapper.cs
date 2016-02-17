@@ -18,7 +18,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             MetaDataWrapper<SampleClass> objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act
             CompoundDocument result = sut.Transform(objectToTransform, context);
@@ -35,7 +35,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             MetaDataWrapper<SampleClass> objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act
             CompoundDocument result = sut.Transform(objectToTransform, context);
@@ -51,7 +51,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             MetaDataWrapper<SampleClass> objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
 
             // Act
@@ -70,7 +70,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             MetaDataWrapper<SampleClass> objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act
             CompoundDocument result = sut
@@ -87,7 +87,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             MetaDataWrapper<SampleClass> objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act
             CompoundDocument result = sut.Transform(objectToTransform, context);
@@ -108,7 +108,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             MetaDataWrapper<SampleClass> objectToTransform = CreateObjectToTransform();
             objectToTransform.MetaData.Add("Paging", pagingValue);
             objectToTransform.MetaData.Add("Count", countValue);
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
 
             // Act

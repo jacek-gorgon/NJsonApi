@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace NJsonApi.Serialization
 {
-    public class JsonApiInputFormatter : InputFormatter
+    internal class JsonApiInputFormatter : InputFormatter
     {
         public readonly MediaTypeHeaderValue DefaultJsonApiMimeType = new MediaTypeHeaderValue("application/vnd.api+json");
         private readonly JsonSerializer jsonSerializer;

@@ -42,8 +42,7 @@ namespace NJsonApi
         public void Apply(IServiceCollection services)
         {
             var serializer = GetJsonSerializer();
-            var helper = new TransformationHelper();
-            var transformer = new JsonApiTransformer { Serializer = serializer, TransformationHelper = helper };
+            var transformer = new JsonApiTransformer(serializer);
             var actionFilter = new JsonApiActionFilter(transformer, this);
 
             services.AddMvc(

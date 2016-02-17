@@ -14,7 +14,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var configuration = CreateContext();
             var objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             var transformed = sut.Transform(objectToTransform, configuration);
 

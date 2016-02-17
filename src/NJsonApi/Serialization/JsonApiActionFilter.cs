@@ -9,7 +9,7 @@ using Microsoft.AspNet.Mvc;
 
 namespace NJsonApi.Serialization
 {
-    public class JsonApiActionFilter : IActionFilter
+    internal class JsonApiActionFilter : IActionFilter
     {
         public bool AllowMultiple { get { return false; } }
         private readonly JsonApiTransformer jsonApiTransformer;

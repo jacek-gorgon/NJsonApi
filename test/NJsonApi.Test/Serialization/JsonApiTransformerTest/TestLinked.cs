@@ -18,7 +18,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
         public TestLinked()
         {
-            transformer = new JsonApiTransformer(){TransformationHelper = transformationHelper};
+            transformer = new JsonApiTransformer();
         }
 
         [Fact]

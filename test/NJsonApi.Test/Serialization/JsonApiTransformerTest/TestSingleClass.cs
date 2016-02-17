@@ -17,7 +17,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             SampleClass objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act
             CompoundDocument result = sut.Transform(objectToTransform, context);
@@ -34,7 +34,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             SampleClass objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act
             CompoundDocument result = sut.Transform(objectToTransform, context);
@@ -50,7 +50,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             SampleClass objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act
             CompoundDocument result = sut.Transform(objectToTransform, context);
@@ -68,7 +68,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             SampleClass objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act
             CompoundDocument result = sut.Transform(objectToTransform, context);
@@ -84,7 +84,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             SampleClass objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act
             CompoundDocument result = sut.Transform(objectToTransform, context);
