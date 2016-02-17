@@ -8,7 +8,7 @@ namespace NJsonApi.Test.TestModel
 {
     internal static class TestModelConfigurationBuilder
     {
-        public static NJsonApi.Configuration BuildEverything
+        public static ConfigurationBuilder BuilderForEverything
         {
             get
             {
@@ -28,7 +28,7 @@ namespace NJsonApi.Test.TestModel
                     .WithAllProperties()
                     .WithLinkTemplate("/comments/{id}");
 
-                return builder.Build();
+                return builder;
             }
         }
     }
