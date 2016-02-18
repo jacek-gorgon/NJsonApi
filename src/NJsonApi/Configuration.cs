@@ -44,14 +44,15 @@ namespace NJsonApi
             var serializer = GetJsonSerializer();
             var transformer = new JsonApiTransformer(serializer);
             var actionFilter = new JsonApiActionFilter(transformer, this);
+            var exceptionFilter = new JsonApiExceptionFilter(transformer);
 
             services.AddMvc(
                 options =>
                     {
                         options.Filters.Add(actionFilter);
-                        options.OutputFormatters.Insert(0, new JsonOutputFormatter());
+                        options.Filters.Add(exceptionFilter);
+                        options.OutputFormatters.Insert(0, new JsonApiOutputFormatter());
                         options.InputFormatters.Insert(0, new JsonApiInputFormatter(serializer, this, transformer));
-                        options.FormatterMappings.SetMediaTypeMappingForFormat("JsonApi", MediaTypeHeaderValue.Parse("application/vnd.api+json"));
                     });
         }
 

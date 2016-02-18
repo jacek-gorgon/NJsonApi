@@ -23,28 +23,6 @@ namespace NJsonApi.Serialization
         private const string MetaCountAttribute = "count";
         private const string SelfLinkKey = "self";
 
-        public CompoundDocument HandleException(Exception exception)
-        {
-            var scfException = exception is NJsonApiBaseException
-                ? exception as NJsonApiBaseException
-                : new NJsonApiBaseException(exception.Message, exception);
-
-            var compoundDocument = new CompoundDocument
-            {
-                Errors = new Dictionary<string, Error>
-                {
-                    { "error", new Error
-                    {
-                        Id = scfException.Id.ToString(),
-                        Title = scfException.Message,
-                        Status = (scfException.GetHttpStatusCode()).ToString(CultureInfo.InvariantCulture),
-                    }}
-                }
-            };
-
-            return compoundDocument;
-        }
-
         public IResourceRepresentation ChooseProperResourceRepresentation(object resource, IEnumerable<SingleResource> representationList)
         {
             return resource is IEnumerable ?

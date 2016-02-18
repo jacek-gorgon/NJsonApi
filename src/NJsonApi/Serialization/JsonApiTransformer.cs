@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NJsonApi.Infrastructure;
 using NJsonApi.Serialization.Documents;
-using Microsoft.AspNet.Mvc;
+using NJsonApi.Serialization.Representations;
+using System.Collections.Generic;
 
 namespace NJsonApi.Serialization
 {
@@ -28,6 +28,24 @@ namespace NJsonApi.Serialization
         {
             get { return serializer ?? (serializer = new JsonSerializer() ); }
             set { serializer = value; }
+        }
+
+        public CompoundDocument Transform(Exception e, int httpStatus)
+        {
+            var result = new CompoundDocument();
+            result.Errors = new List<Error>()
+            {
+                new Error()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Title = "There has been an unhandled error when processing your request.",
+                    Detail = e.Message,
+                    Code = e.ToString(),
+                    Status = httpStatus
+                }
+            };
+
+            return result;
         }
 
         public CompoundDocument Transform(object objectGraph, Context context)

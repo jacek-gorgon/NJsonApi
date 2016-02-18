@@ -15,7 +15,7 @@ using Xunit;
 
 namespace NJsonApi.Test.Serialization
 {
-    public class JsonApiActionFilterTests
+    public class ActionFilterTests
     {
         [Fact]
         public void GIVEN_PostObject_WHEN_OnActionExecuted_THEN_ResponseValid()
@@ -27,9 +27,9 @@ namespace NJsonApi.Test.Serialization
                 .WithAuthor(PostBuilder.Asimov)
                 .Build();
 
-            var context = new ActionExecutedContextBuilder()
+            var context = new FilterContextBuilder()
                 .WithResult(new ObjectResult(post))
-                .Build();
+                .BuildActionExecuted();
 
             // Act
             actionFilter.OnActionExecuted(context);
@@ -44,11 +44,41 @@ namespace NJsonApi.Test.Serialization
             Assert.Equal(post.AuthorId, resource.Attributes["authorId"]);
         }
 
+
+        [Fact]
+        public void GIVEN_Exception_WHEN_OnActionExecuted_THEN_ExceptionIsInCompoundDocument()
+        {
+            // Arrange
+            var transformer = new JsonApiTransformer();
+            var exceptionFilter = new JsonApiExceptionFilter(transformer);
+
+
+            var post = new PostBuilder()
+                .WithAuthor(PostBuilder.Asimov)
+                .Build();
+
+            var context = new FilterContextBuilder()
+                .WithException("Test exception message")
+                .BuildException();
+
+            // Act
+            exceptionFilter.OnException(context);
+
+            // Assert
+            var result = (ObjectResult)context.Result;
+            var value = (CompoundDocument)result.Value;
+
+            Assert.Equal(1, value.Errors.Count());
+            Assert.Equal("Test exception message", value.Errors.First().Detail);
+            Assert.Equal(500, value.Errors.First().Status);
+        }
+
         private JsonApiActionFilter GetActionFilterForTestModel()
         {
             var config = TestModelConfigurationBuilder.BuilderForEverything.Build();
             var transformer = new JsonApiTransformer();
             return new JsonApiActionFilter(transformer, config);
         }
+
     }
 }

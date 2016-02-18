@@ -12,11 +12,17 @@ namespace NJsonApi.Test.Fakes
 {
     internal class FakeHttpContext : HttpContext
     {
-        private readonly FakeHttpRequest fakeRequest;
+        private FakeHttpRequest fakeRequest;
+        private FakeHttpResponse fakeResponse;
 
         public FakeHttpContext()
         {
             this.fakeRequest = new FakeHttpRequest(this);
+        }
+
+        public void SetResponse(FakeHttpResponse response)
+        {
+            this.fakeResponse = response;
         }
 
         public override IServiceProvider ApplicationServices
@@ -73,7 +79,7 @@ namespace NJsonApi.Test.Fakes
         {
             get
             {
-                return new FakeHttpRequest(this);
+                return fakeRequest;
             }
         }
 
@@ -103,13 +109,7 @@ namespace NJsonApi.Test.Fakes
             }
         }
 
-        public override HttpResponse Response
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override HttpResponse Response { get { return fakeResponse; } }
 
         public override ISession Session
         {
