@@ -1,6 +1,7 @@
 ﻿using NJsonApi;
 using NJsonApi.Serialization;
 using NJsonApi.Serialization.Representations.Resources;
+using NJsonApi.Test.Builders;
 using NJsonApi.Test.TestModel;
 using System;
 using System.Collections.Generic;

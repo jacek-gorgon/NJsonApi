@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NJsonApi;
+using NJsonApi.Test.TestModel;
 
-namespace NJsonApi.Test.TestModel
+namespace NJsonApi.Test.Builders
 {
     internal static class TestModelConfigurationBuilder
     {

@@ -18,6 +18,11 @@ namespace NJsonApi.HelloWorld.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
+            if (!StaticPersistentStore.HasWorld(id))
+            {
+                return new HttpNotFoundObjectResult(id);
+            }
+
             return new ObjectResult(StaticPersistentStore.Worlds.Single(w => w.Id == id));
         }
 
