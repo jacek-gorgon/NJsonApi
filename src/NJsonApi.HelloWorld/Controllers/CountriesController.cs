@@ -17,9 +17,9 @@ namespace NJsonApi.HelloWorld.Controllers
         }
 
         [HttpGet("{id}")]
-        public Country Get(int id)
+        public IActionResult Get(int id)
         {
-            return StaticPersistentStore.Countries.Single(c => c.Id == id);
+            return new ObjectResult(StaticPersistentStore.Countries.Single(c => c.Id == id));
         }
     }
 }

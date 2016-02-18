@@ -110,6 +110,11 @@ namespace NJsonApi.HelloWorld.Models
             Countries = new List<Country> { co1, co2, co3, co4, co5, co6 };
         }
 
+        public static bool HasWorld(int id)
+        {
+            return Worlds.Any(x => x.Id == id);
+        }
+
         public static int GetNextId()
         {
             return Worlds.Max(w => w.Id) + 1;

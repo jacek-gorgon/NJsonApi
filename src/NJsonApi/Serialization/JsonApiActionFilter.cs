@@ -24,12 +24,15 @@ namespace NJsonApi.Serialization
         public void OnActionExecuting(ActionExecutingContext context) { }
         public void OnActionExecuted(ActionExecutedContext context)
         {
+            if (context.Exception != null)
+            {
+                return;
+            }
+
             var responseResult = (ObjectResult)context.Result;
 
             var jsonApiContext = new Context(configuration, new Uri(context.HttpContext.Request.GetDisplayUrl()));
             responseResult.Value = jsonApiTransformer.Transform(responseResult.Value, jsonApiContext);
-
-            // TODO ensure that the response code is correct for the type of action we've performed (by default)
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NJsonApi.Infrastructure;
 using NJsonApi.Serialization.Documents;
+using Microsoft.AspNet.Mvc;
 
 namespace NJsonApi.Serialization
 {
@@ -31,16 +33,6 @@ namespace NJsonApi.Serialization
         public CompoundDocument Transform(object objectGraph, Context context)
         {
             Type innerObjectType = transformationHelper.GetObjectType(objectGraph);
-
-            //if (objectGraph is HttpError)
-            //{
-            //    return TransformationHelper.HandleHttpError(objectGraph as HttpError);
-            //}
-
-            if (objectGraph is Exception)
-            {
-                return transformationHelper.HandleException(objectGraph as Exception);
-            }
 
             transformationHelper.VerifyTypeSupport(innerObjectType);
             transformationHelper.AssureAllMappingsRegistered(innerObjectType, context.Configuration);

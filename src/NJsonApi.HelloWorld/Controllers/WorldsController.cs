@@ -16,26 +16,27 @@ namespace NJsonApi.HelloWorld.Controllers
         }
 
         [HttpGet("{id}")]
-        public World Get(int id)
+        public IActionResult Get(int id)
         {
-            return StaticPersistentStore.Worlds.Single(w => w.Id == id);
+            return new ObjectResult(StaticPersistentStore.Worlds.Single(w => w.Id == id));
         }
 
         [HttpPost]
-        public World Post([FromBody]Delta<World> worldDelta)
+        public IActionResult Post([FromBody]Delta<World> worldDelta)
         {
             var world = worldDelta.ToObject();
             world.Id = StaticPersistentStore.GetNextId();
             StaticPersistentStore.Worlds.Add(world);
-            return world;
+
+            return new CreatedAtRouteResult(new { id = world.Id  }, world);
         }
 
         [HttpPut("{id}")]
-        public World Put([FromBody]Delta<World> worldDelta, int id)
+        public IActionResult Put([FromBody]Delta<World> worldDelta, int id)
         {
-            var world = Get(id);
+            var world = StaticPersistentStore.Worlds.Single(w => w.Id == id);
             worldDelta.Apply(world);
-            return world;
+            return new NoContentResult();
         }
     }
 }
