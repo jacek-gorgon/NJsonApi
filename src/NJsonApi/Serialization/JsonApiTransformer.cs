@@ -7,6 +7,7 @@ using NJsonApi.Infrastructure;
 using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Representations;
 using System.Collections.Generic;
+using Microsoft.AspNet.Mvc;
 
 namespace NJsonApi.Serialization
 {
@@ -37,7 +38,6 @@ namespace NJsonApi.Serialization
             {
                 new Error()
                 {
-                    Id = Guid.NewGuid().ToString(),
                     Title = "There has been an unhandled error when processing your request.",
                     Detail = e.Message,
                     Code = e.ToString(),

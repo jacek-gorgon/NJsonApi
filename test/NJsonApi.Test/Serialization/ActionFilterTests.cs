@@ -73,6 +73,27 @@ namespace NJsonApi.Test.Serialization
             Assert.Equal(500, value.Errors.First().Status);
         }
 
+        [Fact]
+        public void GIVEN_Http_WHEN__THEN()
+        {
+            // Arrange
+            var actionFilter = GetActionFilterForTestModel();
+
+            var idNotFoundResult = new HttpNotFoundObjectResult(42);
+
+            var context = new FilterContextBuilder()
+                .WithResult(idNotFoundResult)
+                .BuildActionExecuted();
+
+            // Act
+            actionFilter.OnActionExecuted(context);
+
+            // Assert
+            var result = (ObjectResult)context.Result;
+            var value = (CompoundDocument)result.Value;
+        }
+
+
         private JsonApiActionFilter GetActionFilterForTestModel()
         {
             var config = TestModelConfigurationBuilder.BuilderForEverything.Build();

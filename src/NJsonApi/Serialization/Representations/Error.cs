@@ -1,7 +1,14 @@
-﻿namespace NJsonApi.Serialization.Representations
+﻿using System;
+
+namespace NJsonApi.Serialization.Representations
 {
     public class Error
     {
+        public Error()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+
         public string Id { get; set; }
         public int Status { get; set; }
         public string Code { get; set; }
