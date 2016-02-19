@@ -42,9 +42,15 @@ namespace NJsonApi.Test.Builders
             return this;
         }
 
-        public FilterContextBuilder WithMediaType(string mediaType)
+        public FilterContextBuilder WithContentType(string mediaType)
         {
             this.actionContext.HttpContext.Request.ContentType = mediaType;
+            return this;
+        }
+
+        public FilterContextBuilder WithHeader(string key, string value)
+        {
+            this.actionContext.HttpContext.Request.Headers.Add(key, value);
             return this;
         }
 

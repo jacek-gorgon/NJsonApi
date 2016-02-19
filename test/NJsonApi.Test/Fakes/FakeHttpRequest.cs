@@ -5,12 +5,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
+using Microsoft.AspNet.Http.Internal;
 
 namespace NJsonApi.Test.Fakes
 {
     internal class FakeHttpRequest : HttpRequest
     {
         private readonly FakeHttpContext fakeHttpContext;
+        private readonly HeaderDictionary headerDictionary = new HeaderDictionary();
 
         public FakeHttpRequest(FakeHttpContext context)
         {
@@ -84,13 +86,7 @@ namespace NJsonApi.Test.Fakes
             }
         }
 
-        public override IHeaderDictionary Headers
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override IHeaderDictionary Headers => headerDictionary;
 
         public override HostString Host { get; set; }
 

@@ -97,14 +97,14 @@ namespace NJsonApi.Test.Serialization
 
 
         [Fact]
-        public void GIVEN_WrongMediaType_WHEN_ActionExecuting_THEN_ResponseSet()
+        public void GIVEN_WrongContentType_WHEN_ActionExecuting_THEN_ResponseIs415()
         {
             // Arrange
-            string mediaType = null;
+            string contentType = null;
 
             var actionFilter = GetActionFilterForTestModel();
             var context = new FilterContextBuilder()
-                .WithMediaType(mediaType)
+                .WithContentType(contentType)
                 .BuildActionExecuting();
 
             // Act
@@ -116,14 +116,14 @@ namespace NJsonApi.Test.Serialization
         }
 
         [Fact]
-        public void GIVEN_CorrectMediaType_WHEN_ActionExecuting_THEN_ResponseNotSet()
+        public void GIVEN_CorrectContentType_WHEN_ActionExecuting_THEN_ResponseNotSet()
         {
             // Arrange
-            string mediaType = "application/vnd.api+json";
+            string contentType = "application/vnd.api+json";
 
             var actionFilter = GetActionFilterForTestModel();
             var context = new FilterContextBuilder()
-                .WithMediaType(mediaType)
+                .WithContentType(contentType)
                 .BuildActionExecuting();
 
             // Act
@@ -133,6 +133,109 @@ namespace NJsonApi.Test.Serialization
             Assert.Null(context.Result);
         }
 
+
+        [Fact]
+        public void GIVEN_CorrectContentType_AND_Parameters_WHEN_ActionExecuting_THEN_ResponseIs415()
+        {
+            // Arrange
+            string contentType = "application/vnd.api+json; version=1.0";
+
+            var actionFilter = GetActionFilterForTestModel();
+            var context = new FilterContextBuilder()
+                .WithContentType(contentType)
+                .BuildActionExecuting();
+
+            // Act
+            actionFilter.OnActionExecuting(context);
+
+            // Assert
+            var result = (UnsupportedMediaTypeResult)context.Result;
+            Assert.Equal(415, result.StatusCode);
+        }
+
+
+        [Fact]
+        public void GIVEN_IncorrectAcceptsHeader_WHEN_ActionExecuting_THEN_ResponseIs406()
+        {
+            // Arrange
+            string acceptsHeader = "application/vnd.api+json; version=1.0";
+            string contentType = "application/vnd.api+json";
+
+            var actionFilter = GetActionFilterForTestModel();
+            var context = new FilterContextBuilder()
+                .WithContentType(contentType)
+                .WithHeader("Accept", acceptsHeader)
+                .BuildActionExecuting();
+
+            // Act
+            actionFilter.OnActionExecuting(context);
+
+            // Assert
+            var result = (HttpStatusCodeResult)context.Result;
+            Assert.Equal(406, result.StatusCode);
+        }
+
+        [Fact]
+        public void GIVEN_CorrectAcceptsHeader_WHEN_ActionExecuting_THEN_ResponseIsNull()
+        {
+            // Arrange
+            string acceptsHeader = "application/vnd.api+json";
+            string contentType = "application/vnd.api+json";
+
+            var actionFilter = GetActionFilterForTestModel();
+            var context = new FilterContextBuilder()
+                .WithContentType(contentType)
+                .WithHeader("Accept", acceptsHeader)
+                .BuildActionExecuting();
+
+            // Act
+            actionFilter.OnActionExecuting(context);
+
+            // Assert
+            Assert.Null(context.Result);
+        }
+
+
+        [Fact]
+        public void GIVEN_MutlipleAccept_AND_Correct_WHEN_ActionExecuting_THEN_ResponseIsNull()
+        {
+            // Arrange
+            string acceptsHeader = "application/vnd.api+json, application/vnd.api+json; version=1.0, application/json";
+            string contentType = "application/vnd.api+json";
+
+            var actionFilter = GetActionFilterForTestModel();
+            var context = new FilterContextBuilder()
+                .WithContentType(contentType)
+                .WithHeader("Accept", acceptsHeader)
+                .BuildActionExecuting();
+
+            // Act
+            actionFilter.OnActionExecuting(context);
+
+            // Assert
+            Assert.Null(context.Result);
+        }
+
+        [Fact]
+        public void GIVEN_MutlipleAccept_AND_AllAreWrong_WHEN_ActionExecuting_THEN_ResponseIsNull()
+        {
+            // Arrange
+            string acceptsHeader = "application/xml, application/vnd.api+json; version=1.0, application/json";
+            string contentType = "application/vnd.api+json";
+
+            var actionFilter = GetActionFilterForTestModel();
+            var context = new FilterContextBuilder()
+                .WithContentType(contentType)
+                .WithHeader("Accept", acceptsHeader)
+                .BuildActionExecuting();
+
+            // Act
+            actionFilter.OnActionExecuting(context);
+
+            // Assert
+            var result = (HttpStatusCodeResult)context.Result;
+            Assert.Equal(406, result.StatusCode);
+        }
 
         private JsonApiActionFilter GetActionFilterForTestModel()
         {

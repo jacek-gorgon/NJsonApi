@@ -8,6 +8,7 @@ using Microsoft.AspNet.Mvc.Filters;
 using Microsoft.AspNet.Mvc;
 using System.Collections.Generic;
 using NJsonApi.Serialization.BadActionResultTransformers;
+using Microsoft.Net.Http.Headers;
 
 namespace NJsonApi.Serialization
 {
@@ -28,6 +29,15 @@ namespace NJsonApi.Serialization
             if (context.HttpContext.Request.ContentType != configuration.DefaultJsonApiMediaType.MediaType)
             {
                 context.Result = new UnsupportedMediaTypeResult();
+            }
+
+            if (!string.IsNullOrEmpty(context.HttpContext.Request.Headers["Accept"]))
+            {
+                var acceptsHeaders = context.HttpContext.Request.Headers["Accept"].First();
+                if (!acceptsHeaders.Split(',').Any(x => x.Trim() == configuration.DefaultJsonApiMediaType.MediaType))
+                {
+                    context.Result = new HttpStatusCodeResult(406);
+                }
             }
         }
 

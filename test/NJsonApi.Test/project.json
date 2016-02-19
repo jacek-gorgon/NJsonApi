@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-*",
   "description": "NJsonApi.Test Class Library",
   "authors": [ "Rob" ],
@@ -12,6 +12,7 @@
     }
   },
   "dependencies": {
+    "Microsoft.AspNet.Http": "1.0.0-rc1-final",
     "NJsonApi": "1.0.0-*",
     "xunit": "2.2.0-beta1-build3239",
     "xunit.runner.dnx": "2.1.0-rc1-build204",
