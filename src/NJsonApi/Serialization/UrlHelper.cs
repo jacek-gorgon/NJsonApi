@@ -2,7 +2,7 @@
 
 namespace NJsonApi.Serialization
 {
-    public class UrlBuilder : IUrlBuilder
+    internal class UrlBuilder : IUrlBuilder
     {
         private string routePrefix = string.Empty;
         private string root = string.Empty;

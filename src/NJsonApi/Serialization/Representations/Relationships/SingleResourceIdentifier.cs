@@ -3,7 +3,7 @@ using NJsonApi.Serialization.Representations.Resources;
 
 namespace NJsonApi.Serialization.Representations.Relationships
 {
-    public class SingleResourceIdentifier : IResourceLinkage, IResourceIdentifier
+    internal class SingleResourceIdentifier : IResourceLinkage, IResourceIdentifier
     {
         [JsonProperty(PropertyName = "id", NullValueHandling = NullValueHandling.Ignore)]
         public string Id { get; set; }

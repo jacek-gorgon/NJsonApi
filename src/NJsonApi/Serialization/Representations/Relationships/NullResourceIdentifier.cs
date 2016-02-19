@@ -32,7 +32,7 @@ namespace NJsonApi.Serialization.Representations.Relationships
     /// However, choosing behavior dynamically requires this workaround.
     /// </summary>
     [JsonConverter(typeof(SerializationAwareConverter))]
-    public class NullResourceIdentifier : IResourceLinkage, ISerializationAware
+    internal class NullResourceIdentifier : IResourceLinkage, ISerializationAware
     {
         public void Serialize(JsonWriter writer)
         {

@@ -5,7 +5,7 @@ using NJsonApi.Serialization.Documents;
 
 namespace NJsonApi.Serialization
 {
-    public interface IJsonApiTransformer
+    internal interface IJsonApiTransformer
     {
         JsonSerializer Serializer { get; set; }
         CompoundDocument Transform(object objectGraph, Context context);

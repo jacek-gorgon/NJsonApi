@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace NJsonApi.Serialization.Converters
 {
-    public class SerializationAwareConverter : JsonConverter
+    internal class SerializationAwareConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {

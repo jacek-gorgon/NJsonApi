@@ -2,7 +2,7 @@
 
 namespace NJsonApi.Exceptions
 {
-    public class MissingMappingException : Exception
+    internal class MissingMappingException : Exception
     {
         public MissingMappingException(Type type)
         {

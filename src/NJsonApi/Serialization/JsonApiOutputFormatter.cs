@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NJsonApi.Serialization
 {
-    public class JsonApiOutputFormatter : JsonOutputFormatter
+    internal class JsonApiOutputFormatter : JsonOutputFormatter
     {
         public JsonApiOutputFormatter(Configuration configuration)
         {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace NJsonApi.Serialization.Representations.Resources
 {
-    public class SingleResource : IResourceRepresentation, IResourceIdentifier
+    internal class SingleResource : IResourceRepresentation, IResourceIdentifier
     {
         [JsonProperty(PropertyName = "id", NullValueHandling = NullValueHandling.Ignore)]
         public string Id { get; set; }

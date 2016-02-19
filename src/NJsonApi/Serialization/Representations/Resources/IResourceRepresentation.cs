@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NJsonApi.Serialization.Representations
 {
-    public interface IResourceRepresentation
+    internal interface IResourceRepresentation
     {
     }
 }

@@ -5,7 +5,7 @@ using NJsonApi.Utils;
 
 namespace NJsonApi.Conventions.Impl
 {
-    public class PluralizedCamelCaseTypeConvention : IResourceTypeConvention
+    internal class PluralizedCamelCaseTypeConvention : IResourceTypeConvention
     {
         public virtual string GetResourceTypeFromRepresentationType(Type resourceType)
         {

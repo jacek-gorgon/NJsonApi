@@ -4,13 +4,13 @@ using System.Linq.Expressions;
 
 namespace NJsonApi.Infrastructure
 {
-    public interface IDelta<T> : IDelta
+    internal interface IDelta<T> : IDelta
     {
         void AddFilter<TProperty>(params Expression<Func<T, TProperty>>[] filter);
         void Apply(T inputObject);
     }
 
-    public interface IDelta
+    internal interface IDelta
     {
         Dictionary<string, object> ObjectPropertyValues { get; set; }
     }

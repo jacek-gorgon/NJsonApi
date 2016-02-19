@@ -1,6 +1,6 @@
 ﻿namespace NJsonApi.Serialization.Representations.Resources
 {
-    public interface IResourceIdentifier
+    internal interface IResourceIdentifier
     {
         string Type { get; set; }
         string Id { get; set; }

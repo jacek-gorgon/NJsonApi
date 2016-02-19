@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace NJsonApi.Infrastructure
 {
-    public class NJsonApiBaseException : Exception
+    internal class NJsonApiBaseException : Exception
     {
         public Guid Id { get; private set; }
 

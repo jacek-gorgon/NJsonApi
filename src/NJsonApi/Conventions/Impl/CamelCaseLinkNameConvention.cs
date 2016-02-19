@@ -4,7 +4,7 @@ using NJsonApi.Utils;
 
 namespace NJsonApi.Conventions.Impl
 {
-    public class CamelCaseLinkNameConvention : ILinkNameConvention
+    internal class CamelCaseLinkNameConvention : ILinkNameConvention
     {
         public virtual string GetLinkNameFromExpression<TResource, TLinkedResource>(Expression<Func<TResource, TLinkedResource>> propertyExpression)
         {

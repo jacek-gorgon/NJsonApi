@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NJsonApi.Serialization.Representations.Relationships
 {
-    public class Relationship : IRelationship
+    internal class Relationship : IRelationship
     {
         [JsonProperty(PropertyName = "links", NullValueHandling=NullValueHandling.Ignore)]
         public RelationshipLinks Links { get; set; }

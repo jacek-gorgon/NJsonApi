@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace NJsonApi.Conventions.Impl
 {
-    public class SimpleLinkedIdConvention : ILinkIdConvention
+    internal class SimpleLinkedIdConvention : ILinkIdConvention
     {
         public Expression<Func<TMain, object>> GetIdExpression<TMain, TLinkedResource>(Expression<Func<TMain, TLinkedResource>> linkedResourceExpression)
         {

@@ -10,7 +10,7 @@ namespace NJsonApi.Serialization.Documents
     /// <summary>
     /// Represents a compound document, the root JSON API object returned.
     /// </summary>
-    public class CompoundDocument : Document
+    internal class CompoundDocument : Document
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object"/> class.

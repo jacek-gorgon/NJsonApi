@@ -2,7 +2,7 @@
 
 namespace NJsonApi.Serialization
 {
-    public interface IUrlBuilder
+    internal interface IUrlBuilder
     {
         string GetFullyQualifiedUrl(Context context, string urlTemplate);
     }
