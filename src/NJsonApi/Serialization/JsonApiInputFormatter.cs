@@ -11,7 +11,6 @@ namespace NJsonApi.Serialization
 {
     internal class JsonApiInputFormatter : InputFormatter
     {
-        public readonly MediaTypeHeaderValue DefaultJsonApiMimeType = new MediaTypeHeaderValue("application/vnd.api+json");
         private readonly JsonSerializer jsonSerializer;
         private readonly Configuration configuration;
         private readonly JsonApiTransformer jsonApiTransformer;
@@ -21,7 +20,9 @@ namespace NJsonApi.Serialization
             this.jsonSerializer = jsonSerializer;
             this.configuration = configuration;
             this.jsonApiTransformer = jsonApiTransformer;
-            SupportedMediaTypes.Add(DefaultJsonApiMimeType);
+
+            SupportedMediaTypes.Clear();
+            SupportedMediaTypes.Add(configuration.DefaultJsonApiMediaType);
         }
 
         public override Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context)

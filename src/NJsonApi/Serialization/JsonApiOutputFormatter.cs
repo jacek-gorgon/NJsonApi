@@ -9,11 +9,10 @@ namespace NJsonApi.Serialization
 {
     public class JsonApiOutputFormatter : JsonOutputFormatter
     {
-        public JsonApiOutputFormatter()
-            :base()
+        public JsonApiOutputFormatter(Configuration configuration)
         {
             SupportedMediaTypes.Clear();
-            SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("application/vnd.api+json"));
+            SupportedMediaTypes.Add(configuration.DefaultJsonApiMediaType);
         }
     }
 }

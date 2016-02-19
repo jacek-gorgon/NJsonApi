@@ -33,8 +33,9 @@ namespace NJsonApi.Serialization.BadActionResultTransformers
 
         public static CompoundDocument Transform(IActionResult badActionResult)
         {
-
             return FindTransformer(badActionResult).Transform(badActionResult);
         }
+
+        
     }
 }

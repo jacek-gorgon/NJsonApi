@@ -16,6 +16,13 @@ namespace NJsonApi
         private readonly Dictionary<string, IResourceMapping> resourcesMappingsByResourceType = new Dictionary<string, IResourceMapping>();
         private readonly Dictionary<Type, IResourceMapping> resourcesMappingsByType = new Dictionary<Type, IResourceMapping>();
 
+        public Configuration()
+        {
+            DefaultJsonApiMediaType = new MediaTypeHeaderValue("application/vnd.api+json");
+        }
+
+        public MediaTypeHeaderValue DefaultJsonApiMediaType { get; private set; }
+
         public void AddMapping(IResourceMapping resourceMapping)
         {
             resourcesMappingsByResourceType[resourceMapping.ResourceType] = resourceMapping;
@@ -51,7 +58,7 @@ namespace NJsonApi
                     {
                         options.Filters.Add(actionFilter);
                         options.Filters.Add(exceptionFilter);
-                        options.OutputFormatters.Insert(0, new JsonApiOutputFormatter());
+                        options.OutputFormatters.Insert(0, new JsonApiOutputFormatter(this));
                         options.InputFormatters.Insert(0, new JsonApiInputFormatter(serializer, this, transformer));
                     });
         }

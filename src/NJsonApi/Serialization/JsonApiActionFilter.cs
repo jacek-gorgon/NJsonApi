@@ -16,7 +16,6 @@ namespace NJsonApi.Serialization
         public bool AllowMultiple { get { return false; } }
         private readonly JsonApiTransformer jsonApiTransformer;
         private readonly Configuration configuration;
-        private readonly List<Type> errorTypes;
 
         public JsonApiActionFilter(JsonApiTransformer jsonApiTransformer, Configuration configuration)
         {
@@ -24,7 +23,13 @@ namespace NJsonApi.Serialization
             this.configuration = configuration;
         }
     
-        public void OnActionExecuting(ActionExecutingContext context) { }
+        public void OnActionExecuting(ActionExecutingContext context)
+        {
+            if (context.HttpContext.Request.ContentType != configuration.DefaultJsonApiMediaType.MediaType)
+            {
+                context.Result = new UnsupportedMediaTypeResult();
+            }
+        }
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
