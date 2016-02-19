@@ -74,7 +74,7 @@ namespace NJsonApi.Test.Serialization
         }
 
         [Fact]
-        public void GIVEN_Http_WHEN__THEN()
+        public void GIVEN_HttpNotFoundObjectResult_WHEN_ActionExecuted_THEN_ErrorValue()
         {
             // Arrange
             var actionFilter = GetActionFilterForTestModel();
@@ -91,6 +91,46 @@ namespace NJsonApi.Test.Serialization
             // Assert
             var result = (ObjectResult)context.Result;
             var value = (CompoundDocument)result.Value;
+
+            Assert.Equal(1, value.Errors.Count());
+        }
+
+
+        [Fact]
+        public void GIVEN_WrongMediaType_WHEN_ActionExecuting_THEN_ResponseSet()
+        {
+            // Arrange
+            string mediaType = null;
+
+            var actionFilter = GetActionFilterForTestModel();
+            var context = new FilterContextBuilder()
+                .WithMediaType(mediaType)
+                .BuildActionExecuting();
+
+            // Act
+            actionFilter.OnActionExecuting(context);
+
+            // Assert
+            var result = (UnsupportedMediaTypeResult)context.Result;
+            Assert.Equal(415, result.StatusCode);
+        }
+
+        [Fact]
+        public void GIVEN_CorrectMediaType_WHEN_ActionExecuting_THEN_ResponseNotSet()
+        {
+            // Arrange
+            string mediaType = "application/vnd.api+json";
+
+            var actionFilter = GetActionFilterForTestModel();
+            var context = new FilterContextBuilder()
+                .WithMediaType(mediaType)
+                .BuildActionExecuting();
+
+            // Act
+            actionFilter.OnActionExecuting(context);
+
+            // Assert
+            Assert.Null(context.Result);
         }
 
 

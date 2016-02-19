@@ -48,18 +48,7 @@ namespace NJsonApi.Test.Fakes
             }
         }
 
-        public override string ContentType
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override string ContentType { get; set; }
 
         public override IReadableStringCollection Cookies
         {

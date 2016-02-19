@@ -18,6 +18,7 @@ namespace NJsonApi.Test.Fakes
         public FakeHttpContext()
         {
             this.fakeRequest = new FakeHttpRequest(this);
+            this.fakeResponse = new FakeHttpResponse();
         }
 
         public void SetResponse(FakeHttpResponse response)

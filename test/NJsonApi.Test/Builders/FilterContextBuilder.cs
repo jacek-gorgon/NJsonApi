@@ -13,12 +13,13 @@ namespace NJsonApi.Test.Builders
     {
         private readonly ActionContext actionContext;
         private readonly FakeHttpContext fakeHttpContext;
-        private readonly ExceptionContext exceptionContext;
+        private readonly Dictionary<string, object> actionArguments;
         private IActionResult result;
         private Exception exception;
 
         public FilterContextBuilder()
         {
+            actionArguments = new Dictionary<string, object>();
             fakeHttpContext = new FakeHttpContext();
 
             this.actionContext = new ActionContext()
@@ -41,6 +42,12 @@ namespace NJsonApi.Test.Builders
             return this;
         }
 
+        public FilterContextBuilder WithMediaType(string mediaType)
+        {
+            this.actionContext.HttpContext.Request.ContentType = mediaType;
+            return this;
+        }
+
         public ActionExecutedContext BuildActionExecuted()
         {
             var actionExecutedContext = new ActionExecutedContext(
@@ -59,6 +66,13 @@ namespace NJsonApi.Test.Builders
             exceptionContext.Exception = exception;
 
             return exceptionContext;
+        }
+
+        public ActionExecutingContext BuildActionExecuting()
+        {
+            var actionExecutingContext = new ActionExecutingContext(
+                actionContext, new List<IFilterMetadata>(), actionArguments, new { });
+            return actionExecutingContext;
         }
     }
 }
