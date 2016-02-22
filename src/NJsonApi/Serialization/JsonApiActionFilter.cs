@@ -9,6 +9,7 @@ using Microsoft.AspNet.Mvc;
 using System.Collections.Generic;
 using NJsonApi.Serialization.BadActionResultTransformers;
 using Microsoft.Net.Http.Headers;
+using Microsoft.AspNet.Http;
 
 namespace NJsonApi.Serialization
 {
@@ -31,13 +32,9 @@ namespace NJsonApi.Serialization
                 context.Result = new UnsupportedMediaTypeResult();
             }
 
-            if (!string.IsNullOrEmpty(context.HttpContext.Request.Headers["Accept"]))
-            {
-                var acceptsHeaders = context.HttpContext.Request.Headers["Accept"].First();
-                if (!acceptsHeaders.Split(',').Any(x => x.Trim() == configuration.DefaultJsonApiMediaType.MediaType))
-                {
-                    context.Result = new HttpStatusCodeResult(406);
-                }
+            if (!ValidateAcceptHeader(context.HttpContext.Request.Headers))
+            { 
+                context.Result = new HttpStatusCodeResult(406);
             }
         }
 
@@ -63,5 +60,23 @@ namespace NJsonApi.Serialization
             var responseResult = (ObjectResult)context.Result;
             responseResult.Value = jsonApiTransformer.Transform(responseResult.Value, jsonApiContext);
         }
+
+        private bool ValidateAcceptHeader(IHeaderDictionary headers)
+        {
+            var acceptsHeaders = headers["Accept"].FirstOrDefault();
+
+            if (string.IsNullOrEmpty(acceptsHeaders))
+            {
+                return true;
+            }
+
+            return acceptsHeaders
+                .Split(',')
+                .Select(x => x.Trim())
+                .Any(x => 
+                    x == "*/*" || 
+                    x == configuration.DefaultJsonApiMediaType.MediaType);
+        }
+        
     }
 }
