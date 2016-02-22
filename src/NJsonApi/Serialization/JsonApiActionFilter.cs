@@ -66,7 +66,9 @@ namespace NJsonApi.Serialization
 
         private string[] FindRelationshipPathsToInclude(HttpRequest request)
         {
-            return request.Query["include"].First().Split(',');
+            var result = request.Query["include"].FirstOrDefault();
+
+            return string.IsNullOrEmpty(result) ? new string[0] : result.Split(',');
         }
 
         private bool ValidateAcceptHeader(IHeaderDictionary headers)

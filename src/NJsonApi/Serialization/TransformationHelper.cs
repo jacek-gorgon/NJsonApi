@@ -34,17 +34,28 @@ namespace NJsonApi.Serialization
         {
             var includedList = new List<SingleResource>();
             var alreadyVisitedObjects = new HashSet<object>(primaryResourceList);
+            var path = string.Empty;
 
             foreach (var resource in primaryResourceList)
             {
                 includedList.AddRange(
-                    AppendIncludedRepresentationRecursive(resource, resourceMapping, alreadyVisitedObjects, context));
+                    AppendIncludedRepresentationRecursive(
+                        resource, 
+                        resourceMapping, 
+                        alreadyVisitedObjects, 
+                        context,
+                        path));
             }
 
             return includedList;
         }
 
-        private List<SingleResource> AppendIncludedRepresentationRecursive(object resource, IResourceMapping resourceMapping, HashSet<object> alreadyVisitedObjects, Context context)
+        private List<SingleResource> AppendIncludedRepresentationRecursive(
+            object resource, 
+            IResourceMapping resourceMapping, 
+            HashSet<object> alreadyVisitedObjects, 
+            Context context,
+            string parentPath)
         {
             var includedResources = new List<SingleResource>();
 
@@ -56,8 +67,23 @@ namespace NJsonApi.Serialization
                 }
 
                 var relatedResources = UnifyObjectsToList(relationship.RelatedResource(resource));
+                string relationshipPath = string.Empty;
+
+                if (string.IsNullOrEmpty(parentPath))
+                {
+                    relationshipPath = relationship.RelatedBaseResourceType;
+                }
+                else
+                {
+                    relationshipPath = $"{parentPath}.{relationship.RelatedBaseResourceType}";
+                }
+
+                if (!context.IncludedResources.Any(x => x.Contains(relationshipPath)))
+                {
+                    continue;
+                }
                 
-                foreach(var relatedResource in relatedResources)
+                foreach (var relatedResource in relatedResources)
                 {
                     if (alreadyVisitedObjects.Contains(relatedResource))
                     {
@@ -69,7 +95,7 @@ namespace NJsonApi.Serialization
                         CreateResourceRepresentation(relatedResource, relationship.ResourceMapping, context));
 
                     includedResources.AddRange(
-                        AppendIncludedRepresentationRecursive(relatedResource, relationship.ResourceMapping, alreadyVisitedObjects, context));
+                        AppendIncludedRepresentationRecursive(relatedResource, relationship.ResourceMapping, alreadyVisitedObjects, context, relationshipPath));
                 }
             }
 
