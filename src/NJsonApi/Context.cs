@@ -14,8 +14,17 @@ namespace NJsonApi
             RequestUri = requestUri;
         }
 
+        public Context(Configuration configuration, Uri requestUri, string[] includedResources)
+        {
+            Configuration = configuration;
+            RequestUri = requestUri;
+            IncludedResources = includedResources;
+        }
+
         public Configuration Configuration { get; private set; }
         public Uri RequestUri { get; private set; }
+        public string[] IncludedResources { get; set; }
+
         public string BaseUri {
             get
             {

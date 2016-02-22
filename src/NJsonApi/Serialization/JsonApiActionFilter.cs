@@ -56,9 +56,17 @@ namespace NJsonApi.Serialization
                 return;
             }
 
-            var jsonApiContext = new Context(configuration, new Uri(context.HttpContext.Request.GetDisplayUrl()));
+            var jsonApiContext = new Context(
+                configuration, 
+                new Uri(context.HttpContext.Request.GetDisplayUrl()),
+                FindRelationshipPathsToInclude(context.HttpContext.Request));
             var responseResult = (ObjectResult)context.Result;
             responseResult.Value = jsonApiTransformer.Transform(responseResult.Value, jsonApiContext);
+        }
+
+        private string[] FindRelationshipPathsToInclude(HttpRequest request)
+        {
+            return request.Query["include"].First().Split(',');
         }
 
         private bool ValidateAcceptHeader(IHeaderDictionary headers)
