@@ -8,6 +8,7 @@ using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Representations;
 using System.Collections.Generic;
 using Microsoft.AspNet.Mvc;
+using NJsonApi.Utils;
 
 namespace NJsonApi.Serialization
 {
@@ -50,7 +51,7 @@ namespace NJsonApi.Serialization
 
         public CompoundDocument Transform(object objectGraph, Context context)
         {
-            Type innerObjectType = transformationHelper.GetObjectType(objectGraph);
+            Type innerObjectType = Reflection.GetObjectType(objectGraph);
 
             transformationHelper.VerifyTypeSupport(innerObjectType);
             transformationHelper.AssureAllMappingsRegistered(innerObjectType, context.Configuration);

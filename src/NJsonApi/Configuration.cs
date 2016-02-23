@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNet.Mvc.Formatters;
 using System.Reflection;
 using Microsoft.Net.Http.Headers;
+using NJsonApi.Utils;
+using NJsonApi.Exceptions;
 
 namespace NJsonApi
 {
@@ -46,6 +48,11 @@ namespace NJsonApi
             return mapping;
         }
 
+        public IResourceMapping GetMapping(object objectGraph)
+        {
+            return GetMapping(Reflection.GetObjectType(objectGraph));
+        }
+
         public void Apply(IServiceCollection services)
         {
             var serializer = GetJsonSerializer();
@@ -61,6 +68,16 @@ namespace NJsonApi
                         options.OutputFormatters.Insert(0, new JsonApiOutputFormatter(this));
                         options.InputFormatters.Insert(0, new JsonApiInputFormatter(serializer, this, transformer));
                     });
+        }
+
+        public bool ValidateIncludedRelationshipPaths(string[] includedPaths, object objectGraph)
+        {
+            var mapping = GetMapping(objectGraph);
+            if (mapping == null)
+            {
+                throw new MissingMappingException(Reflection.GetObjectType(objectGraph));
+            }
+            return mapping.ValidateIncludedRelationshipPaths(includedPaths);
         }
 
         private static JsonSerializer GetJsonSerializer()

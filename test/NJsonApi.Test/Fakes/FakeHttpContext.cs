@@ -84,6 +84,11 @@ namespace NJsonApi.Test.Fakes
             }
         }
 
+        internal void AddQuery(string key, string value)
+        {
+            this.fakeRequest.AddQuery(key, value);
+        }
+
         public override CancellationToken RequestAborted
         {
             get

@@ -149,22 +149,6 @@ namespace NJsonApi.Serialization
             return null;
         }
 
-        public Type GetObjectType(object objectGraph)
-        {
-            Type objectType = objectGraph.GetType();
-            if (objectGraph is IMetaDataWrapper)
-            {
-                objectType = objectGraph.GetType().GetGenericArguments()[0];
-            }
-
-            if (typeof(IEnumerable).IsAssignableFrom(objectType) && objectType.GetTypeInfo().IsGenericType)
-            {
-                objectType = objectType.GetGenericArguments()[0];
-            }
-
-            return objectType;
-        }
-
         public SingleResource CreateResourceRepresentation(object objectGraph, IResourceMapping resourceMapping, Context context)
         {
             var urlBuilder = new UrlBuilder();

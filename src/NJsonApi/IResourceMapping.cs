@@ -15,6 +15,7 @@ namespace NJsonApi
         Dictionary<string, Func<object, object>> PropertyGetters { get; set; }
         Dictionary<string, Action<object, object>> PropertySetters { get; }
         Dictionary<string, Expression<Action<object, object>>> PropertySettersExpressions { get; }
+        bool ValidateIncludedRelationshipPaths(string[] includedPaths);
 
     }
 }

@@ -10,6 +10,7 @@ namespace NJsonApi
     {
         public Context(Configuration configuration, Uri requestUri)
         {
+            IncludedResources = new string[0];
             Configuration = configuration;
             RequestUri = requestUri;
         }

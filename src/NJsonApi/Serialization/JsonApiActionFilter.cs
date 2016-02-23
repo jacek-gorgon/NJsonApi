@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNet.Http.Extensions;
 using Microsoft.AspNet.Mvc.Filters;
 using Microsoft.AspNet.Mvc;
-using System.Collections.Generic;
 using NJsonApi.Serialization.BadActionResultTransformers;
-using Microsoft.Net.Http.Headers;
 using Microsoft.AspNet.Http;
+using NJsonApi.Utils;
 
 namespace NJsonApi.Serialization
 {
@@ -56,11 +52,19 @@ namespace NJsonApi.Serialization
                 return;
             }
 
+            var responseResult = (ObjectResult)context.Result;
+            var relationshipPaths = FindRelationshipPathsToInclude(context.HttpContext.Request);
+
+            if (!configuration.ValidateIncludedRelationshipPaths(relationshipPaths, responseResult.Value))
+            {
+                context.Result = new HttpStatusCodeResult(400);
+                return;
+            }
+
             var jsonApiContext = new Context(
                 configuration, 
                 new Uri(context.HttpContext.Request.GetDisplayUrl()),
-                FindRelationshipPathsToInclude(context.HttpContext.Request));
-            var responseResult = (ObjectResult)context.Result;
+                relationshipPaths);
             responseResult.Value = jsonApiTransformer.Transform(responseResult.Value, jsonApiContext);
         }
 
@@ -86,7 +90,6 @@ namespace NJsonApi.Serialization
                 .Any(x => 
                     x == "*/*" || 
                     x == configuration.DefaultJsonApiMediaType.MediaType);
-        }
-        
+        }       
     }
 }

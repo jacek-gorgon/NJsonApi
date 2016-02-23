@@ -1,16 +1,9 @@
-﻿using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Filters;
+﻿using Microsoft.AspNet.Mvc;
 using NJsonApi.Serialization;
 using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Representations.Resources;
 using NJsonApi.Test.Builders;
-using NJsonApi.Test.Fakes;
-using NJsonApi.Test.TestModel;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace NJsonApi.Test.Serialization
@@ -217,7 +210,7 @@ namespace NJsonApi.Test.Serialization
         }
 
         [Fact]
-        public void GIVEN_MutlipleAccept_AND_AllAreWrong_WHEN_ActionExecuting_THEN_ResponseIsNull()
+        public void GIVEN_MutlipleAccept_AND_AllAreWrong_WHEN_ActionExecuting_THEN_406Unacceptable()
         {
             // Arrange
             string acceptsHeader = "application/xml, application/vnd.api+json; version=1.0, application/json";
@@ -237,12 +230,113 @@ namespace NJsonApi.Test.Serialization
             Assert.Equal(406, result.StatusCode);
         }
 
+        [Fact]
+        public void GIVEN_WildcardAccept_WHEN_ActionExecuting_THEN_ResponseIsNull()
+        {
+            // Arrange
+            string acceptsHeader = "*/*";
+            string contentType = "application/vnd.api+json";
+
+            var actionFilter = GetActionFilterForTestModel();
+            var context = new FilterContextBuilder()
+                .WithContentType(contentType)
+                .WithHeader("Accept", acceptsHeader)
+                .BuildActionExecuting();
+
+            // Act
+            actionFilter.OnActionExecuting(context);
+
+            // Assert
+            Assert.Null(context.Result);
+        }
+
+        [Theory]
+        [InlineData("singlenonsensepath")]
+        [InlineData("double.nonsensepath")]
+        [InlineData("post.nonsense")]
+        [InlineData("nonsense.comment")]
+        public void GIVEN_IncludesAreNotApplicable_WHEN_ActionExecuted_THEN_400BadRequest(string includePath)
+        {
+            // Arrange
+            var post = new PostBuilder()
+                .WithAuthor(PostBuilder.Asimov)
+                .Build();
+
+            var actionFilter = GetActionFilterForTestModel();
+            var context = new FilterContextBuilder()
+                .WithResult(new ObjectResult(post))
+                .WithQuery("include", includePath)
+                .BuildActionExecuted();
+
+            // Act
+            actionFilter.OnActionExecuted(context);
+
+            // Assert
+            var result = (HttpStatusCodeResult)context.Result;
+            Assert.Equal(400, result.StatusCode);
+        }
+
+        [Fact]
+        public void GIVEN_SingleInclude_WHEN_ActionExecuted_THEN_RelatedIncludePresent()
+        {
+            // Arrange
+            var post = new PostBuilder()
+                .WithAuthor(PostBuilder.Asimov)
+                .Build();
+
+            var actionFilter = GetActionFilterForTestModel();
+            var context = new FilterContextBuilder()
+                .WithResult(new ObjectResult(post))
+                .WithQuery("include", "authors")
+                .BuildActionExecuted();
+
+            // Act
+            actionFilter.OnActionExecuted(context);
+
+            // Assert
+            var result = (ObjectResult)context.Result;
+            var document = (CompoundDocument)result.Value;
+
+            Assert.Equal(PostBuilder.Asimov.Name, document.Included.Single().Attributes["name"]);
+        }
+
+        [Fact]
+        public void GIVEN_MultipleInclude_WHEN_ActionExecuted_THEN_AllIncludesPresent()
+        {
+            // Arrange
+            var post = new PostBuilder()
+                .WithAuthor(PostBuilder.Asimov)
+                .WithComment(1, "First")
+                .Build();
+
+            var actionFilter = GetActionFilterForTestModel();
+            var context = new FilterContextBuilder()
+                .WithResult(new ObjectResult(post))
+                .WithQuery("include", "authors,comments")
+                .BuildActionExecuted();
+
+            // Act
+            actionFilter.OnActionExecuted(context);
+
+            // Assert
+            var result = (ObjectResult)context.Result;
+            var document = (CompoundDocument)result.Value;
+            var includedAttributes = document.Included.SelectMany(x => x.Attributes).ToList();
+
+            Assert.Contains(includedAttributes, x =>
+                x.Key == "name" &&
+                x.Value.ToString() == PostBuilder.Asimov.Name);
+
+            Assert.Contains(includedAttributes, x =>
+                x.Key == "body" &&
+                x.Value.ToString() == "First");
+        }
+
         private JsonApiActionFilter GetActionFilterForTestModel()
         {
             var config = TestModelConfigurationBuilder.BuilderForEverything.Build();
             var transformer = new JsonApiTransformer();
             return new JsonApiActionFilter(transformer, config);
         }
-
     }
 }

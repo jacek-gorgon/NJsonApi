@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
 using Microsoft.AspNet.Http.Internal;
+using Microsoft.Extensions.Primitives;
 
 namespace NJsonApi.Test.Fakes
 {
@@ -13,6 +14,7 @@ namespace NJsonApi.Test.Fakes
     {
         private readonly FakeHttpContext fakeHttpContext;
         private readonly HeaderDictionary headerDictionary = new HeaderDictionary();
+        private readonly Dictionary<string, StringValues> queryStrings = new Dictionary<string, StringValues>();
 
         public FakeHttpRequest(FakeHttpContext context)
         {
@@ -22,6 +24,7 @@ namespace NJsonApi.Test.Fakes
             this.Host = new HostString("localhost");
             this.PathBase = new PathString("");
             this.Path = new PathString("/api/fake");
+            this.Query = new ReadableStringCollection(queryStrings);
         }
 
         public override Stream Body
@@ -130,18 +133,7 @@ namespace NJsonApi.Test.Fakes
             }
         }
 
-        public override IReadableStringCollection Query
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override IReadableStringCollection Query { get; set; }
 
         public override QueryString QueryString { get; set; }
         
@@ -151,6 +143,11 @@ namespace NJsonApi.Test.Fakes
         public override Task<IFormCollection> ReadFormAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
+        }
+
+        public void AddQuery(string key, string value)
+        {
+            this.queryStrings.Add(key, value);
         }
     }
 }

@@ -31,7 +31,10 @@ namespace NJsonApi.Test.Serialization
             var config = TestModelConfigurationBuilder.BuilderForEverything.Build();
 
             var mapping = config.GetMapping(typeof(Post));
-            var context = new Context(config, new Uri("http://dummy:4242/posts"));
+            var context = new Context(
+                config, 
+                new Uri("http://dummy:4242/posts"),
+                new string[] { "authors.comments" });
 
             var transformationHelper = new TransformationHelper();
 
@@ -68,7 +71,10 @@ namespace NJsonApi.Test.Serialization
             var config = TestModelConfigurationBuilder.BuilderForEverything.Build();
 
             var mapping = config.GetMapping(typeof(Post));
-            var context = new Context(config, new Uri("http://dummy:4242/posts"));
+            var context = new Context(
+                config, 
+                new Uri("http://dummy:4242/posts"),
+                new string[] { "authors.comments" });
 
             var transformationHelper = new TransformationHelper();
 

@@ -54,6 +54,12 @@ namespace NJsonApi.Test.Builders
             return this;
         }
 
+        public FilterContextBuilder WithQuery(string key, string value)
+        {
+            this.fakeHttpContext.AddQuery(key, value);
+            return this;
+        }
+
         public ActionExecutedContext BuildActionExecuted()
         {
             var actionExecutedContext = new ActionExecutedContext(

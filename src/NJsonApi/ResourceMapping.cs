@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NJsonApi.Utils;
+using System.Linq;
 
 namespace NJsonApi
 {
@@ -47,6 +48,25 @@ namespace NJsonApi
 
             PropertySettersExpressions.Add(key, convertedExpression);
             PropertySetters.Add(key, convertedExpression.Compile());
+        }
+
+        public bool ValidateIncludedRelationshipPaths(string[] includedPaths)
+        {
+            foreach (var relationshipPath in includedPaths)
+            {
+                IResourceMapping currentMapping = this;
+
+                var parts = relationshipPath.Split('.');
+                foreach (var part in parts)
+                {
+                    var relationship = currentMapping.Relationships.SingleOrDefault(x => x.RelatedBaseResourceType == part);
+                    if (relationship == null)
+                        return false;
+
+                    currentMapping = relationship.ResourceMapping;
+                }
+            }
+            return true;
         }
     }
 }
