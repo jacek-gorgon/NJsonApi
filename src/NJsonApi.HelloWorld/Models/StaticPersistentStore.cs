@@ -9,11 +9,50 @@ namespace NJsonApi.HelloWorld.Models
     /// </summary>
     public static class StaticPersistentStore
     {
-        public static List<World> Worlds { get; set; }
-        public static List<Continent> Continents { get; set; }
-        public static List<Country> Countries { get;set;}
+        private static int currentId { get; set; }
 
+        public static List<Article> Articles { get; set; }
 
+        public static List<Person> People { get; set; }
+
+        public static List<Comment> Comments { get; set; }
+
+        static StaticPersistentStore()
+        {
+            currentId = 1;
+
+            Articles = new List<Article>();
+            People = new List<Person>();
+            Comments = new List<Comment>();
+
+            var article1 = new Article("JSON API paints my bikeshed!");
+            var article2 = new Article("JSON API makes the tea!");
+
+            var person1 = new Person("Dan", "Gebhardt", "dgeb");
+            var person2 = new Person("Rob", "Lang", "brainwipe");
+
+            var comment1 = new Comment("First!");
+            var comment2 = new Comment("I like XML Better");
+
+            article1.Author = person1;
+            article1.Comments.Add(comment1);
+            article1.Comments.Add(comment2);
+            Articles.Add(article1);
+
+            article2.Author = person2;
+            Articles.Add(article2);
+
+            People.Add(person1);
+            People.Add(person2);
+
+            comment1.Author = person1;
+            comment2.Author = person2;
+
+            Comments.Add(comment1);
+            Comments.Add(comment2);
+        }
+
+        /*
         static StaticPersistentStore()
         {
             var w = new World
@@ -108,16 +147,11 @@ namespace NJsonApi.HelloWorld.Models
             Worlds = new List<World> { w };
             Continents = new List<Continent> { c1, c2, c3 };
             Countries = new List<Country> { co1, co2, co3, co4, co5, co6 };
-        }
-
-        public static bool HasWorld(int id)
-        {
-            return Worlds.Any(x => x.Id == id);
-        }
+        }*/
 
         public static int GetNextId()
         {
-            return Worlds.Max(w => w.Id) + 1;
+            return currentId++;
         }
     }
 }

@@ -1,158 +1,204 @@
 # NJsonApi
-The .NET server implementation of the {**json:api**} standard running on .NET Core 1.0 (DNX/vNext/OWIN).
+The .NET server implementation of the {**json:api**} standard running on .NET Core 1.0 (aka ASP.NET 5, MVC 6, DNX/vNext/OWIN).
 
 > This library is not a complete implementation of the JSONApi 1.0 specification and is under heavy development.
 
 ## History
-Spawned as an internal project used in production environment, the package is now available in the open thanks to courtesy of [**SocialCee**](http://socialcee.com)! Further development, including updating to {**json:api**} 1.0 will take place here.
+Originally courtesy of [**SocialCee**](http://socialcee.com) and forked from the work done by https://github.com/jacek-gorgon/NJsonApi
 
-Forked from the work done by https://github.com/jacek-gorgon/NJsonApi
+## How to use
+There is currently no nuget package. You will need to download the code and build the NJsonApi.sln yourself, the nuget package is not part of this branch. 
 
-## Quick start
-You will need to download the code and build the NJsonApi.sln yourself, the nuget package is not part of this branch.
+A HelloWorld project (running ASP.NET Core 1.0) implements the sample below.
 
-... given the two POCOs:
+Unit tests are written using xUnit.
+
+## Example
+Using the same entities found on the [JSONApi homepage](http://jsonapi.org/). 
+
 ```cs
-    public class World
+    public class Article
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public List<Continent> Continents { get; set; }
+        public string Title { get; set; }
+        public List<Person> Author { get; set; }
+        public List<Comment> Comments { get; set}
     }
 
-	public class Continent
+	  public class Person
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public World World { get; set; }
-        public int WorldId { get; set; }
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
+        public string Twitter { get; set; }
     }
+
+    public class Comment
+    {
+        public int Id { get; set; }
+        public string Body { get; set; }
+    }
+
 ```
 
-... and the **NJsonApi** mapping and bootstrapping:
+During Startup, the entities are registered with the `ConfigurationBuilder` to build a Configuration. This is done in the ASP.NET Core method: `ConfigureServices(IServiceCollection services)`.
+
 ```cs
 	var configBuilder = new ConfigurationBuilder();
 
 	configBuilder
-		.Resource<World>()
+		.Resource<Article>()
 		.WithAllProperties()
-		.WithLinkTemplate("/worlds/{id}");
+		.WithLinkTemplate("/articles/{id}");
 
 	configBuilder
-		.Resource<Continent>()
+		.Resource<Person>()
 		.WithAllProperties()
-		.WithLinkTemplate("/continents/{id}");
+		.WithLinkTemplate("/authors/{id}");
+
+  configBuilder
+    .Resource<Comment>()
+    .WithAllProperties()
+    .WithLinkTemplate("/comments/{id}");
 
 	var nJsonApiConfig = configBuilder.Build();
 	nJsonApiConfig.Apply(httpConfiguration);
 ```
 
-... a standard Web API controller method:
+The Controller method requires no additional attributes or markup:
+
 ```cs
-	[HttpGet, Route]
-	public IEnumerable<World> Get()
+	[Route("[controller]")]
+	public IEnumerable<Article> Get()
 	{
-		return new List<World>() { ... };
+		return new List<Article>() { ... };
 	}
 ```
 
-... starts returning the {**json:api**} compliant JSON:
+A GET request to `localhost:5000/articles/1?include=comments.author` with header `application/vnd.api+json` gives the compound document:
+
 ```json
 {
-  "data": {
-    "id": "1",
-    "type": "worlds",
-    "attributes": {
-      "name": "Hello"
-    },
-    "relationships": {
-      "continents": {
-        "data": [
-          {
-            "id": "1",
-            "type": "continents"
-          },
-          {
-            "id": "2",
-            "type": "continents"
-          },
-          {
-            "id": "3",
-            "type": "continents"
-          }
-        ],
-        "meta": {
-          "count": "3"
-        }
-      }
-    },
-    "links": {
-      "self": "http://localhost:56827/worlds/1"
-    }
-  },
-  "included": [
+  "data": [
     {
       "id": "1",
-      "type": "continents",
+      "type": "articles",
       "attributes": {
-        "name": "Hello Europe",
-        "worldId": 1
+        "title": "JSON API paints my bikeshed!"
       },
       "relationships": {
-        "world": {
+        "author": {
           "data": {
-            "id": "1",
-            "type": "worlds"
+            "id": "3",
+            "type": "people"
+          }
+        },
+        "comments": {
+          "data": [
+            {
+              "id": "5",
+              "type": "comments"
+            },
+            {
+              "id": "6",
+              "type": "comments"
+            }
+          ],
+          "meta": {
+            "count": "2"
           }
         }
       },
       "links": {
-        "self": "http://localhost:56827/continents/1"
+        "self": "http://localhost:5000/articles/1"
       }
     },
     {
       "id": "2",
-      "type": "continents",
+      "type": "articles",
       "attributes": {
-        "name": "Hello America",
-        "worldId": 1
+        "title": "JSON API makes the tea!"
       },
       "relationships": {
-        "world": {
+        "author": {
           "data": {
-            "id": "1",
-            "type": "worlds"
+            "id": "4",
+            "type": "people"
+          }
+        },
+        "comments": {
+          "data": [],
+          "meta": {
+            "count": "0"
           }
         }
       },
       "links": {
-        "self": "http://localhost:56827/continents/2"
+        "self": "http://localhost:5000/articles/2"
+      }
+    }
+  ],
+  "included": [
+    {
+      "id": "3",
+      "type": "people",
+      "attributes": {
+        "firstName": "Dan",
+        "lastName": "Gebhardt",
+        "twitter": "dgeb"
+      },
+      "links": {
+        "self": "http://localhost:5000/people/3"
       }
     },
     {
-      "id": "3",
-      "type": "continents",
+      "id": "5",
+      "type": "comments",
       "attributes": {
-        "name": "Hello Asia",
-        "worldId": 1
+        "body": "First!"
       },
       "relationships": {
-        "world": {
+        "author": {
           "data": {
-            "id": "1",
-            "type": "worlds"
+            "id": "3",
+            "type": "people"
           }
         }
       },
       "links": {
-        "self": "http://localhost:56827/continents/3"
+        "self": "http://localhost:5000/comments/5"
+      }
+    },
+    {
+      "id": "6",
+      "type": "comments",
+      "attributes": {
+        "body": "I like XML Better"
+      },
+      "relationships": {
+        "author": {
+          "data": {
+            "id": "4",
+            "type": "people"
+          }
+        }
+      },
+      "links": {
+        "self": "http://localhost:5000/comments/6"
+      }
+    },
+    {
+      "id": "4",
+      "type": "people",
+      "attributes": {
+        "firstName": "Rob",
+        "lastName": "Lang",
+        "twitter": "brainwipe"
+      },
+      "links": {
+        "self": "http://localhost:5000/people/4"
       }
     }
   ]
 }
 ```
-
-## Sample projects included
-NJsonApi runs in .Net Core 1.0 (also known as DNX, ASP.NET 5, dnxcore50). This makes NJsonApi Linux/OSX ready.
-
-Use a browser and explore the related resource thanks to HATEOAS or run Fiddler and load the included session file for a full test bench.

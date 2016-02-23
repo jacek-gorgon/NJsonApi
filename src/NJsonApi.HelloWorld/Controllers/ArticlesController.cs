@@ -7,19 +7,19 @@ using System.Threading.Tasks;
 
 namespace NJsonApi.HelloWorld.Controllers
 {
-    [Route("api/[controller]")]
-    public class CountriesController : Controller
+    [Route("[controller]")]
+    public class ArticlesController : Controller
     {
         [HttpGet]
-        public IEnumerable<Country> Get()
+        public IEnumerable<Article> Get()
         {
-            return StaticPersistentStore.Countries;
+            return StaticPersistentStore.Articles;
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            return new ObjectResult(StaticPersistentStore.Countries.Single(c => c.Id == id));
+            return new ObjectResult(StaticPersistentStore.Articles.Single(w => w.Id == id));
         }
     }
 }

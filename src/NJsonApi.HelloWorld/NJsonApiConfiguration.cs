@@ -9,20 +9,20 @@ namespace NJsonApi.HelloWorld
             var configBuilder = new ConfigurationBuilder();
 
             configBuilder
-                .Resource<World>()
+                .Resource<Article>()
                 .WithAllProperties()
-                .WithLinkTemplate("api/worlds/{id}");
+                .WithLinkTemplate("articles/{id}");
 
             configBuilder
-                .Resource<Continent>()
+                .Resource<Person>()
                 .WithAllProperties()
-                .WithLinkTemplate("api/continents/{id}");
+                .WithLinkTemplate("people/{id}");
 
             configBuilder
-                .Resource<Country>()
+                .Resource<Comment>()
                 .WithAllProperties()
-                .WithLinkTemplate("api/countries/{id}");
-
+                .WithLinkTemplate("comments/{id}");
+            
             var nJsonApiConfig = configBuilder.Build();
             return nJsonApiConfig;
         }
