@@ -1,7 +1,7 @@
 ﻿using NJsonApi.Serialization.Representations;
 using Microsoft.AspNet.Mvc;
 
-namespace NJsonApi.Serialization.BadActionResultTransformers
+namespace NJsonApi.Web.BadActionResultTransformers
 {
     internal class TransformHttpNotFoundResult : BaseTransformBadAction<HttpNotFoundResult>
     {

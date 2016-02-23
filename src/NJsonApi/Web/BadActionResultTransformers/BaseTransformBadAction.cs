@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NJsonApi.Serialization.BadActionResultTransformers
+namespace NJsonApi.Web.BadActionResultTransformers
 {
     internal abstract class BaseTransformBadAction<T> : ICanTransformBadActions
         where T : class, IActionResult

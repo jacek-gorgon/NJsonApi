@@ -3,11 +3,11 @@ using System.Linq;
 using Microsoft.AspNet.Http.Extensions;
 using Microsoft.AspNet.Mvc.Filters;
 using Microsoft.AspNet.Mvc;
-using NJsonApi.Serialization.BadActionResultTransformers;
+using NJsonApi.Web.BadActionResultTransformers;
 using Microsoft.AspNet.Http;
-using NJsonApi.Utils;
+using NJsonApi.Serialization;
 
-namespace NJsonApi.Serialization
+namespace NJsonApi.Web
 {
     internal class JsonApiActionFilter : IActionFilter
     {

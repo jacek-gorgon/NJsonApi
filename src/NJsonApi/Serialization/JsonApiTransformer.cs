@@ -7,7 +7,6 @@ using NJsonApi.Infrastructure;
 using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Representations;
 using System.Collections.Generic;
-using Microsoft.AspNet.Mvc;
 using NJsonApi.Utils;
 
 namespace NJsonApi.Serialization

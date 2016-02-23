@@ -3,6 +3,7 @@ using NJsonApi.Serialization;
 using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Representations.Resources;
 using NJsonApi.Test.Builders;
+using NJsonApi.Web;
 using System.Linq;
 using Xunit;
 

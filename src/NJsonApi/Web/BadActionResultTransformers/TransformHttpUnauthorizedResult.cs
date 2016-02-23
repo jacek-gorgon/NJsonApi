@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNet.Mvc;
 using NJsonApi.Serialization.Representations;
 
-namespace NJsonApi.Serialization.BadActionResultTransformers
+namespace NJsonApi.Web.BadActionResultTransformers
 {
     internal class TransformHttpUnauthorizedResult : BaseTransformBadAction<HttpUnauthorizedResult>
     {

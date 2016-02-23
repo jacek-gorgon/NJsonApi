@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNet.Mvc;
 using NJsonApi.Serialization.Documents;
 
-namespace NJsonApi.Serialization.BadActionResultTransformers
+namespace NJsonApi.Web.BadActionResultTransformers
 {
     internal interface ICanTransformBadActions
     {

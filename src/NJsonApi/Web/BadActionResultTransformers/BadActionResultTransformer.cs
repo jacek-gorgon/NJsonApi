@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNet.Mvc;
 using NJsonApi.Serialization.Documents;
-using NJsonApi.Serialization.Representations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NJsonApi.Serialization.BadActionResultTransformers
+namespace NJsonApi.Web.BadActionResultTransformers
 {
     internal static class BadActionResultTransformer
     {

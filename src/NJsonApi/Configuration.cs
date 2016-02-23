@@ -10,6 +10,7 @@ using System.Reflection;
 using Microsoft.Net.Http.Headers;
 using NJsonApi.Utils;
 using NJsonApi.Exceptions;
+using NJsonApi.Web;
 
 namespace NJsonApi
 {

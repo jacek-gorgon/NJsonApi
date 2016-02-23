@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNet.Mvc;
-using NJsonApi.Serialization.BadActionResultTransformers;
+using NJsonApi.Web.BadActionResultTransformers;
 using NJsonApi.Test.TestModel;
 using System;
 using System.Collections.Generic;
