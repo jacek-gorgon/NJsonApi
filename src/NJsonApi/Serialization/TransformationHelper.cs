@@ -16,7 +16,6 @@ namespace NJsonApi.Serialization
 {
     internal class TransformationHelper
     {
-        public const int RecursionDepthLimit = 10;
         private const string IdPlaceholder = "{id}";
         private const string ParentIdPlaceholder = "{parentId}";
         private const string RelatedIdPlaceholder = "{relatedId}";
@@ -34,7 +33,6 @@ namespace NJsonApi.Serialization
         {
             var includedList = new List<SingleResource>();
             var alreadyVisitedObjects = new HashSet<object>(primaryResourceList);
-            var path = string.Empty;
 
             foreach (var resource in primaryResourceList)
             {
@@ -43,8 +41,7 @@ namespace NJsonApi.Serialization
                         resource, 
                         resourceMapping, 
                         alreadyVisitedObjects, 
-                        context,
-                        path));
+                        context));
             }
 
             return includedList;
@@ -55,7 +52,7 @@ namespace NJsonApi.Serialization
             IResourceMapping resourceMapping, 
             HashSet<object> alreadyVisitedObjects, 
             Context context,
-            string parentPath)
+            string parentRelationshipPath = "")
         {
             var includedResources = new List<SingleResource>();
 
@@ -67,16 +64,7 @@ namespace NJsonApi.Serialization
                 }
 
                 var relatedResources = UnifyObjectsToList(relationship.RelatedResource(resource));
-                string relationshipPath = string.Empty;
-
-                if (string.IsNullOrEmpty(parentPath))
-                {
-                    relationshipPath = relationship.RelatedBaseResourceType;
-                }
-                else
-                {
-                    relationshipPath = $"{parentPath}.{relationship.RelatedBaseResourceType}";
-                }
+                string relationshipPath = BuildRelationshipPath(parentRelationshipPath, relationship);
 
                 if (!context.IncludedResources.Any(x => x.Contains(relationshipPath)))
                 {
@@ -102,6 +90,18 @@ namespace NJsonApi.Serialization
             return includedResources;
         }
         
+        private string BuildRelationshipPath(string parentRelationshipPath, IRelationshipMapping relationship)
+        { 
+            if (string.IsNullOrEmpty(parentRelationshipPath))
+            {
+                return relationship.RelatedBaseResourceType;
+            }
+            else
+            {
+                return $"{parentRelationshipPath}.{relationship.RelatedBaseResourceType}";
+            }
+        }
+
         public List<object> UnifyObjectsToList(object nestedObject)
         {
             var list = new List<object>();
