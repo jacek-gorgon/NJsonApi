@@ -14,7 +14,7 @@ using NJsonApi.Web;
 
 namespace NJsonApi
 {
-    public class Configuration
+    public class Configuration : IConfiguration
     {
         private readonly Dictionary<string, IResourceMapping> resourcesMappingsByResourceType = new Dictionary<string, IResourceMapping>();
         private readonly Dictionary<Type, IResourceMapping> resourcesMappingsByType = new Dictionary<Type, IResourceMapping>();
@@ -58,17 +58,18 @@ namespace NJsonApi
         {
             var serializer = GetJsonSerializer();
             var transformer = new JsonApiTransformer(serializer);
-            var actionFilter = new JsonApiActionFilter(transformer, this);
-            var exceptionFilter = new JsonApiExceptionFilter(transformer);
 
             services.AddMvc(
                 options =>
                     {
-                        options.Filters.Add(actionFilter);
-                        options.Filters.Add(exceptionFilter);
+                        options.Filters.Add(typeof(JsonApiActionFilter));
+                        options.Filters.Add(typeof(JsonApiExceptionFilter));
                         options.OutputFormatters.Insert(0, new JsonApiOutputFormatter(this));
                         options.InputFormatters.Insert(0, new JsonApiInputFormatter(serializer, this, transformer));
                     });
+
+            services.AddSingleton<IJsonApiTransformer, JsonApiTransformer>();
+            services.AddInstance<IConfiguration>(this);
         }
 
         public bool ValidateIncludedRelationshipPaths(string[] includedPaths, object objectGraph)

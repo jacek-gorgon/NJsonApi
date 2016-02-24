@@ -273,7 +273,7 @@ namespace NJsonApi.Serialization
             return relationships.Any() ? relationships : null;
         }
 
-        public void AssureAllMappingsRegistered(Type type, Configuration config)
+        public void AssureAllMappingsRegistered(Type type, IConfiguration config)
         {
             if (!config.IsMappingRegistered(type))
             {

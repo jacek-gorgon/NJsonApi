@@ -10,9 +10,9 @@ namespace NJsonApi.Web
 {
     internal class JsonApiExceptionFilter : ExceptionFilterAttribute
     {
-        private readonly JsonApiTransformer jsonApiTransformer;
+        private readonly IJsonApiTransformer jsonApiTransformer;
 
-        public JsonApiExceptionFilter(JsonApiTransformer jsonApiTransformer)
+        public JsonApiExceptionFilter(IJsonApiTransformer jsonApiTransformer)
         {
             this.jsonApiTransformer = jsonApiTransformer;
         }

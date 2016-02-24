@@ -7,14 +7,8 @@ using NJsonApi.Serialization.Representations.Resources;
 
 namespace NJsonApi.Serialization.Documents
 {
-    /// <summary>
-    /// Represents a compound document, the root JSON API object returned.
-    /// </summary>
-    internal class CompoundDocument : Document
+    internal class CompoundDocument
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:System.Object"/> class.
-        /// </summary>
         public CompoundDocument()
         {
         }
@@ -31,21 +25,10 @@ namespace NJsonApi.Serialization.Documents
         [JsonProperty(PropertyName = "errors", NullValueHandling = NullValueHandling.Ignore)]
         public List<Error> Errors { get; set; }
 
+        [JsonProperty(PropertyName = "meta", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, object> Meta { get; set; }
+
         [JsonExtensionData]
         public Dictionary<string, JToken> UnmappedAttributes { get; set; }
-
-        public string GetPrimaryResourceHref()
-        {
-            var resource = Data as Dictionary<string, object>;
-            if (resource != null && resource.ContainsKey("href"))
-            {
-                return resource["href"].ToString();
-            }
-
-            var resourceList = Data as List<Dictionary<string, object>>;
-            var href = resourceList?.FirstOrDefault()?.FirstOrDefault(kvp => kvp.Key == "href").Value as string;
-
-            return href ?? string.Empty;
-        }
     }
 }

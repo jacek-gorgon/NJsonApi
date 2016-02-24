@@ -8,6 +8,7 @@ namespace NJsonApi.Serialization
     internal interface IJsonApiTransformer
     {
         JsonSerializer Serializer { get; set; }
+        CompoundDocument Transform(Exception e, int httpStatus);
         CompoundDocument Transform(object objectGraph, Context context);
         IDelta TransformBack(UpdateDocument updateDocument, Type type, Context context);
     }

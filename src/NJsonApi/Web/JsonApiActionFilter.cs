@@ -9,19 +9,19 @@ using NJsonApi.Serialization;
 
 namespace NJsonApi.Web
 {
-    internal class JsonApiActionFilter : IActionFilter
+    internal class JsonApiActionFilter : ActionFilterAttribute
     {
         public bool AllowMultiple { get { return false; } }
-        private readonly JsonApiTransformer jsonApiTransformer;
-        private readonly Configuration configuration;
+        private readonly IJsonApiTransformer jsonApiTransformer;
+        private readonly IConfiguration configuration;
 
-        public JsonApiActionFilter(JsonApiTransformer jsonApiTransformer, Configuration configuration)
+        public JsonApiActionFilter(IJsonApiTransformer jsonApiTransformer, IConfiguration configuration)
         {
             this.jsonApiTransformer = jsonApiTransformer;
             this.configuration = configuration;
         }
     
-        public void OnActionExecuting(ActionExecutingContext context)
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
             if (context.HttpContext.Request.ContentType != configuration.DefaultJsonApiMediaType.MediaType)
             {
@@ -34,7 +34,7 @@ namespace NJsonApi.Web
             }
         }
 
-        public void OnActionExecuted(ActionExecutedContext context)
+        public override void OnActionExecuted(ActionExecutedContext context)
         {
             if (context.Result == null)
             {
