@@ -39,5 +39,12 @@ namespace NJsonApi.HelloWorld.Controllers
             update.Apply(article);
             return new ObjectResult(article);
         }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            StaticPersistentStore.Articles.RemoveAll(x => x.Id == id);
+            return new NoContentResult();
+        }
     }
 }

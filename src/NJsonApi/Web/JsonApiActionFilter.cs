@@ -36,7 +36,7 @@ namespace NJsonApi.Web
 
         public override void OnActionExecuted(ActionExecutedContext context)
         {
-            if (context.Result == null)
+            if (context.Result == null || context.Result is NoContentResult)
             {
                 return;
             }
