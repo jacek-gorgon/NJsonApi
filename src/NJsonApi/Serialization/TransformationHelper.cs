@@ -44,7 +44,11 @@ namespace NJsonApi.Serialization
                         context));
             }
 
-            return includedList;
+            if (includedList.Any())
+            {
+                return includedList;
+            }
+            return null;
         }
 
         private List<SingleResource> AppendIncludedRepresentationRecursive(

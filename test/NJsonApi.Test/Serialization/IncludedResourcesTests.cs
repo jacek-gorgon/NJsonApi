@@ -86,5 +86,34 @@ namespace NJsonApi.Test.Serialization
                 x.Type == "authors" && 
                 x.Id == PostBuilder.Asimov.Id.ToString()));
         }
+
+
+        [Fact]
+        public void GIVEN_NoIncludedItems_WHEN_Get_THEN_IncludedItemsAreNull()
+        {
+            // Arrange
+            var source = new PostBuilder()
+                .Build();
+
+            var sourceList = new List<object>()
+            {
+                source
+            };
+
+            var config = TestModelConfigurationBuilder.BuilderForEverything.Build();
+
+            var mapping = config.GetMapping(typeof(Post));
+            var context = new Context(
+                config,
+                new Uri("http://dummy:4242/posts"));
+
+            var transformationHelper = new TransformationHelper();
+
+            // Act
+            var result = transformationHelper.CreateIncludedRepresentations(sourceList, mapping, context);
+
+            // Assert
+            Assert.Null(result);
+        }
     }
 }
