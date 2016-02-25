@@ -29,7 +29,7 @@ namespace NJsonApi.HelloWorld.Controllers
             var newArticle = article.ToObject();
             newArticle.Id = StaticPersistentStore.GetNextId();
             StaticPersistentStore.Articles.Add(newArticle);
-            return new ObjectResult(newArticle);
+            return CreatedAtAction("Get", new { id = newArticle.Id }, newArticle);
         }
     }
 }
