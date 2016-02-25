@@ -7,6 +7,11 @@ namespace NJsonApi.HelloWorld.Models
 {
     public class Article
     {
+        public Article()
+        {
+
+        }
+
         public Article(string title)
         {
             Comments = new List<Comment>();

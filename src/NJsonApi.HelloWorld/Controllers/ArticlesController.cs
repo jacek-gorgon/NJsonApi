@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Mvc;
 using NJsonApi.HelloWorld.Models;
+using NJsonApi.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,15 @@ namespace NJsonApi.HelloWorld.Controllers
         public IActionResult Get(int id)
         {
             return new ObjectResult(StaticPersistentStore.Articles.Single(w => w.Id == id));
+        }
+
+        [HttpPost]
+        public IActionResult Post([FromBody]Delta<Article> article)
+        {
+            var newArticle = article.ToObject();
+            newArticle.Id = StaticPersistentStore.GetNextId();
+            StaticPersistentStore.Articles.Add(newArticle);
+            return new ObjectResult(newArticle);
         }
     }
 }
