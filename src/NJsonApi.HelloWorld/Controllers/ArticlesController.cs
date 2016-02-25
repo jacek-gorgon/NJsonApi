@@ -31,5 +31,13 @@ namespace NJsonApi.HelloWorld.Controllers
             StaticPersistentStore.Articles.Add(newArticle);
             return CreatedAtAction("Get", new { id = newArticle.Id }, newArticle);
         }
+
+        [HttpPatch("{id}")]
+        public IActionResult Patch([FromBody]Delta<Article> update, int id)
+        {
+            var article = StaticPersistentStore.Articles.Single(w => w.Id == id);
+            update.Apply(article);
+            return new ObjectResult(article);
+        }
     }
 }
