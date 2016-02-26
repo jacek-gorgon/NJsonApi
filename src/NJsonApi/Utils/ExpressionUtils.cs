@@ -6,12 +6,12 @@ namespace NJsonApi.Utils
 {
     public static class ExpressionUtils
     {
-        public static PropertyInfo GetPropertyInfoFromExpression<TMain, TProperty>(Expression<Func<TMain, TProperty>> propertyExpression)
+        public static PropertyInfo GetPropertyInfo(this LambdaExpression propertyExpression)
         {
             var expression = propertyExpression.Body;
-            if (expression is UnaryExpression) 
+            if (expression is UnaryExpression)
                 expression = ((UnaryExpression)expression).Operand;
-            
+
             var me = expression as MemberExpression;
 
             if (me == null || !(me.Member is PropertyInfo))
@@ -55,5 +55,42 @@ namespace NJsonApi.Utils
 
             return convertedExpression;
         }
+
+        public static Delegate ToCompiledGetterDelegate(this PropertyInfo pi, Type tInstance, Type tResult)
+        {
+            var mi = pi.GetGetMethod();
+            var parameter = Expression.Parameter(tInstance);
+            return Expression.Lambda(Expression.Call(parameter, mi), parameter).Compile();
+        }
+
+        public static Func<TInstance, TResult> ToCompiledGetterFunc<TInstance, TResult>(this PropertyInfo pi)
+        {
+            return (Func<TInstance, TResult>)ToCompiledGetterDelegate(pi, typeof(TInstance), typeof(TResult));
+        }
+
+        public static Delegate ToCompiledSetterDelegate(this PropertyInfo pi, Type tInstance, Type tValue)
+        {
+            if (!tValue.IsAssignableFrom(pi.PropertyType) && !pi.PropertyType.IsAssignableFrom(tValue))
+                throw new InvalidOperationException($"Unsupported type combination: {tValue} and {pi.GetType()}.");
+
+            var mi = pi.GetSetMethod();
+
+            var instanceParameter = Expression.Parameter(tInstance);
+            var valueParameter = Expression.Parameter(tValue);
+            Expression valueExpression = valueParameter;
+
+            if (pi.PropertyType != tValue)
+                valueExpression = Expression.Convert(valueExpression, pi.PropertyType);
+
+            var body = Expression.Call(instanceParameter, mi, valueExpression);
+
+            return Expression.Lambda(body, instanceParameter, valueParameter).Compile();
+        }
+
+        public static Action<TInstance, TValue> ToCompiledSetterAction<TInstance, TValue>(this PropertyInfo pi)
+        {
+            return (Action<TInstance, TValue>)ToCompiledSetterDelegate(pi, typeof(TInstance), typeof(TValue));
+        }
     }
+
 }

@@ -4,6 +4,7 @@ using NJsonApi.Serialization;
 using System.Collections.Generic;
 using System;
 using Xunit;
+using NJsonApi.Serialization.Representations.Resources;
 
 namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 {
@@ -14,9 +15,14 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         {
             var updateDocument = new UpdateDocument()
             {
-                Data = new Dictionary<string, object>()
+                Data = new SingleResource()
                 {
-                    { "data", JObject.Parse("{ \"id\":123, \"type\":\"post\", \"attributes\" : { \"title\": \"someTitle\" }}") }
+                    Id = "123",
+                    Type = "post",
+                    Attributes = new Dictionary<string, object>()
+                    {
+                        {"title", "someTitle" }
+                    }
                 }
             };
 
@@ -41,9 +47,15 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var updateDocument = new UpdateDocument
             {
-                Data = new Dictionary<string, object>()
+                Data = new SingleResource()
                 {
-                    { "data", JObject.Parse("{ \"id\":123, \"type\":\"post\", \"attributes\" : { \"title\": \"someTitle\", \"authorId\" : \"1234\"}}") }
+                    Id = "123",
+                    Type = "post",
+                    Attributes = new Dictionary<string, object>()
+                    {
+                        {"title", "someTitle" },
+                        {"authorId", "1234" },
+                    }
                 }
             };
 

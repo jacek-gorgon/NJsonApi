@@ -9,7 +9,7 @@ namespace NJsonApi.Conventions.Impl
     {
         public Expression<Func<TMain, object>> GetIdExpression<TMain, TLinkedResource>(Expression<Func<TMain, TLinkedResource>> linkedResourceExpression)
         {
-            var resourcePi = ExpressionUtils.GetPropertyInfoFromExpression(linkedResourceExpression);
+            var resourcePi = linkedResourceExpression.GetPropertyInfo();
             var idPropertyName = GetIdPropertyNameFromPropertyName(resourcePi.Name);
             var idPi = typeof(TMain).GetProperty(idPropertyName);
             if (idPi == null)

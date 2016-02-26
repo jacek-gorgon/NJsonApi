@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Newtonsoft.Json;
@@ -6,8 +8,8 @@ using Newtonsoft.Json.Linq;
 using NJsonApi.Infrastructure;
 using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Representations;
-using System.Collections.Generic;
 using NJsonApi.Utils;
+using NJsonApi.Serialization.Representations.Relationships;
 
 namespace NJsonApi.Serialization
 {
@@ -89,77 +91,61 @@ namespace NJsonApi.Serialization
                 return null;
             }
 
-            var resourceKey = "data";
-            if (!updateDocument.Data.ContainsKey(resourceKey))
-            {
-                return delta;
-            }
-
-            var jsonApiDocument = updateDocument.Data[resourceKey] as JObject;
-            if (jsonApiDocument == null)
-            {
-                return delta;
-            }
-
-            var resource = jsonApiDocument["attributes"] as JObject;
-
             // Scan the data for which properties are only set
             foreach (var propertySetter in mapping.PropertySettersExpressions)
             {
-                JToken value;
-                resource.TryGetValue(propertySetter.Key, StringComparison.CurrentCultureIgnoreCase, out value);
-                if (value == null)
-                {
-                    continue;
-                }
-                // Set only the properties that are present
-                var methodCallExpression = propertySetter.Value.Body as MethodCallExpression;
-                if (methodCallExpression != null)
-                {
-                    Type returnType = methodCallExpression.Arguments[0].Type;
-
-                    var resultValue = transformationHelper.GetValue(value, returnType);
-
-                    string key = propertySetter.Key.TrimStart('_');
-                    delta.ObjectPropertyValues.Add(key, resultValue);
-                }
+                object value;
+                updateDocument.Data.Attributes.TryGetValue(propertySetter.Key, out value);
+                if (value != null)
+                    delta.ObjectPropertyValues.Add(propertySetter.Key, value);
             }
 
-            JToken linksToken;
-            jsonApiDocument.TryGetValue("links", StringComparison.CurrentCultureIgnoreCase, out linksToken);
-            JObject links = linksToken as JObject;
-
-            if (links != null)
+            if (updateDocument.Data.Relationships != null)
             {
-                foreach (var link in mapping.Relationships)
+                foreach (var relMapping in mapping.Relationships)
                 {
-                    JToken value;
-                    links.TryGetValue(link.RelationshipName, StringComparison.CurrentCultureIgnoreCase, out value);
-                    if (value == null)
+                    var relatedTypeMapping = context.Configuration.GetMapping(relMapping.RelatedBaseType);
+                    var relationship = updateDocument.Data.Relationships[relMapping.RelationshipName];
+                    if (relationship == null)
                     {
                         continue;
                     }
 
-                    if (link.IsCollection)
+                    if (relMapping.IsCollection && relationship.Data is MultipleResourceIdentifiers)
                     {
-                        var property = link.RelatedCollectionProperty;
-                        if (property != null)
+                        var multipleIDs = (MultipleResourceIdentifiers)relationship.Data;
+                        var openGenericCollection = typeof(CollectionDelta<>);
+                        var closedGenericTypeCollection = openGenericCollection.MakeGenericType(relMapping.RelatedBaseType);
+                        var collection = Activator.CreateInstance(closedGenericTypeCollection, relatedTypeMapping.IdGetter) as ICollectionDelta;
+                        var openGenericList = typeof(List<>);
+                        var closedGenericTypeList = openGenericList.MakeGenericType(relMapping.RelatedBaseType);
+                        collection.Elements = Activator.CreateInstance(closedGenericTypeList) as IList;
+                        foreach (var id in multipleIDs)
                         {
-                            var resultValue = transformationHelper.GetCollection(value, link);
+                            var colProp = relMapping.RelatedCollectionProperty;
 
-                            string key = link.RelationshipName.TrimStart('_');
-                            delta.ObjectPropertyValues.Add(key, resultValue);
-                        }    
+                            var newInstance = Activator.CreateInstance(relMapping.RelatedBaseType);
+                            relatedTypeMapping.IdSetter(newInstance, id.Id);
+                            (collection.Elements as IList).Add(newInstance);
+                        }
+                        delta.CollectionDeltas.Add(relMapping.RelationshipName, collection);
+
+                    }
+                    else if (!relMapping.IsCollection && relationship.Data is SingleResourceIdentifier)
+                    {
+                        var singleId = relationship.Data as SingleResourceIdentifier;
+                        var instance = Activator.CreateInstance(relMapping.RelatedBaseType);
+                        relatedTypeMapping.IdSetter(instance, singleId.Id);
+                        delta.ObjectPropertyValues.Add(relMapping.RelationshipName, instance);
                     }
                     else
                     {
-                        delta.ObjectPropertyValues.Add(link.ParentResourceNavigationPropertyName, transformationHelper.GetValue(value, link.ParentResourceNavigationPropertyType));
+                        throw new InvalidOperationException();
                     }
                 }
-            }
 
+            }
             return delta;
         }
     }
-
 }

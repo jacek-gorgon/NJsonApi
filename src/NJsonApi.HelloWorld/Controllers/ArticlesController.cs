@@ -36,7 +36,7 @@ namespace NJsonApi.HelloWorld.Controllers
         public IActionResult Patch([FromBody]Delta<Article> update, int id)
         {
             var article = StaticPersistentStore.Articles.Single(w => w.Id == id);
-            update.Apply(article);
+            update.ApplySimpleProperties(article);
             return new ObjectResult(article);
         }
 

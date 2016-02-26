@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NJsonApi.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -6,7 +7,7 @@ using System.Reflection;
 
 namespace NJsonApi
 {
-    public class LinkMapping<TParent, TNested> : IRelationshipMapping
+    public class RelationshipMapping<TParent, TNested> : IRelationshipMapping
         where TNested : class
     {
         public string RelationshipName { get; set; }
@@ -17,7 +18,14 @@ namespace NJsonApi
         public string SelfUrlTemplate { get; set; }
         public string RelatedUrlTemplate { get; set; }
         public bool IsCollection { get; set; }
-        public PropertyInfo RelatedCollectionProperty{ get; set; }
+        public IPropertyHandle<TParent, TNested> RelatedCollectionProperty { get; set; }
+
+        IPropertyHandle IRelationshipMapping.RelatedCollectionProperty
+        {
+            get { return RelatedCollectionProperty; }
+            set { RelatedCollectionProperty = (IPropertyHandle<TParent, TNested>)value; }
+        }
+
         public ResourceInclusionRules InclusionRule { get; set; }
         public string ParentResourceNavigationPropertyName { get; private set; }
         public Type ParentResourceNavigationPropertyType { get; private set; }
@@ -51,13 +59,13 @@ namespace NJsonApi
 
             if (body == null)
             {
-                var ubody = (UnaryExpression) value.Body;
+                var ubody = (UnaryExpression)value.Body;
                 body = ubody.Operand as MemberExpression;
             }
 
             if (body != null)
             {
-                 return body.Member.Name;
+                return body.Member.Name;
             }
 
             return null;
@@ -86,7 +94,7 @@ namespace NJsonApi
             return null;
         }
 
-        public LinkMapping()
+        public RelationshipMapping()
         {
             ParentType = typeof(TParent);
             RelatedBaseType = typeof(TNested);
@@ -117,8 +125,5 @@ namespace NJsonApi
 
             return convertedExpression.Compile();
         }
-
-        
-
     }
 }

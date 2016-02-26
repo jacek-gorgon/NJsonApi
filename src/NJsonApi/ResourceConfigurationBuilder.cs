@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NJsonApi.Conventions;
 using NJsonApi.Utils;
+using NJsonApi.Infrastructure;
 
 namespace NJsonApi
 {
@@ -14,7 +15,6 @@ namespace NJsonApi
     {
         public IResourceMapping ConstructedMetadata { get; set; }
         public ConfigurationBuilder ConfigurationBuilder { get; set; }
-
         public IResourceTypeConvention ResourceTypeConvention { get; set; }
         public ILinkNameConvention LinkNameConvention { get; set; }
         public ILinkIdConvention LinkIdConvention { get; set; }
@@ -44,20 +44,20 @@ namespace NJsonApi
         public ResourceConfigurationBuilder<TResource> WithIdSelector(Expression<Func<TResource, object>> expression)
         {
             ConstructedMetadata.IdGetter = ExpressionUtils.CompileToObjectTypedFunction(expression);
-            ConstructedMetadata.IdSetter = CreateIdSetter(ExpressionUtils.GetPropertyInfoFromExpression(expression));
+            ConstructedMetadata.IdSetter = CreateIdSetter(expression.GetPropertyInfo());
             return this;
         }
 
         public ResourceConfigurationBuilder<TResource> WithSimpleProperty(Expression<Func<TResource, object>> propertyAccessor)
         {
-            var propertyInfo = ExpressionUtils.GetPropertyInfoFromExpression(propertyAccessor);
+            var propertyInfo = propertyAccessor.GetPropertyInfo();
             AddProperty(propertyInfo, typeof(TResource));
             return this;
         }
 
         public ResourceConfigurationBuilder<TResource> WithSimpleProperty(Expression<Func<TResource, object>> propertyAccessor, SerializationDirection direction)
         {
-            var propertyInfo = ExpressionUtils.GetPropertyInfoFromExpression(propertyAccessor);
+            var propertyInfo = propertyAccessor.GetPropertyInfo();
             RemoveProperty(propertyInfo);
             AddProperty(propertyInfo, typeof(TResource), direction);
             return this;
@@ -65,7 +65,7 @@ namespace NJsonApi
 
         public ResourceConfigurationBuilder<TResource> IgnoreProperty(Expression<Func<TResource, object>> propertyAccessor)
         {
-            var pi = ExpressionUtils.GetPropertyInfoFromExpression(propertyAccessor);
+            var pi = propertyAccessor.GetPropertyInfo();
             RemoveProperty(pi);
             return this;
         }
@@ -165,7 +165,7 @@ namespace NJsonApi
                     // Because the expression is constructed in run-time and we need to invoke the convention that expects
                     // a compile-time-safe generic method, reflection must be used to invoke it.
                     MethodInfo closedMethod = openMethod.MakeGenericMethod(nestedType);
-                    closedMethod.Invoke(this, new object[] { propertyAccessor, null, null, null, ResourceInclusionRules.Smart });
+                    closedMethod.Invoke(this, new object[] { propertyAccessor, null, null, null, ResourceInclusionRules.Smart, null, null });
                 }
             }
             return this;
@@ -191,12 +191,20 @@ namespace NJsonApi
         /// 
         /// Supply a custom implementations to alter behavior.
         /// </remarks>
-        public ResourceConfigurationBuilder<TResource> WithLinkedResource<TNested>(Expression<Func<TResource, TNested>> objectAccessor, Expression<Func<TResource, object>> idAccessor = null, string linkedResourceType = null, string linkName = null, ResourceInclusionRules inclusionRule = ResourceInclusionRules.Smart) where TNested : class
+        public ResourceConfigurationBuilder<TResource> WithLinkedResource<TNested>(
+            Expression<Func<TResource, TNested>> objectAccessor, 
+            Expression<Func<TResource, object>> idAccessor = null, 
+            string linkedResourceType = null, 
+            string linkName = null, 
+            ResourceInclusionRules inclusionRule = ResourceInclusionRules.Smart, 
+            string relatedURLTemplate = null, 
+            string selfURLTemplate = null) 
+            where TNested : class
         {
             if (typeof(TNested).Name == "Array")
                 throw new NotSupportedException("Array type is not supported!");
 
-            var propertyInfo = ExpressionUtils.GetPropertyInfoFromExpression(objectAccessor);
+            var propertyInfo = objectAccessor.GetPropertyInfo();
 
             var isCollection = typeof(IEnumerable).IsAssignableFrom(propertyInfo.PropertyType);
 
@@ -206,13 +214,13 @@ namespace NJsonApi
             if (linkedResourceType == null) linkedResourceType = ResourceTypeConvention.GetResourceTypeFromRepresentationType(linkedType);
             if (idAccessor == null) idAccessor = LinkIdConvention.GetIdExpression(objectAccessor);
 
-            var link = new LinkMapping<TResource, TNested>
+            var link = new RelationshipMapping<TResource, TNested>
             {
                 RelationshipName = linkName,
                 ResourceIdGetter = idAccessor,
                 ResourceGetter = ExpressionUtils.CompileToObjectTypedExpression(objectAccessor),
                 IsCollection = isCollection,
-                RelatedCollectionProperty = isCollection ? propertyInfo : null,
+                RelatedCollectionProperty = isCollection ? new PropertyHandle<TResource, TNested>(objectAccessor) : null,
                 RelatedBaseType = linkedType,
                 RelatedBaseResourceType = linkedResourceType,
                 InclusionRule = inclusionRule
@@ -238,7 +246,7 @@ namespace NJsonApi
 
             if (direction == SerializationDirection.In || direction == SerializationDirection.Both)
             {
-                ConstructedMetadata.PropertySetters[name] = propertyInfo.SetValue;    
+                ConstructedMetadata.PropertySetters[name] = propertyInfo.SetValue;
             }
             
             var instance = Expression.Parameter(typeof(object), "i");
@@ -250,7 +258,7 @@ namespace NJsonApi
 
             Expression<Action<object, object>> expression = Expression.Lambda<Action<object, object>>(setterCall, instance, argument);
 
-            if (direction == SerializationDirection.In  || direction == SerializationDirection.Both)
+            if (direction == SerializationDirection.In || direction == SerializationDirection.Both)
             {
                 ConstructedMetadata.PropertySettersExpressions[name] = expression;
             }

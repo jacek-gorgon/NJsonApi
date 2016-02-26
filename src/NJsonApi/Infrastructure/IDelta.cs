@@ -6,12 +6,13 @@ namespace NJsonApi.Infrastructure
 {
     internal interface IDelta<T> : IDelta
     {
-        void AddFilter<TProperty>(params Expression<Func<T, TProperty>>[] filter);
-        void Apply(T inputObject);
+        void FilterOut<TProperty>(params Expression<Func<T, TProperty>>[] filter);
+        void ApplySimpleProperties(T inputObject);
     }
 
     internal interface IDelta
     {
         Dictionary<string, object> ObjectPropertyValues { get; set; }
+        Dictionary<string, ICollectionDelta> CollectionDeltas { get; set; }
     }
 }

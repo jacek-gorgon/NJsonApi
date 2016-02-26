@@ -81,7 +81,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             deeplyNestedMapping.AddPropertyGetter("value", c => c.Value);
 
 
-            var linkMapping = new LinkMapping<SampleClass, NestedClass>()
+            var linkMapping = new RelationshipMapping<SampleClass, NestedClass>()
             {
                 IsCollection = true,
                 RelationshipName = "nestedValues",
@@ -89,7 +89,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
                 ResourceGetter = c => c.NestedClass,
             };
 
-            var deepLinkMapping = new LinkMapping<NestedClass, DeeplyNestedClass>()
+            var deepLinkMapping = new RelationshipMapping<NestedClass, DeeplyNestedClass>()
             {
                 RelationshipName = "deeplyNestedValues",
                 ResourceMapping = deeplyNestedMapping,
