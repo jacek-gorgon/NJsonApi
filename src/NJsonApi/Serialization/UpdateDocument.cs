@@ -6,7 +6,7 @@ namespace NJsonApi.Serialization
 {
     internal class UpdateDocument
     {
-        [JsonExtensionData]
+        [JsonProperty(PropertyName = "data", Required = Required.Always)]
         public SingleResource Data { get; set; }
     }
 }
