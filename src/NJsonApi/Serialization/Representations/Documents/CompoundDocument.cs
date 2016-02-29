@@ -11,6 +11,7 @@ namespace NJsonApi.Serialization.Documents
     {
         public CompoundDocument()
         {
+            this.JsonApi = new JsonApi();
         }
 
         [JsonProperty(PropertyName = "data", NullValueHandling = NullValueHandling.Ignore)]
@@ -30,5 +31,8 @@ namespace NJsonApi.Serialization.Documents
 
         [JsonExtensionData]
         public Dictionary<string, JToken> UnmappedAttributes { get; set; }
+
+        [JsonProperty(PropertyName = "jsonapi", NullValueHandling = NullValueHandling.Ignore)]
+        public JsonApi JsonApi { get; set; }
     }
 }
