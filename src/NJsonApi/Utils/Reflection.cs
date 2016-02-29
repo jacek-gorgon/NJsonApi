@@ -26,5 +26,22 @@ namespace NJsonApi.Utils
 
             return objectType;
         }
+
+        public static Type[] FromWithinGeneric(Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (type.IsConstructedGenericType)
+            {
+                return type.GetGenericArguments();
+            }
+            else
+            {
+                return new Type[] { type };
+            }
+        }
     }
 }

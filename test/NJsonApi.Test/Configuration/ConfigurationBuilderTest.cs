@@ -383,5 +383,35 @@ namespace NJsonApi.Test.Configuration
             Assert.Equal(authorLinks[0].RelationshipName, "posts");
             Assert.Equal(authorLinks[0].ResourceMapping.PropertyGetters.Count, 1);
         }
+
+        [Fact]
+        public void GIVEN_ModelWithReservedWordProperties_WHEN_BuildConfiguration_THEN_Exception()
+        {
+            // Arrange
+            var configurationBuilder = new ConfigurationBuilder();
+
+            // Act - Exception!
+            Assert.Throws<InvalidOperationException>(() => configurationBuilder.Resource<BadModelWithReservedWords>());
+        }
+
+        [Fact]
+        public void GIVEN_ValidModel_AND_ChildPropertyHasRervedWordProperties_WHEN_BuildConfiguration_THEN_Exception()
+        {
+            // Arrange
+            var configurationBuilder = new ConfigurationBuilder();
+
+            // Act - Exception!
+            Assert.Throws<InvalidOperationException>(() => configurationBuilder.Resource<ValidModelWithBadChild>());
+        }
+
+        [Fact]
+        public void GIVEN_ModelWithSelfRefernce_WHEN_ValidateReservedWords_THEN_NotInfiniteLoop()
+        {
+            // Arrange
+            var configurationBuilder = new ConfigurationBuilder();
+
+            // Act - Will not throw an infinite loop error
+            configurationBuilder.Resource<ModelThatCausesInfiniteLoop>();
+        }
     }
 }

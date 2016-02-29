@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using NJsonApi.Conventions;
 using NJsonApi.Conventions.Impl;
+using NJsonApi.Utils;
 
 namespace NJsonApi
 {
@@ -38,15 +40,22 @@ namespace NJsonApi
 
         public ResourceConfigurationBuilder<TResource> Resource<TResource>()
         {
-            if (!ResourceConfigurationsByType.ContainsKey(typeof(TResource)))
+            var resource = typeof(TResource);
+
+            if (DoesModelHaveReservedWordsRecursive(resource))
+            {
+                throw new InvalidOperationException("The model being registered for a resource contains properties that are reserved words by JsonApi.");
+            }
+
+            if (!ResourceConfigurationsByType.ContainsKey(resource))
             {
                 var newResourceConfiguration = new ResourceConfigurationBuilder<TResource>(this) { ConfigurationBuilder = this };
-                ResourceConfigurationsByType[typeof(TResource)] = newResourceConfiguration;
+                ResourceConfigurationsByType[resource] = newResourceConfiguration;
                 return newResourceConfiguration;
             }
             else
             {
-                return ResourceConfigurationsByType[typeof(TResource)] as ResourceConfigurationBuilder<TResource>;
+                return ResourceConfigurationsByType[resource] as ResourceConfigurationBuilder<TResource>;
             }
         }
 
@@ -85,6 +94,40 @@ namespace NJsonApi
             }
 
             return configuration;
+        }
+
+        private bool DoesModelHaveReservedWordsRecursive(Type model, List<Type> checkedTypes = null)
+        {
+            if (checkedTypes == null)
+                checkedTypes = new List<Type>();
+
+            if (checkedTypes.Contains(model))
+            {
+                return false;
+            }
+            else
+            {
+                checkedTypes.Add(model);
+            }
+
+            foreach (var property in model.GetProperties())
+            {
+                if (property.Name == "Relationships" || property.Name == "Links")
+                {
+                    return true;
+                }
+
+                var childTypesToScan = Reflection.FromWithinGeneric(property.PropertyType);
+
+                foreach(var childType in childTypesToScan)
+                {
+                    if (childType.GetTypeInfo().IsClass)
+                    {
+                        return DoesModelHaveReservedWordsRecursive(childType, checkedTypes);
+                    }
+                }
+            }
+            return false;
         }
     }
 }
