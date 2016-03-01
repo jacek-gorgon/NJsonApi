@@ -1,4 +1,5 @@
-﻿using NJsonApi.Test.TestModel;
+﻿using NJsonApi.Test.TestControllers;
+using NJsonApi.Test.TestModel;
 using Xunit;
 
 namespace NJsonApi.Test.Configuration
@@ -17,13 +18,13 @@ namespace NJsonApi.Test.Configuration
         {
             //Arrange
             string resourceType = typeof(Author).Name;
-            var classUnderTest = configurationBuilder.Resource<Author>();
+            var classUnderTest = configurationBuilder.Resource<Author, AuthorsController>();
 
             //Act
             classUnderTest.WithResourceType(resourceType);
 
             //Assert
-            Assert.Equal(classUnderTest.ConstructedMetadata.ResourceType, resourceType);
+            Assert.Equal(classUnderTest.BuiltResourceMapping.ResourceType, resourceType);
         }
 
         [Fact]
@@ -32,8 +33,8 @@ namespace NJsonApi.Test.Configuration
             //Arrange
             string resourceTypeAuthor = typeof(Author).Name;
             string resourceTypePost = typeof(Post).Name;
-            var resourceConfigurationForAuthor = configurationBuilder.Resource<Author>();
-            var resourceConfigurationForPost = configurationBuilder.Resource<Post>();
+            var resourceConfigurationForAuthor = configurationBuilder.Resource<Author, AuthorsController>();
+            var resourceConfigurationForPost = configurationBuilder.Resource<Post, PostsController>();
 
             //Act
             resourceConfigurationForAuthor.WithResourceType(resourceTypeAuthor);
@@ -41,11 +42,11 @@ namespace NJsonApi.Test.Configuration
 
             //Assert
             Assert.Equal(resourceConfigurationForAuthor
-                .ConstructedMetadata
+                .BuiltResourceMapping
                 .ResourceType, resourceTypeAuthor);
 
             Assert.Equal(resourceConfigurationForPost
-                .ConstructedMetadata
+                .BuiltResourceMapping
                 .ResourceType,resourceTypePost);
         }
 
@@ -53,7 +54,7 @@ namespace NJsonApi.Test.Configuration
         public void TestWithIdSelector()
         {
             //Arrange
-            var resourceConfigurationForAuthor = configurationBuilder.Resource<Author>();
+            var resourceConfigurationForAuthor = configurationBuilder.Resource<Author, AuthorsController>();
             const int authorId = 5;
             var author = new Author() { Id = authorId };
 
@@ -61,7 +62,7 @@ namespace NJsonApi.Test.Configuration
             resourceConfigurationForAuthor.WithIdSelector(a => a.Id);
 
             //Assert
-            var result = (int)resourceConfigurationForAuthor.ConstructedMetadata.IdGetter.Invoke(author);
+            var result = (int)resourceConfigurationForAuthor.BuiltResourceMapping.IdGetter.Invoke(author);
             Assert.Equal(result, authorId);
         }
 
@@ -69,8 +70,8 @@ namespace NJsonApi.Test.Configuration
         public void TestWithIdSelectorForMultipleTypes()
         {
             //Arrange
-            var resourceConfigurationForAuthor = configurationBuilder.Resource<Author>();
-            var resourceConfigurationForPost = configurationBuilder.Resource<Post>();
+            var resourceConfigurationForAuthor = configurationBuilder.Resource<Author, AuthorsController>();
+            var resourceConfigurationForPost = configurationBuilder.Resource<Post, PostsController>();
             const int authorId = 5;
             const int postId = 6;
             var author = new Author() { Id = authorId };
@@ -81,9 +82,9 @@ namespace NJsonApi.Test.Configuration
             resourceConfigurationForPost.WithIdSelector(p => p.Id);
 
             //Assert
-            var authorResult = (int)resourceConfigurationForAuthor.ConstructedMetadata.IdGetter.Invoke(author);
+            var authorResult = (int)resourceConfigurationForAuthor.BuiltResourceMapping.IdGetter.Invoke(author);
             Assert.Equal(authorResult, authorId);
-            var postResult = (int)resourceConfigurationForPost.ConstructedMetadata.IdGetter.Invoke(post);
+            var postResult = (int)resourceConfigurationForPost.BuiltResourceMapping.IdGetter.Invoke(post);
             Assert.Equal(postResult, postId);
         }
 
@@ -93,60 +94,16 @@ namespace NJsonApi.Test.Configuration
             //Arrange
             const int authorId = 5;
             var author = new Author() { Id = authorId };
-            var resourceConfigurationForAuthor = configurationBuilder.Resource<Author>();
+            var resourceConfigurationForAuthor = configurationBuilder.Resource<Author, AuthorsController>();
             
             //Act
             resourceConfigurationForAuthor.WithSimpleProperty(a => a.Name);
 
             //Assert
-            Assert.Equal(resourceConfigurationForAuthor.ConstructedMetadata.PropertyGetters.Count, 1);
-            Assert.Equal(resourceConfigurationForAuthor.ConstructedMetadata.PropertySetters.Count, 1);
-            Assert.Null(resourceConfigurationForAuthor.ConstructedMetadata.IdGetter);
-            Assert.Contains("author", resourceConfigurationForAuthor.ConstructedMetadata.ResourceType);
-        }
-
-        class ClassWithReserveredKeys
-        {
-            public string Id { get; set; }
-            public string Type { get; set; }
-            public string Links { get; set; }
-            public string Href { get; set; }
-        }
-
-        [Fact]
-        public void TestWithSimpleProperty_with_reserved_jsonapi_key()
-        {
-            // Arrange
-            var sut = configurationBuilder.Resource<ClassWithReserveredKeys>();
-
-            // Act
-            sut.WithSimpleProperty(a => a.Id);
-            sut.WithSimpleProperty(a => a.Type);
-            sut.WithSimpleProperty(a => a.Links);
-            sut.WithSimpleProperty(a => a.Href);
-
-            // Assert
-            var propertyGetters = sut.ConstructedMetadata.PropertyGetters;
-            Assert.Contains("_id", propertyGetters.Keys);
-            Assert.Contains("_type", propertyGetters.Keys);
-            Assert.Contains("_links", propertyGetters.Keys);
-            Assert.Contains("_href", propertyGetters.Keys);
-
-            Assert.DoesNotContain("id", propertyGetters.Keys);
-            Assert.DoesNotContain("type", propertyGetters.Keys);
-            Assert.DoesNotContain("links", propertyGetters.Keys);
-            Assert.DoesNotContain("href", propertyGetters.Keys);
-
-            var propertySetters = sut.ConstructedMetadata.PropertySetters;
-            Assert.Contains("_id", propertySetters.Keys);
-            Assert.Contains("_type", propertySetters.Keys);
-            Assert.Contains("_links", propertySetters.Keys);
-            Assert.Contains("_href", propertySetters.Keys);
-
-            Assert.DoesNotContain("id", propertySetters.Keys);
-            Assert.DoesNotContain("type", propertySetters.Keys);
-            Assert.DoesNotContain("links", propertySetters.Keys);
-            Assert.DoesNotContain("href", propertySetters.Keys);
+            Assert.Equal(resourceConfigurationForAuthor.BuiltResourceMapping.PropertyGetters.Count, 1);
+            Assert.Equal(resourceConfigurationForAuthor.BuiltResourceMapping.PropertySetters.Count, 1);
+            Assert.Null(resourceConfigurationForAuthor.BuiltResourceMapping.IdGetter);
+            Assert.Contains("author", resourceConfigurationForAuthor.BuiltResourceMapping.ResourceType);
         }
 
         [Fact]
@@ -154,12 +111,12 @@ namespace NJsonApi.Test.Configuration
         {
             //Arrange & Act
             var resourceConfigurationForAuthor = configurationBuilder
-                .Resource<Author>()
+                .Resource<Author, AuthorsController>()
                 .WithSimpleProperty(a => a.Name)
                 .WithIdSelector(a => a.Id);
             //Assert
             AssertResourceConfigurationHasValuesForWithSimpleProperty(resourceConfigurationForAuthor);
-            Assert.Contains("author", resourceConfigurationForAuthor.ConstructedMetadata.ResourceType);
+            Assert.Contains("author", resourceConfigurationForAuthor.BuiltResourceMapping.ResourceType);
         }
 
         [Fact]
@@ -172,12 +129,12 @@ namespace NJsonApi.Test.Configuration
 
             //Act
             var resourceConfigurationForAuthor = configurationBuilder
-                .Resource<Author>()
+                .Resource<Author, AuthorsController>()
                 .WithSimpleProperty(a => a.Name)
                 .WithIdSelector(a => a.Id);
 
-            var resultForName = resourceConfigurationForAuthor.ConstructedMetadata.PropertyGetters["name"].Invoke(author);
-            var resultForId = resourceConfigurationForAuthor.ConstructedMetadata.IdGetter.Invoke(author);
+            var resultForName = resourceConfigurationForAuthor.BuiltResourceMapping.PropertyGetters["name"].Invoke(author);
+            var resultForId = resourceConfigurationForAuthor.BuiltResourceMapping.IdGetter.Invoke(author);
 
             //Assert
             Assert.Equal(resultForName, authorName);
@@ -198,16 +155,16 @@ namespace NJsonApi.Test.Configuration
 
             //Act
             var resourceConfigurationForPost = configurationBuilder
-                .Resource<Post>()
+                .Resource<Post, PostsController>()
                 .WithSimpleProperty(p => p.Title)
                 .WithIdSelector(p => p.Id);
             var resourceConfigurationForAuthor = configurationBuilder
-                .Resource<Author>()
+                .Resource<Author, AuthorsController>()
                 .WithSimpleProperty(a => a.Name)
                 .WithIdSelector(a => a.Id);
 
             //Assert
-            var result = resourceConfigurationForAuthor.ConstructedMetadata;
+            var result = resourceConfigurationForAuthor.BuiltResourceMapping;
             AssertResourceConfigurationHasValuesForWithSimpleProperty(resourceConfigurationForAuthor);
 
             Assert.Contains("author", result.ResourceType);
@@ -216,11 +173,11 @@ namespace NJsonApi.Test.Configuration
 
             AssertResourceConfigurationHasValuesForWithSimpleProperty(resourceConfigurationForPost);
 
-            result = resourceConfigurationForPost.ConstructedMetadata;
+            result = resourceConfigurationForPost.BuiltResourceMapping;
             Assert.Contains("post", result.ResourceType);
             Assert.Equal(result.PropertyGetters["title"].Invoke(post), postTitle);
 
-            resourceConfigurationForPost.ConstructedMetadata.PropertySetters["title"].Invoke(post, postTitleModifed);
+            resourceConfigurationForPost.BuiltResourceMapping.PropertySetters["title"].Invoke(post, postTitleModifed);
             Assert.Equal(post.Title,postTitleModifed);
             Assert.Equal(result.PropertyGetters["title"].Invoke(post), postTitleModifed);
         }
@@ -231,16 +188,16 @@ namespace NJsonApi.Test.Configuration
             //Arrange
             const int authorId = 5;
             var author = new Author() { Id = authorId };
-            var resourceConfigurationForAuthor = configurationBuilder.Resource<Author>();
+            var resourceConfigurationForAuthor = configurationBuilder.Resource<Author, AuthorsController>();
             resourceConfigurationForAuthor.WithSimpleProperty(a => a.Name);
 
-            var result = resourceConfigurationForAuthor.ConstructedMetadata;
+            var result = resourceConfigurationForAuthor.BuiltResourceMapping;
 
             // Assert initial
             Assert.Equal(result.PropertyGetters.Count, 1);
             Assert.Equal(result.PropertySetters.Count, 1);
             Assert.Null(result.IdGetter);
-            Assert.Contains("author", resourceConfigurationForAuthor.ConstructedMetadata.ResourceType);
+            Assert.Contains("author", resourceConfigurationForAuthor.BuiltResourceMapping.ResourceType);
 
             //Act
             resourceConfigurationForAuthor.IgnoreProperty(a => a.Name);
@@ -249,7 +206,7 @@ namespace NJsonApi.Test.Configuration
             Assert.Equal(result.PropertyGetters.Count, 0);
             Assert.Equal(result.PropertySetters.Count, 0);
             Assert.Null(result.IdGetter);
-            Assert.Contains("author", resourceConfigurationForAuthor.ConstructedMetadata.ResourceType);
+            Assert.Contains("author", resourceConfigurationForAuthor.BuiltResourceMapping.ResourceType);
         }
 
         [Fact]
@@ -259,12 +216,12 @@ namespace NJsonApi.Test.Configuration
 
             //Act
             var resourceConfigurationForPost = configurationBuilder
-                .Resource<Post>()
+                .Resource<Post, PostsController>()
                 .WithIdSelector(p => p.Id)
                 .WithSimpleProperty(p => p.Title)
-                .WithLinkedResource<Author>(p => p.Author);
+                .WithLinkedResource(p => p.Author);
 
-            var result = resourceConfigurationForPost.ConstructedMetadata;
+            var result = resourceConfigurationForPost.BuiltResourceMapping;
 
             //Assert
             Assert.Equal(result.Relationships.Count, 1);
@@ -279,23 +236,23 @@ namespace NJsonApi.Test.Configuration
             //Arrange
             const string urlTemplate = "urlTemplate";
             var resourceConfigurationForPost = configurationBuilder
-                .Resource<Post>()
+                .Resource<Post, PostsController>()
                 .WithIdSelector(p => p.Id)
                 .WithSimpleProperty(p => p.Title);
 
-            Assert.Null(resourceConfigurationForPost.ConstructedMetadata.UrlTemplate);
+            Assert.Null(resourceConfigurationForPost.BuiltResourceMapping.UrlTemplate);
 
             //Act
             resourceConfigurationForPost
                  .WithLinkTemplate(urlTemplate);
 
             //Assert
-            Assert.Equal(resourceConfigurationForPost.ConstructedMetadata.UrlTemplate,urlTemplate);
+            Assert.Equal(resourceConfigurationForPost.BuiltResourceMapping.UrlTemplate,urlTemplate);
         }
 
         private void AssertResourceConfigurationHasValuesForWithSimpleProperty(IResourceConfigurationBuilder resourceConfiguration)
         {
-            var result = resourceConfiguration.ConstructedMetadata;
+            var result = resourceConfiguration.BuiltResourceMapping;
 
             Assert.Equal(result.PropertyGetters.Count,1);
             Assert.Equal(result.PropertySetters.Count,1);

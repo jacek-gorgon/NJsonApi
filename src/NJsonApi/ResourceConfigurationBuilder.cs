@@ -11,10 +11,9 @@ using NJsonApi.Infrastructure;
 
 namespace NJsonApi
 {
-    public class ResourceConfigurationBuilder<TResource> : IResourceConfigurationBuilder
+    public class ResourceConfigurationBuilder<TResource, TController> : IResourceConfigurationBuilder
     {
-        public IResourceMapping ConstructedMetadata { get; set; }
-        public ConfigurationBuilder ConfigurationBuilder { get; set; }
+        public IResourceMapping BuiltResourceMapping { get; set; }
         public IResourceTypeConvention ResourceTypeConvention { get; set; }
         public ILinkNameConvention LinkNameConvention { get; set; }
         public ILinkIdConvention LinkIdConvention { get; set; }
@@ -22,40 +21,38 @@ namespace NJsonApi
 
         public ResourceConfigurationBuilder(ConfigurationBuilder configurationBuilder)
         {
-            ConfigurationBuilder = configurationBuilder;
-
             ResourceTypeConvention = configurationBuilder.GetConvention<IResourceTypeConvention>();
             LinkNameConvention = configurationBuilder.GetConvention<ILinkNameConvention>();
             LinkIdConvention = configurationBuilder.GetConvention<ILinkIdConvention>();
             PropertyScanningConvention = configurationBuilder.GetConvention<IPropertyScanningConvention>();
 
-            ConstructedMetadata = new ResourceMapping<TResource>
+            BuiltResourceMapping = new ResourceMapping<TResource>
             {
                 ResourceType = ResourceTypeConvention.GetResourceTypeFromRepresentationType(typeof(TResource))
             };
         }
 
-        public ResourceConfigurationBuilder<TResource> WithResourceType(string resourceType)
+        public ResourceConfigurationBuilder<TResource, TController> WithResourceType(string resourceType)
         {
-            ConstructedMetadata.ResourceType = resourceType;
+            BuiltResourceMapping.ResourceType = resourceType;
             return this;
         }
 
-        public ResourceConfigurationBuilder<TResource> WithIdSelector(Expression<Func<TResource, object>> expression)
+        public ResourceConfigurationBuilder<TResource, TController> WithIdSelector(Expression<Func<TResource, object>> expression)
         {
-            ConstructedMetadata.IdGetter = ExpressionUtils.CompileToObjectTypedFunction(expression);
-            ConstructedMetadata.IdSetter = CreateIdSetter(expression.GetPropertyInfo());
+            BuiltResourceMapping.IdGetter = ExpressionUtils.CompileToObjectTypedFunction(expression);
+            BuiltResourceMapping.IdSetter = CreateIdSetter(expression.GetPropertyInfo());
             return this;
         }
 
-        public ResourceConfigurationBuilder<TResource> WithSimpleProperty(Expression<Func<TResource, object>> propertyAccessor)
+        public ResourceConfigurationBuilder<TResource, TController> WithSimpleProperty(Expression<Func<TResource, object>> propertyAccessor)
         {
             var propertyInfo = propertyAccessor.GetPropertyInfo();
             AddProperty(propertyInfo, typeof(TResource));
             return this;
         }
 
-        public ResourceConfigurationBuilder<TResource> WithSimpleProperty(Expression<Func<TResource, object>> propertyAccessor, SerializationDirection direction)
+        public ResourceConfigurationBuilder<TResource, TController> WithSimpleProperty(Expression<Func<TResource, object>> propertyAccessor, SerializationDirection direction)
         {
             var propertyInfo = propertyAccessor.GetPropertyInfo();
             RemoveProperty(propertyInfo);
@@ -63,16 +60,16 @@ namespace NJsonApi
             return this;
         }
 
-        public ResourceConfigurationBuilder<TResource> IgnoreProperty(Expression<Func<TResource, object>> propertyAccessor)
+        public ResourceConfigurationBuilder<TResource, TController> IgnoreProperty(Expression<Func<TResource, object>> propertyAccessor)
         {
             var pi = propertyAccessor.GetPropertyInfo();
             RemoveProperty(pi);
             return this;
         }
 
-        public ResourceConfigurationBuilder<TResource> WithLinkTemplate(string link)
+        public ResourceConfigurationBuilder<TResource, TController> WithLinkTemplate(string link)
         {
-            ConstructedMetadata.UrlTemplate = link;
+            BuiltResourceMapping.UrlTemplate = link;
             return this;
         }
 
@@ -85,15 +82,15 @@ namespace NJsonApi
         /// 
         /// Supply a custom implementations to alter behavior.
         /// </remarks>
-        public ResourceConfigurationBuilder<TResource> WithAllSimpleProperties()
+        public ResourceConfigurationBuilder<TResource, TController> WithAllSimpleProperties()
         {
             foreach (var propertyInfo in typeof(TResource).GetProperties())
             {
                 if (PropertyScanningConvention.IsPrimaryId(propertyInfo))
                 {
-                    ConstructedMetadata.IdGetter = propertyInfo.GetValue;
+                    BuiltResourceMapping.IdGetter = propertyInfo.GetValue;
                     PropertyInfo info = propertyInfo;
-                    ConstructedMetadata.IdSetter = CreateIdSetter(info);
+                    BuiltResourceMapping.IdSetter = CreateIdSetter(info);
                 }
                 else if (!PropertyScanningConvention.IsLinkedResource(propertyInfo) && !PropertyScanningConvention.ShouldIgnore(propertyInfo))
                     AddProperty(propertyInfo, typeof(TResource));
@@ -101,7 +98,7 @@ namespace NJsonApi
             return this;
         }
 
-        public ResourceConfigurationBuilder<TResource> WithLinkedChildResources()
+        public ResourceConfigurationBuilder<TResource, TController> WithLinkedChildResources()
         {
             return this;
         }
@@ -129,7 +126,7 @@ namespace NJsonApi
         /// 
         /// Supply a custom implementations to alter behavior.
         /// </remarks>
-        public ResourceConfigurationBuilder<TResource> WithAllProperties()
+        public ResourceConfigurationBuilder<TResource, TController> WithAllProperties()
         {
             WithAllSimpleProperties();
             WithAllLinkedResources();
@@ -148,7 +145,7 @@ namespace NJsonApi
         /// 
         /// Supply a custom implementations to alter behavior.
         /// </remarks>
-        public ResourceConfigurationBuilder<TResource> WithAllLinkedResources()
+        public ResourceConfigurationBuilder<TResource, TController> WithAllLinkedResources()
         {
             MethodInfo openMethod = GetType().GetMethod("WithLinkedResource");
 
@@ -191,7 +188,7 @@ namespace NJsonApi
         /// 
         /// Supply a custom implementations to alter behavior.
         /// </remarks>
-        public ResourceConfigurationBuilder<TResource> WithLinkedResource<TNested>(
+        public ResourceConfigurationBuilder<TResource, TController> WithLinkedResource<TNested>(
             Expression<Func<TResource, TNested>> objectAccessor, 
             Expression<Func<TResource, object>> idAccessor = null, 
             string linkedResourceType = null, 
@@ -226,27 +223,27 @@ namespace NJsonApi
                 InclusionRule = inclusionRule
             };
 
-            ConstructedMetadata.Relationships.Add(link);
+            BuiltResourceMapping.Relationships.Add(link);
             return this;
         }
 
         private void AddProperty(PropertyInfo propertyInfo, Type type, SerializationDirection direction = SerializationDirection.Both)
         {
             var name = PropertyScanningConvention.GetPropertyName(propertyInfo);
-            if (ConstructedMetadata.PropertyGetters.ContainsKey(name) ||
-                ConstructedMetadata.PropertySetters.ContainsKey(name))
+            if (BuiltResourceMapping.PropertyGetters.ContainsKey(name) ||
+                BuiltResourceMapping.PropertySetters.ContainsKey(name))
             {
                 throw new InvalidOperationException(string.Format("Property {0} is already registered on type {1}.", name, typeof(TResource)));
             }
 
             if (direction == SerializationDirection.Out || direction == SerializationDirection.Both)
             {
-                ConstructedMetadata.PropertyGetters[name] = propertyInfo.GetValue;
+                BuiltResourceMapping.PropertyGetters[name] = propertyInfo.GetValue;
             }
 
             if (direction == SerializationDirection.In || direction == SerializationDirection.Both)
             {
-                ConstructedMetadata.PropertySetters[name] = propertyInfo.SetValue;
+                BuiltResourceMapping.PropertySetters[name] = propertyInfo.SetValue;
             }
             
             var instance = Expression.Parameter(typeof(object), "i");
@@ -260,16 +257,16 @@ namespace NJsonApi
 
             if (direction == SerializationDirection.In || direction == SerializationDirection.Both)
             {
-                ConstructedMetadata.PropertySettersExpressions[name] = expression;
+                BuiltResourceMapping.PropertySettersExpressions[name] = expression;
             }
         }
 
         private void RemoveProperty(PropertyInfo propertyInfo)
         {
             var name = PropertyScanningConvention.GetPropertyName(propertyInfo);
-            ConstructedMetadata.PropertyGetters.Remove(name);
-            ConstructedMetadata.PropertySetters.Remove(name);
-            ConstructedMetadata.PropertySettersExpressions.Remove(name);
+            BuiltResourceMapping.PropertyGetters.Remove(name);
+            BuiltResourceMapping.PropertySetters.Remove(name);
+            BuiltResourceMapping.PropertySettersExpressions.Remove(name);
         }
     }
 }

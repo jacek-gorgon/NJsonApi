@@ -67,9 +67,8 @@ namespace NJsonApi.Serialization
 
             var resourceList = transformationHelper.UnifyObjectsToList(resource);
             var representationList = resourceList.Select(o => transformationHelper.CreateResourceRepresentation(o, resourceMapping, context));
-            var primaryResource = transformationHelper.ChooseProperResourceRepresentation(resource, representationList);
-
-            result.Data = primaryResource;
+            result.Data = transformationHelper.ChooseProperResourceRepresentation(resource, representationList);
+            result.Links = transformationHelper.GetTopLevelLinks(context.RequestUri);
 
             if (resourceMapping.Relationships.Any())
             {

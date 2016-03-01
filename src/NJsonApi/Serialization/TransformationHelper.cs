@@ -284,26 +284,12 @@ namespace NJsonApi.Serialization
                 throw new MissingMappingException(type);
             }
         }
-        
-        public object GetValue(JToken value, Type returnType)
+
+        public Dictionary<string, ILink> GetTopLevelLinks(Uri requestUri)
         {
-            object resultValue;
-            try
-            {
-                if (returnType == typeof(string) && value.Value<string>() == null)
-                {
-                    resultValue = null;
-                }
-                else
-                {
-                    resultValue = value.ToObject(returnType);
-                }
-            }
-            catch
-            {
-                resultValue = default(ValueType);
-            }
-            return resultValue;
+            var topLevel = new Dictionary<string, ILink>();
+            topLevel.Add("self", new SimpleLink(requestUri));
+            return topLevel;
         }
     }
 }

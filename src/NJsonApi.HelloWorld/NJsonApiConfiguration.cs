@@ -1,4 +1,5 @@
-﻿using NJsonApi.HelloWorld.Models;
+﻿using NJsonApi.HelloWorld.Controllers;
+using NJsonApi.HelloWorld.Models;
 
 namespace NJsonApi.HelloWorld
 {
@@ -9,17 +10,17 @@ namespace NJsonApi.HelloWorld
             var configBuilder = new ConfigurationBuilder();
 
             configBuilder
-                .Resource<Article>()
+                .Resource<Article, ArticlesController>()
                 .WithAllProperties()
                 .WithLinkTemplate("articles/{id}");
 
             configBuilder
-                .Resource<Person>()
+                .Resource<Person, PeopleController>()
                 .WithAllProperties()
                 .WithLinkTemplate("people/{id}");
 
             configBuilder
-                .Resource<Comment>()
+                .Resource<Comment, CommentsController>()
                 .WithAllProperties()
                 .WithLinkTemplate("comments/{id}");
             

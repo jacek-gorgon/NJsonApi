@@ -7,6 +7,7 @@ using NJsonApi.Test.TestModel;
 using NJsonApi.Conventions;
 using NJsonApi.Conventions.Impl;
 using Xunit;
+using NJsonApi.Test.TestControllers;
 
 namespace NJsonApi.Test.Configuration
 {
@@ -19,7 +20,7 @@ namespace NJsonApi.Test.Configuration
             var builder = new ConfigurationBuilder();
 
             //Act
-            builder.Resource<Post>();
+            builder.Resource<Post, PostsController>();
 
             var result = builder.Build();
 
@@ -37,7 +38,7 @@ namespace NJsonApi.Test.Configuration
 
             //Act
             builder
-                .Resource<Post>()
+                .Resource<Post, PostsController>()
                 .WithSimpleProperty(p => p.Title);
 
             var configuration = builder.Build();
@@ -65,7 +66,7 @@ namespace NJsonApi.Test.Configuration
 
             //Act
             builder
-                .Resource<Post>()
+                .Resource<Post, PostsController>()
                 .WithIdSelector(p => p.Id);
 
             var configuration = builder.Build();
@@ -97,11 +98,11 @@ namespace NJsonApi.Test.Configuration
 
             //Act
             builder
-                .Resource<Post>()
+                .Resource<Post, PostsController>()
                 .WithLinkedResource(p => p.Author);
 
             builder
-                .Resource<Author>()
+                .Resource<Author, AuthorsController>()
                 .WithLinkedResource(a => a.Posts);
 
             var configuration = builder.Build();
@@ -197,7 +198,7 @@ namespace NJsonApi.Test.Configuration
 
             //Act
             builder
-                .Resource<Post>()
+                .Resource<Post, PostsController>()
                 .WithAllSimpleProperties();
             
             var configuration = builder.Build();
@@ -225,11 +226,11 @@ namespace NJsonApi.Test.Configuration
             
             //Act
             builder
-                .Resource<Post>()
+                .Resource<Post, PostsController>()
                 .WithAllLinkedResources();
 
-            builder.Resource<Author>();
-            builder.Resource<Comment>();
+            builder.Resource<Author, AuthorsController>();
+            builder.Resource<Comment, CommentsController>();
 
             var configuration = builder.Build();
             var postMapping = configuration.GetMapping(typeof(Post));
@@ -253,11 +254,11 @@ namespace NJsonApi.Test.Configuration
 
             //Act
             builder
-                .Resource<Post>()
+                .Resource<Post, PostsController>()
                 .WithAllProperties();
 
-            builder.Resource<Author>();
-            builder.Resource<Comment>();
+            builder.Resource<Author, AuthorsController>();
+            builder.Resource<Comment, CommentsController>();
 
             var configuration = builder.Build();
             var postMapping = configuration.GetMapping(typeof(Post));
@@ -356,29 +357,29 @@ namespace NJsonApi.Test.Configuration
 
             //Act
             var resourceConfigurationForPost = configurationBuilder
-                .Resource<Post>()
+                .Resource<Post, PostsController>()
                 .WithSimpleProperty(p => p.Title)
                 .WithIdSelector(p => p.Id)
                 .WithLinkedResource(p => p.Replies);
             var resourceConfigurationForAuthor = configurationBuilder
-                .Resource<Author>()
+                .Resource<Author, AuthorsController>()
                 .WithSimpleProperty(a => a.Name)
                 .WithIdSelector(a => a.Id)
                 .WithLinkedResource(a => a.Posts);
             var resourceConfigurationForComment = configurationBuilder
-                .Resource<Comment>()
+                .Resource<Comment, CommentsController>()
                 .WithIdSelector(c => c.Id)
                 .WithSimpleProperty(c => c.Body);
             var result = configurationBuilder.Build();
 
             //Assert
-            Assert.Equal(resourceConfigurationForPost.ConstructedMetadata.Relationships.Count, 1);
-            Assert.Equal(resourceConfigurationForAuthor.ConstructedMetadata.Relationships.Count, 1);
+            Assert.Equal(resourceConfigurationForPost.BuiltResourceMapping.Relationships.Count, 1);
+            Assert.Equal(resourceConfigurationForAuthor.BuiltResourceMapping.Relationships.Count, 1);
             configurationBuilder.ResourceConfigurationsByType.All(
-                r => r.Value.ConstructedMetadata.Relationships.All(l => l.ResourceMapping != null));
+                r => r.Value.BuiltResourceMapping.Relationships.All(l => l.ResourceMapping != null));
             var authorLinks =
                  configurationBuilder.ResourceConfigurationsByType[
-                     resourceConfigurationForAuthor.ConstructedMetadata.ResourceRepresentationType].ConstructedMetadata.Relationships;
+                     resourceConfigurationForAuthor.BuiltResourceMapping.ResourceRepresentationType].BuiltResourceMapping.Relationships;
             Assert.Equal(authorLinks.Count, 1);
             Assert.Equal(authorLinks[0].RelationshipName, "posts");
             Assert.Equal(authorLinks[0].ResourceMapping.PropertyGetters.Count, 1);
@@ -391,7 +392,7 @@ namespace NJsonApi.Test.Configuration
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act - Exception!
-            Assert.Throws<InvalidOperationException>(() => configurationBuilder.Resource<BadModelWithReservedWords>());
+            Assert.Throws<InvalidOperationException>(() => configurationBuilder.Resource<BadModelWithReservedWords, DummyController>());
         }
 
         [Fact]
@@ -401,7 +402,7 @@ namespace NJsonApi.Test.Configuration
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act - Exception!
-            Assert.Throws<InvalidOperationException>(() => configurationBuilder.Resource<ValidModelWithBadChild>());
+            Assert.Throws<InvalidOperationException>(() => configurationBuilder.Resource<ValidModelWithBadChild, DummyController>());
         }
 
         [Fact]
@@ -411,7 +412,7 @@ namespace NJsonApi.Test.Configuration
             var configurationBuilder = new ConfigurationBuilder();
 
             // Act - Will not throw an infinite loop error
-            configurationBuilder.Resource<ModelThatCausesInfiniteLoop>();
+            configurationBuilder.Resource<ModelThatCausesInfiniteLoop, DummyController>();
         }
     }
 }

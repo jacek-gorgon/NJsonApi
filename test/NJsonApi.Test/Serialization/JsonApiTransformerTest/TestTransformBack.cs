@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using Xunit;
 using NJsonApi.Serialization.Representations.Resources;
+using NJsonApi.Test.Builders;
 
 namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 {
@@ -26,12 +27,8 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
                 }
             };
 
-            var configuration = (new ConfigurationBuilder())
-                .Resource<Post>()
-                .WithSimpleProperty(x => x.AuthorId)
-                .WithSimpleProperty(x => x.Id)
-                .WithSimpleProperty(x => x.Title);
-            var context = new Context(configuration.ConfigurationBuilder.Build(), new Uri("http://fakehost:1234", UriKind.Absolute));
+            var config = TestModelConfigurationBuilder.BuilderForEverything.Build();
+            var context = new Context(config, new Uri("http://fakehost:1234", UriKind.Absolute));
             var sut = new JsonApiTransformer();
 
             // Act
@@ -59,11 +56,8 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
                 }
             };
 
-            var configuration = (new ConfigurationBuilder())
-                .Resource<Post>()
-                .WithSimpleProperty(x => x.AuthorId)
-                .WithSimpleProperty(x => x.Title);
-            var context = new Context(configuration.ConfigurationBuilder.Build(), new Uri("http://fakehost:1234", UriKind.Absolute));
+            var config = TestModelConfigurationBuilder.BuilderForEverything.Build();
+            var context = new Context(config, new Uri("http://fakehost:1234", UriKind.Absolute));
             var sut = new JsonApiTransformer();
 
 

@@ -6,6 +6,7 @@ using Microsoft.AspNet.Mvc;
 using NJsonApi.Web.BadActionResultTransformers;
 using Microsoft.AspNet.Http;
 using NJsonApi.Serialization;
+using Microsoft.AspNet.Mvc.ApiExplorer;
 
 namespace NJsonApi.Web
 {
@@ -14,11 +15,16 @@ namespace NJsonApi.Web
         public bool AllowMultiple { get { return false; } }
         private readonly IJsonApiTransformer jsonApiTransformer;
         private readonly IConfiguration configuration;
+        private readonly IApiDescriptionGroupCollectionProvider descriptionProvider;
 
-        public JsonApiActionFilter(IJsonApiTransformer jsonApiTransformer, IConfiguration configuration)
+        public JsonApiActionFilter(
+            IJsonApiTransformer jsonApiTransformer, 
+            IConfiguration configuration, 
+            IApiDescriptionGroupCollectionProvider descriptionProvider)
         {
             this.jsonApiTransformer = jsonApiTransformer;
             this.configuration = configuration;
+            this.descriptionProvider = descriptionProvider;
         }
     
         public override void OnActionExecuting(ActionExecutingContext context)

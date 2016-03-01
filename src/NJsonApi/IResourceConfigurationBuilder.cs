@@ -2,6 +2,6 @@
 {
     public interface IResourceConfigurationBuilder
     {
-        IResourceMapping ConstructedMetadata { get; set; }
+        IResourceMapping BuiltResourceMapping { get; set; }
     }
 }

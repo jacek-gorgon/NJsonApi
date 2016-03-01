@@ -62,6 +62,7 @@ namespace NJsonApi
             services.AddMvc(
                 options =>
                     {
+                        options.Conventions.Add(new ApiExplorerVisibilityEnabledConvention());
                         options.Filters.Add(typeof(JsonApiActionFilter));
                         options.Filters.Add(typeof(JsonApiExceptionFilter));
                         options.OutputFormatters.Insert(0, new JsonApiOutputFormatter(this));

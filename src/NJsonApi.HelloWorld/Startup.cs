@@ -40,7 +40,7 @@ namespace NJsonApi.HelloWorld
             app.UseIISPlatformHandler();
 
             app.UseStaticFiles();
-
+            
             app.UseMvc();
         }
 

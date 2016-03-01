@@ -38,7 +38,7 @@ namespace NJsonApi
             return firstMatchingConvention;
         }
 
-        public ResourceConfigurationBuilder<TResource> Resource<TResource>()
+        public ResourceConfigurationBuilder<TResource, TController> Resource<TResource, TController>()
         {
             var resource = typeof(TResource);
 
@@ -49,13 +49,13 @@ namespace NJsonApi
 
             if (!ResourceConfigurationsByType.ContainsKey(resource))
             {
-                var newResourceConfiguration = new ResourceConfigurationBuilder<TResource>(this) { ConfigurationBuilder = this };
+                var newResourceConfiguration = new ResourceConfigurationBuilder<TResource, TController>(this);
                 ResourceConfigurationsByType[resource] = newResourceConfiguration;
                 return newResourceConfiguration;
             }
             else
             {
-                return ResourceConfigurationsByType[resource] as ResourceConfigurationBuilder<TResource>;
+                return ResourceConfigurationsByType[resource] as ResourceConfigurationBuilder<TResource, TController>;
             }
         }
 
@@ -67,7 +67,7 @@ namespace NJsonApi
             // Each link needs to be wired to full metadata once all resources are registered
             foreach (var resourceConfiguration in ResourceConfigurationsByType)
             {
-                var links = resourceConfiguration.Value.ConstructedMetadata.Relationships;
+                var links = resourceConfiguration.Value.BuiltResourceMapping.Relationships;
                 for (int i = links.Count - 1; i >= 0; i--)
                 {
                     var link = links[i];
@@ -87,10 +87,10 @@ namespace NJsonApi
                             links.RemoveAt(i);
                     }
                     else
-                        link.ResourceMapping = resourceConfigurationOutput.ConstructedMetadata;
+                        link.ResourceMapping = resourceConfigurationOutput.BuiltResourceMapping;
                 }
 
-                configuration.AddMapping(resourceConfiguration.Value.ConstructedMetadata);
+                configuration.AddMapping(resourceConfiguration.Value.BuiltResourceMapping);
             }
 
             return configuration;
