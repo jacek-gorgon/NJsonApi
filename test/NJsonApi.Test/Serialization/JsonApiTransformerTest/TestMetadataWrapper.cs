@@ -5,6 +5,7 @@ using NJsonApi.Serialization;
 using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Representations.Resources;
 using Xunit;
+using NJsonApi.Test.Builders;
 
 namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 {
@@ -18,10 +19,12 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             MetaDataWrapper<SampleClass> objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer();
+            var transfomer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
             // Act
-            CompoundDocument result = sut.Transform(objectToTransform, context);
+            CompoundDocument result = transfomer.Transform(objectToTransform, context);
 
             // Assert
             Assert.NotNull(result.Data);
@@ -35,10 +38,12 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             MetaDataWrapper<SampleClass> objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer();
+            var transfomer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
             // Act
-            CompoundDocument result = sut.Transform(objectToTransform, context);
+            CompoundDocument result = transfomer.Transform(objectToTransform, context);
 
             // Assert
             var transformedObject = result.Data as SingleResource;
@@ -51,11 +56,12 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             MetaDataWrapper<SampleClass> objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer();
-
+            var transfomer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
             // Act
-            CompoundDocument result = sut.Transform(objectToTransform, context);
+            CompoundDocument result = transfomer.Transform(objectToTransform, context);
 
             // Assert
             var transformedObject = result.Data as SingleResource;
@@ -70,11 +76,12 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             MetaDataWrapper<SampleClass> objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer();
+            var transfomer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
             // Act
-            CompoundDocument result = sut
-                .Transform(objectToTransform, context);
+            CompoundDocument result = transfomer.Transform(objectToTransform, context);
 
             // Assert
             var transformedObject = result.Data as SingleResource;
@@ -87,10 +94,12 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             MetaDataWrapper<SampleClass> objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer();
+            var transfomer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
             // Act
-            CompoundDocument result = sut.Transform(objectToTransform, context);
+            CompoundDocument result = transfomer.Transform(objectToTransform, context);
 
             // Assert
             var transformedObject = result.Data as SingleResource;
@@ -108,11 +117,12 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             MetaDataWrapper<SampleClass> objectToTransform = CreateObjectToTransform();
             objectToTransform.MetaData.Add("Paging", pagingValue);
             objectToTransform.MetaData.Add("Count", countValue);
-            var sut = new JsonApiTransformer();
-
+            var transfomer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
             // Act
-            CompoundDocument result = sut.Transform(objectToTransform, context);
+            CompoundDocument result = transfomer.Transform(objectToTransform, context);
 
             // Assert
             var transformedObjectMetadata = result.Meta;
@@ -134,14 +144,19 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
         private Context CreateContext()
         {
-            var conf = new NJsonApi.Configuration();
+            return new Context(new Uri("http://fakehost:1234/", UriKind.Absolute));
+        }
+
+        private IConfiguration CreateConfiguration()
+        {
             var mapping = new ResourceMapping<SampleClass>(c => c.Id, "http://sampleClass/{id}");
             mapping.ResourceType = "sampleClasses";
             mapping.AddPropertyGetter("someValue", c => c.SomeValue);
             mapping.AddPropertyGetter("date", c => c.DateTime);
-            conf.AddMapping(mapping);
 
-            return new Context(conf, new Uri("http://fakehost:1234/", UriKind.Absolute));
+            var config = new NJsonApi.Configuration();
+            config.AddMapping(mapping);
+            return config;
         }
 
         class SampleClass

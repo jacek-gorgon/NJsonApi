@@ -7,6 +7,7 @@ using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Representations;
 using NJsonApi.Serialization.Representations.Resources;
 using Xunit;
+using NJsonApi.Test.Builders;
 
 namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 {
@@ -18,12 +19,14 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         public void Creates_CompondDocument_for_collection_not_nested_class_and_propertly_map_resourceName()
         {
             // Arrange
-            var configuration = CreateContext();            
+            var context = CreateContext();            
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer();
+            var transformer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
             // Act
-            CompoundDocument result = sut.Transform(objectsToTransform, configuration);
+            CompoundDocument result = transformer.Transform(objectsToTransform, context);
 
             // Assert
             Assert.NotNull(result.Data);
@@ -37,10 +40,12 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var configuration = CreateContext();
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform().Take(1);
-            var sut = new JsonApiTransformer();
+            var transformer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
             // Act
-            CompoundDocument result = sut.Transform(objectsToTransform, configuration);
+            CompoundDocument result = transformer.Transform(objectsToTransform, configuration);
 
             // Assert
             Assert.NotNull(result.Data);
@@ -55,10 +60,12 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var configuration = CreateContext();
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer();
+            var transformer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
             // Act
-            CompoundDocument result = sut.Transform(objectsToTransform, configuration);
+            CompoundDocument result = transformer.Transform(objectsToTransform, configuration);
 
             // Assert
             var transformedObject = result.Data as ResourceCollection;
@@ -70,12 +77,14 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         public void Creates_CompondDocument_for_collection_not_nested_class_and_propertly_map_properties()
         {
             // Arrange
-            var configuration = CreateContext();
+            var context = CreateContext();
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer();
+            var transformer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
             // Act
-            CompoundDocument result = sut.Transform(objectsToTransform, configuration);
+            CompoundDocument result = transformer.Transform(objectsToTransform, context);
 
             // Assert
             var transformedObject = result.Data as ResourceCollection;
@@ -97,10 +106,12 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var configuration = CreateContext();
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer();
+            var transformer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
             // Act
-            CompoundDocument result = sut.Transform(objectsToTransform, configuration);
+            CompoundDocument result = transformer.Transform(objectsToTransform, configuration);
 
             // Assert
             var transformedObject = result.Data as ResourceCollection;
@@ -114,10 +125,12 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var configuration = CreateContext();
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer();
+            var transformer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
             // Act
-            CompoundDocument result = sut.Transform(objectsToTransform, configuration);
+            CompoundDocument result = transformer.Transform(objectsToTransform, configuration);
 
             // Assert
             var transformedObject = result.Data as ResourceCollection;
@@ -134,10 +147,10 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             {
                 new MetaDataWrapper<SampleClass>(new SampleClass())
             };
-            var sut = new JsonApiTransformer();
+            var transformer = new JsonApiTransformerBuilder().Build();
 
             // Act => Assert
-            Assert.Throws<NotSupportedException>(() => sut.Transform(objectsToTransform, configuration));
+            Assert.Throws<NotSupportedException>(() => transformer.Transform(objectsToTransform, configuration));
         }
 
         private static IEnumerable<SampleClass> CreateObjectToTransform()
@@ -167,15 +180,21 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
         private Context CreateContext()
         {
-            var conf = new NJsonApi.Configuration();
+            
+            var requestUri = new Uri("http://fakeUri:1234/fakecontroller");
+
+            return new Context(requestUri);
+        }
+
+        private IConfiguration CreateConfiguration()
+        {
             var mapping = new ResourceMapping<SampleClass>(c => c.Id, "http://sampleClass/{id}");
             mapping.ResourceType = "sampleClasses";
             mapping.AddPropertyGetter("someValue", c => c.SomeValue);
             mapping.AddPropertyGetter("date", c => c.DateTime);
-            conf.AddMapping(mapping);
-            var requestUri = new Uri("http://fakeUri:1234/fakecontroller");
-
-            return new Context(conf, requestUri);
+            var config = new NJsonApi.Configuration();
+            config.AddMapping(mapping);
+            return config;
         }
 
         class SampleClass

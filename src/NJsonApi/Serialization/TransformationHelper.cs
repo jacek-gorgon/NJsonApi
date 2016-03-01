@@ -21,6 +21,12 @@ namespace NJsonApi.Serialization
         private const string RelatedIdPlaceholder = "{relatedId}";
         private const string MetaCountAttribute = "count";
         private const string SelfLinkKey = "self";
+        private readonly IConfiguration configuration;
+
+        public TransformationHelper(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
 
         public IResourceRepresentation ChooseProperResourceRepresentation(object resource, IEnumerable<SingleResource> representationList)
         {
@@ -231,7 +237,7 @@ namespace NJsonApi.Serialization
                             rel.Data = new SingleResourceIdentifier
                             {
                                 Id = relatedId,
-                                Type = context.Configuration.GetMapping(relatedInstance.GetType()).ResourceType // This allows polymorphic (subtyped) resources to be fully represented
+                                Type = configuration.GetMapping(relatedInstance.GetType()).ResourceType // This allows polymorphic (subtyped) resources to be fully represented
                             };
                         else if (relatedId == null || linkMapping.InclusionRule == ResourceInclusionRules.ForceInclude)
                             rel.Data = new NullResourceIdentifier(); // two-state null case, see NullResourceIdentifier summary
@@ -258,7 +264,7 @@ namespace NJsonApi.Serialization
                             .Select(o => new SingleResourceIdentifier
                             {
                                 Id = idGetter(o).ToString(),
-                                Type = context.Configuration.GetMapping(o.GetType()).ResourceType // This allows polymorphic (subtyped) resources to be fully represented
+                                Type = configuration.GetMapping(o.GetType()).ResourceType // This allows polymorphic (subtyped) resources to be fully represented
                             });
                         rel.Data = new MultipleResourceIdentifiers(identifiers);
                     }

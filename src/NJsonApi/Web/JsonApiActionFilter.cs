@@ -7,6 +7,9 @@ using NJsonApi.Web.BadActionResultTransformers;
 using Microsoft.AspNet.Http;
 using NJsonApi.Serialization;
 using Microsoft.AspNet.Mvc.ApiExplorer;
+using System.IO;
+using Newtonsoft.Json;
+using Microsoft.AspNet.Mvc.ModelBinding;
 
 namespace NJsonApi.Web
 {
@@ -15,13 +18,16 @@ namespace NJsonApi.Web
         public bool AllowMultiple { get { return false; } }
         private readonly IJsonApiTransformer jsonApiTransformer;
         private readonly IConfiguration configuration;
+        private readonly JsonSerializer serializer;
 
         public JsonApiActionFilter(
             IJsonApiTransformer jsonApiTransformer, 
-            IConfiguration configuration)
+            IConfiguration configuration,
+            JsonSerializer serializer)
         {
             this.jsonApiTransformer = jsonApiTransformer;
             this.configuration = configuration;
+            this.serializer = serializer;
         }
     
         public override void OnActionExecuting(ActionExecutingContext context)
@@ -34,6 +40,31 @@ namespace NJsonApi.Web
             if (!ValidateAcceptHeader(context.HttpContext.Request.Headers))
             { 
                 context.Result = new HttpStatusCodeResult(406);
+            }
+
+            using (var reader = new StreamReader(context.HttpContext.Request.Body))
+            {
+                using (var jsonReader = new JsonTextReader(reader))
+                {
+                    var updateDocument = serializer.Deserialize(jsonReader, typeof(UpdateDocument)) as UpdateDocument;
+
+                    if (updateDocument != null)
+                    {
+                        // TODO this method doesn't belong here, should be part of TransformBack method in the transformer
+                        var actionDescriptorForBody = context.ActionDescriptor
+                            .Parameters
+                            .Single(x => x.BindingInfo.BindingSource == BindingSource.Body);
+
+                        var typeInsideDeltaGeneric = actionDescriptorForBody
+                            .ParameterType
+                            .GenericTypeArguments
+                            .Single();
+                        var jsonApiContext = new Context(new Uri(context.HttpContext.Request.Host.Value, UriKind.Absolute));
+                        var transformed = jsonApiTransformer.TransformBack(updateDocument, typeInsideDeltaGeneric, jsonApiContext);
+                        context.ActionArguments.Add(actionDescriptorForBody.Name, transformed);
+                        context.ModelState.Clear();
+                    }
+                }
             }
         }
 
@@ -65,7 +96,6 @@ namespace NJsonApi.Web
             }
 
             var jsonApiContext = new Context(
-                configuration, 
                 new Uri(context.HttpContext.Request.GetDisplayUrl()),
                 relationshipPaths);
             responseResult.Value = jsonApiTransformer.Transform(responseResult.Value, jsonApiContext);

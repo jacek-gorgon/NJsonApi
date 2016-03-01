@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NJsonApi.Serialization;
+using NJsonApi.Test.Builders;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -12,11 +13,13 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         public void Serilized_properly()
         {
             // Arrange
-            var configuration = CreateContext();
+            var context = CreateContext();
             var objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer();
+            var transformer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
-            var transformed = sut.Transform(objectToTransform, configuration);
+            var transformed = transformer.Transform(objectToTransform, context);
 
             // Act
             var json = JsonConvert.SerializeObject(transformed);
@@ -64,6 +67,11 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
         private Context CreateContext()
         {
+            return new Context(new Uri("http://fakehost:1234/", UriKind.Absolute));
+        }
+
+        private IConfiguration CreateConfiguration()
+        {
             var conf = new NJsonApi.Configuration();
             var sampleClassMapping = new ResourceMapping<SampleClass>(c => c.Id, "http://sampleClass/{id}");
             sampleClassMapping.ResourceType = "sampleClasses";
@@ -103,7 +111,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             conf.AddMapping(nestedClassMapping);
             conf.AddMapping(deeplyNestedMapping);
 
-            return new Context(conf, new Uri("http://fakehost:1234/", UriKind.Absolute));
+            return conf;
         }
 
         class SampleClass

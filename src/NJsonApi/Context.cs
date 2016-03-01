@@ -8,21 +8,18 @@ namespace NJsonApi
 {
     public class Context
     {
-        public Context(IConfiguration configuration, Uri requestUri)
+        public Context(Uri requestUri)
         {
             IncludedResources = new string[0];
-            Configuration = configuration;
             RequestUri = requestUri;
         }
 
-        public Context(IConfiguration configuration, Uri requestUri, string[] includedResources)
+        public Context(Uri requestUri, string[] includedResources)
         {
-            Configuration = configuration;
             RequestUri = requestUri;
             IncludedResources = includedResources;
         }
 
-        public IConfiguration Configuration { get; private set; }
         public Uri RequestUri { get; private set; }
         public string[] IncludedResources { get; set; }
 

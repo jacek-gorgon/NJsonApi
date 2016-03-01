@@ -25,20 +25,10 @@ namespace NJsonApi.Test.Fakes
             this.PathBase = new PathString("");
             this.Path = new PathString("/api/fake");
             this.Query = new ReadableStringCollection(queryStrings);
+            this.Body = new MemoryStream();
         }
 
-        public override Stream Body
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override Stream Body { get; set; }
 
         public override long? ContentLength
         {

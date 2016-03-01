@@ -4,7 +4,7 @@ namespace NJsonApi.Web
 {
     internal class JsonApiOutputFormatter : JsonOutputFormatter
     {
-        public JsonApiOutputFormatter(Configuration configuration)
+        public JsonApiOutputFormatter(IConfiguration configuration)
         {
             SupportedMediaTypes.Clear();
             SupportedMediaTypes.Add(configuration.DefaultJsonApiMediaType);

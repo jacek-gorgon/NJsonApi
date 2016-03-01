@@ -1,6 +1,7 @@
 ﻿using NJsonApi.Serialization;
 using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Representations.Resources;
+using NJsonApi.Test.Builders;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -17,10 +18,12 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             SampleClass objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer();
+            var transformer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
             // Act
-            CompoundDocument result = sut.Transform(objectToTransform, context);
+            CompoundDocument result = transformer.Transform(objectToTransform, context);
 
             // Assert
             Assert.NotNull(result.Data);
@@ -34,10 +37,12 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             SampleClass objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer();
+            var transformer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
             // Act
-            CompoundDocument result = sut.Transform(objectToTransform, context);
+            CompoundDocument result = transformer.Transform(objectToTransform, context);
 
             // Assert
             var transformedObject = result.Data as SingleResource;
@@ -50,10 +55,12 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             SampleClass objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer();
+            var transformer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
             // Act
-            CompoundDocument result = sut.Transform(objectToTransform, context);
+            CompoundDocument result = transformer.Transform(objectToTransform, context);
 
             // Assert
             var transformedObject = result.Data as SingleResource;
@@ -68,10 +75,12 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             SampleClass objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer();
+            var transformer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
             // Act
-            CompoundDocument result = sut.Transform(objectToTransform, context);
+            CompoundDocument result = transformer.Transform(objectToTransform, context);
 
             // Assert
             var transformedObject = result.Data as SingleResource;
@@ -84,10 +93,12 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var context = CreateContext();
             SampleClass objectToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer();
+            var transformer = new JsonApiTransformerBuilder()
+                .With(CreateConfiguration())
+                .Build();
 
             // Act
-            CompoundDocument result = sut.Transform(objectToTransform, context);
+            CompoundDocument result = transformer.Transform(objectToTransform, context);
 
             // Assert
             var transformedObject = result.Data as SingleResource;
@@ -107,14 +118,19 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
         private Context CreateContext()
         {
-            var conf = new NJsonApi.Configuration();
+            return new Context(new Uri("http://fakehost:1234/", UriKind.Absolute));
+        }
+
+        private IConfiguration CreateConfiguration()
+        {
             var mapping = new ResourceMapping<SampleClass>(c => c.Id, "http://sampleClass/{id}");
             mapping.ResourceType = "sampleClasses";
             mapping.AddPropertyGetter("someValue", c => c.SomeValue);
-            mapping.AddPropertyGetter("date", c => c.DateTime );
-            conf.AddMapping(mapping);
+            mapping.AddPropertyGetter("date", c => c.DateTime);
 
-            return new Context(conf, new Uri("http://fakehost:1234/", UriKind.Absolute));
+            var config = new NJsonApi.Configuration();
+            config.AddMapping(mapping);
+            return config; 
         }
 
         class SampleClass

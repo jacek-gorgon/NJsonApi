@@ -18,16 +18,19 @@ namespace NJsonApi.Serialization
     {
         private JsonSerializer serializer;
 
-        private readonly TransformationHelper transformationHelper = new TransformationHelper();
+        private readonly TransformationHelper transformationHelper;
         private readonly IApiDescriptionGroupCollectionProvider descriptionProvider;
+        private readonly IConfiguration configuration;
 
-        internal JsonApiTransformer()
-        { }
-
-        public JsonApiTransformer(JsonSerializer serializer, IApiDescriptionGroupCollectionProvider descriptionProvider)
+        public JsonApiTransformer(
+            JsonSerializer serializer, 
+            IApiDescriptionGroupCollectionProvider descriptionProvider,
+            IConfiguration configuration)
         {
             this.serializer = serializer;
             this.descriptionProvider = descriptionProvider;
+            this.configuration = configuration;
+            this.transformationHelper = new TransformationHelper(configuration);
         }
 
         public CompoundDocument Transform(Exception e, int httpStatus)
@@ -52,7 +55,7 @@ namespace NJsonApi.Serialization
             Type innerObjectType = Reflection.GetObjectType(objectGraph);
 
             transformationHelper.VerifyTypeSupport(innerObjectType);
-            transformationHelper.AssureAllMappingsRegistered(innerObjectType, context.Configuration);
+            transformationHelper.AssureAllMappingsRegistered(innerObjectType, configuration);
 
             var result = new CompoundDocument
             {
@@ -60,7 +63,7 @@ namespace NJsonApi.Serialization
             };
 
             var resource = transformationHelper.UnwrapResourceObject(objectGraph);
-            var resourceMapping = context.Configuration.GetMapping(innerObjectType);
+            var resourceMapping = configuration.GetMapping(innerObjectType);
 
             var resourceList = transformationHelper.UnifyObjectsToList(resource);
             var representationList = resourceList.Select(o => transformationHelper.CreateResourceRepresentation(o, resourceMapping, context));
@@ -77,7 +80,7 @@ namespace NJsonApi.Serialization
 
         public IDelta TransformBack(UpdateDocument updateDocument, Type type, Context context)
         {
-            var mapping = context.Configuration.GetMapping(type);
+            var mapping = configuration.GetMapping(type);
             var openGeneric = typeof(Delta<>);
             var closedGenericType = openGeneric.MakeGenericType(type);
             var delta = Activator.CreateInstance(closedGenericType) as IDelta;
@@ -100,7 +103,7 @@ namespace NJsonApi.Serialization
             {
                 foreach (var relMapping in mapping.Relationships)
                 {
-                    var relatedTypeMapping = context.Configuration.GetMapping(relMapping.RelatedBaseType);
+                    var relatedTypeMapping = configuration.GetMapping(relMapping.RelatedBaseType);
                     var relationship = updateDocument.Data.Relationships[relMapping.RelationshipName];
                     if (relationship == null)
                     {

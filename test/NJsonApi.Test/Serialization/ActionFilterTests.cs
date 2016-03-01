@@ -43,7 +43,7 @@ namespace NJsonApi.Test.Serialization
         public void GIVEN_Exception_WHEN_OnActionExecuted_THEN_ExceptionIsInCompoundDocument()
         {
             // Arrange
-            var transformer = new JsonApiTransformer();
+            var transformer = new JsonApiTransformer(null, null, null);
             var exceptionFilter = new JsonApiExceptionFilter(transformer);
 
 
@@ -336,8 +336,8 @@ namespace NJsonApi.Test.Serialization
         private JsonApiActionFilter GetActionFilterForTestModel()
         {
             var config = TestModelConfigurationBuilder.BuilderForEverything.Build();
-            var transformer = new JsonApiTransformer();
-            return new JsonApiActionFilter(transformer, config);
+            var transformer = new JsonApiTransformer(null, null, config);
+            return new JsonApiActionFilter(transformer, config, JsonSerializerBuilder.Build());
         }
     }
 }
