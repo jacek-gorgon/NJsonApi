@@ -10,6 +10,7 @@ using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Representations;
 using NJsonApi.Utils;
 using NJsonApi.Serialization.Representations.Relationships;
+using Microsoft.AspNet.Mvc.ApiExplorer;
 
 namespace NJsonApi.Serialization
 {
@@ -18,19 +19,15 @@ namespace NJsonApi.Serialization
         private JsonSerializer serializer;
 
         private readonly TransformationHelper transformationHelper = new TransformationHelper();
+        private readonly IApiDescriptionGroupCollectionProvider descriptionProvider;
 
-        public JsonApiTransformer()
+        internal JsonApiTransformer()
         { }
 
-        public JsonApiTransformer(JsonSerializer serializer)
+        public JsonApiTransformer(JsonSerializer serializer, IApiDescriptionGroupCollectionProvider descriptionProvider)
         {
             this.serializer = serializer;
-        }
-
-        public JsonSerializer Serializer
-        {
-            get { return serializer ?? (serializer = new JsonSerializer() ); }
-            set { serializer = value; }
+            this.descriptionProvider = descriptionProvider;
         }
 
         public CompoundDocument Transform(Exception e, int httpStatus)

@@ -230,26 +230,6 @@ namespace NJsonApi.Test.Configuration
             Assert.Null(result.Relationships[0].ResourceMapping);
         }
 
-        [Fact]
-        public void WithLinkTemplateTest()
-        {
-            //Arrange
-            const string urlTemplate = "urlTemplate";
-            var resourceConfigurationForPost = configurationBuilder
-                .Resource<Post, PostsController>()
-                .WithIdSelector(p => p.Id)
-                .WithSimpleProperty(p => p.Title);
-
-            Assert.Null(resourceConfigurationForPost.BuiltResourceMapping.UrlTemplate);
-
-            //Act
-            resourceConfigurationForPost
-                 .WithLinkTemplate(urlTemplate);
-
-            //Assert
-            Assert.Equal(resourceConfigurationForPost.BuiltResourceMapping.UrlTemplate,urlTemplate);
-        }
-
         private void AssertResourceConfigurationHasValuesForWithSimpleProperty(IResourceConfigurationBuilder resourceConfiguration)
         {
             var result = resourceConfiguration.BuiltResourceMapping;

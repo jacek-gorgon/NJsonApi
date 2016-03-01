@@ -67,21 +67,6 @@ namespace NJsonApi
             return this;
         }
 
-        public ResourceConfigurationBuilder<TResource, TController> WithLinkTemplate(string link)
-        {
-            BuiltResourceMapping.UrlTemplate = link;
-            return this;
-        }
-
-        /// <summary>
-        /// Registers through discovery all properties that are considered primitive, i.e. not linked resources.
-        /// </summary>
-        /// <remarks>
-        /// Conventions used:
-        /// IProperyScanningConvention
-        /// 
-        /// Supply a custom implementations to alter behavior.
-        /// </remarks>
         public ResourceConfigurationBuilder<TResource, TController> WithAllSimpleProperties()
         {
             foreach (var propertyInfo in typeof(TResource).GetProperties())
@@ -108,24 +93,12 @@ namespace NJsonApi
             return (o, s) => info.SetValue(o, ParseStringIntoT(info.PropertyType, s));
         }
 
-        public static object ParseStringIntoT(Type t, string s)
+        private static object ParseStringIntoT(Type t, string s)
         {
             var foo = TypeDescriptor.GetConverter(t);
             return foo.ConvertFromInvariantString(s);
         }
 
-        /// <summary>
-        /// Registers through discovery all properties, including primitive properties and linked resources.
-        /// </summary>
-        /// <remarks>
-        /// Conventions used:
-        /// IResourceTypeConvention
-        /// ILinkIdConvention
-        /// ILinkNameConvention
-        /// IProperyScanningConvention
-        /// 
-        /// Supply a custom implementations to alter behavior.
-        /// </remarks>
         public ResourceConfigurationBuilder<TResource, TController> WithAllProperties()
         {
             WithAllSimpleProperties();
@@ -133,18 +106,6 @@ namespace NJsonApi
             return this;
         }
 
-        /// <summary>
-        /// Registers all properties discovered to be linked resources.
-        /// </summary>
-        /// <remarks>
-        /// Conventions used:
-        /// IResourceTypeConvention
-        /// ILinkIdConvention
-        /// ILinkNameConvention
-        /// IProperyScanningConvention
-        /// 
-        /// Supply a custom implementations to alter behavior.
-        /// </remarks>
         public ResourceConfigurationBuilder<TResource, TController> WithAllLinkedResources()
         {
             MethodInfo openMethod = GetType().GetMethod("WithLinkedResource");
@@ -177,17 +138,6 @@ namespace NJsonApi
                 .SingleOrDefault();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// Conventions used:
-        /// IResourceTypeConvention
-        /// ILinkIdConvention
-        /// ILinkNameConvention
-        /// 
-        /// Supply a custom implementations to alter behavior.
-        /// </remarks>
         public ResourceConfigurationBuilder<TResource, TController> WithLinkedResource<TNested>(
             Expression<Func<TResource, TNested>> objectAccessor, 
             Expression<Func<TResource, object>> idAccessor = null, 

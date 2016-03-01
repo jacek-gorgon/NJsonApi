@@ -57,7 +57,7 @@ namespace NJsonApi
         public void Apply(IServiceCollection services)
         {
             var serializer = GetJsonSerializer();
-            var transformer = new JsonApiTransformer(serializer);
+            var transformer = new JsonApiTransformer(serializer, null);
 
             services.AddMvc(
                 options =>
@@ -69,6 +69,7 @@ namespace NJsonApi
                         options.InputFormatters.Insert(0, new JsonApiInputFormatter(serializer, this, transformer));
                     });
 
+            services.AddInstance<JsonSerializer>(GetJsonSerializer());
             services.AddSingleton<IJsonApiTransformer, JsonApiTransformer>();
             services.AddInstance<IConfiguration>(this);
         }

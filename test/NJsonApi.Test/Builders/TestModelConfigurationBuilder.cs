@@ -17,18 +17,15 @@ namespace NJsonApi.Test.Builders
                 var builder = new ConfigurationBuilder();
                 builder
                     .Resource<Post, PostsController>()
-                    .WithAllProperties()
-                    .WithLinkTemplate("/posts/{id}");
+                    .WithAllProperties();
 
                 builder
                     .Resource<Author, AuthorsController>()
-                    .WithAllProperties()
-                    .WithLinkTemplate("/authors/{id}");
+                    .WithAllProperties();
 
                 builder
                     .Resource<Comment, CommentsController>()
-                    .WithAllProperties()
-                    .WithLinkTemplate("/comments/{id}");
+                    .WithAllProperties();
 
                 return builder;
             }

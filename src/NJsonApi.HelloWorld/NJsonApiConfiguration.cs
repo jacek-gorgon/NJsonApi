@@ -11,18 +11,15 @@ namespace NJsonApi.HelloWorld
 
             configBuilder
                 .Resource<Article, ArticlesController>()
-                .WithAllProperties()
-                .WithLinkTemplate("articles/{id}");
+                .WithAllProperties();
 
             configBuilder
                 .Resource<Person, PeopleController>()
-                .WithAllProperties()
-                .WithLinkTemplate("people/{id}");
+                .WithAllProperties();
 
             configBuilder
                 .Resource<Comment, CommentsController>()
-                .WithAllProperties()
-                .WithLinkTemplate("comments/{id}");
+                .WithAllProperties();
             
             var nJsonApiConfig = configBuilder.Build();
             return nJsonApiConfig;

@@ -15,16 +15,13 @@ namespace NJsonApi.Web
         public bool AllowMultiple { get { return false; } }
         private readonly IJsonApiTransformer jsonApiTransformer;
         private readonly IConfiguration configuration;
-        private readonly IApiDescriptionGroupCollectionProvider descriptionProvider;
 
         public JsonApiActionFilter(
             IJsonApiTransformer jsonApiTransformer, 
-            IConfiguration configuration, 
-            IApiDescriptionGroupCollectionProvider descriptionProvider)
+            IConfiguration configuration)
         {
             this.jsonApiTransformer = jsonApiTransformer;
             this.configuration = configuration;
-            this.descriptionProvider = descriptionProvider;
         }
     
         public override void OnActionExecuting(ActionExecutingContext context)
