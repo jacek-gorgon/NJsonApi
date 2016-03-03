@@ -9,7 +9,7 @@ namespace NJsonApi.Serialization
 
         public string GetFullyQualifiedUrl(Context context, string urlTemplate)
         {
-            var fullUri = new Uri(new Uri(context.BaseUri, UriKind.Absolute), urlTemplate);
+            var fullUri = new Uri(context.BaseUri, urlTemplate);
 
             return fullUri.AbsoluteUri;
         }

@@ -1,4 +1,5 @@
-﻿using NJsonApi.Test.TestModel;
+﻿using NJsonApi.Test.TestControllers;
+using NJsonApi.Test.TestModel;
 using Xunit;
 
 namespace NJsonApi.Test.Configuration
@@ -9,7 +10,7 @@ namespace NJsonApi.Test.Configuration
         public void Creates_configuration_mapping()
         {
             // Arrange
-            var sampleMapping = new ResourceMapping<Post>(c => c.Id, "sample_{id}")
+            var sampleMapping = new ResourceMapping<Post, PostsController>(c => c.Id, "sample_{id}")
             {
                 ResourceType = "posts"
             };

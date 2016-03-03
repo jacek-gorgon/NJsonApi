@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNet.Mvc.ApiExplorer;
+﻿using Microsoft.AspNet.Mvc;
+using Microsoft.AspNet.Mvc.ApiExplorer;
 using Newtonsoft.Json;
 using NJsonApi.Serialization;
+using NJsonApi.Test.Fakes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +12,12 @@ namespace NJsonApi.Test.Builders
 {
     internal class JsonApiTransformerBuilder
     {
-        private readonly IApiDescriptionGroupCollectionProvider apiProvider;
         private IConfiguration config;
+        private ILinkBuilder linkBuilder;
 
         public JsonApiTransformerBuilder()
         {
-            this.apiProvider = null;
+            this.linkBuilder = new FakeLinkBuilder();
         }
 
         public JsonApiTransformerBuilder With(IConfiguration config)
@@ -27,7 +29,8 @@ namespace NJsonApi.Test.Builders
         public JsonApiTransformer Build()
         {
             var serializer = JsonSerializerBuilder.Build();
-            return new JsonApiTransformer(serializer, apiProvider, config);
+            var transformationHelper = new TransformationHelper(config, linkBuilder);
+            return new JsonApiTransformer(serializer, config, transformationHelper);
         }
     }
 }

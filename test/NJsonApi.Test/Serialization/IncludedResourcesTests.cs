@@ -2,6 +2,7 @@
 using NJsonApi.Serialization;
 using NJsonApi.Serialization.Representations.Resources;
 using NJsonApi.Test.Builders;
+using NJsonApi.Test.Fakes;
 using NJsonApi.Test.TestModel;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace NJsonApi.Test.Serialization
                 new Uri("http://dummy:4242/posts"),
                 new string[] { "authors.comments" });
 
-            var transformationHelper = new TransformationHelper(config);
+            var transformationHelper = new TransformationHelper(config, new FakeLinkBuilder());
 
             // Act
             var result = transformationHelper.CreateIncludedRepresentations(sourceList, mapping, context);
@@ -74,7 +75,7 @@ namespace NJsonApi.Test.Serialization
                 new Uri("http://dummy:4242/posts"),
                 new string[] { "authors.comments" });
 
-            var transformationHelper = new TransformationHelper(config);
+            var transformationHelper = new TransformationHelper(config, new FakeLinkBuilder());
 
             // Act
             var result = transformationHelper.CreateIncludedRepresentations(sourceList, mapping, context);
@@ -103,7 +104,7 @@ namespace NJsonApi.Test.Serialization
             var mapping = config.GetMapping(typeof(Post));
             var context = new Context(new Uri("http://dummy:4242/posts"));
 
-            var transformationHelper = new TransformationHelper(config);
+            var transformationHelper = new TransformationHelper(config, new FakeLinkBuilder());
 
             // Act
             var result = transformationHelper.CreateIncludedRepresentations(sourceList, mapping, context);

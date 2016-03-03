@@ -5,13 +5,11 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using NJsonApi.Serialization;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNet.Mvc.Formatters;
 using System.Reflection;
 using Microsoft.Net.Http.Headers;
 using NJsonApi.Utils;
 using NJsonApi.Exceptions;
 using NJsonApi.Web;
-using Microsoft.AspNet.Mvc;
 
 namespace NJsonApi
 {
@@ -69,6 +67,7 @@ namespace NJsonApi
             services.AddInstance<JsonSerializer>(GetJsonSerializer());
             services.AddSingleton<IJsonApiTransformer, JsonApiTransformer>();
             services.AddInstance<IConfiguration>(this);
+            services.AddSingleton<TransformationHelper>();
         }
 
         public bool ValidateIncludedRelationshipPaths(string[] includedPaths, object objectGraph)
@@ -91,6 +90,11 @@ namespace NJsonApi
 #endif
             var jsonSerializer = JsonSerializer.Create(serializerSettings);
             return jsonSerializer;
+        }
+
+        public IEnumerable<IResourceMapping> All()
+        {
+            return resourcesMappingsByType.Values;
         }
     }
 }

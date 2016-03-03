@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NJsonApi
 {
@@ -23,13 +19,11 @@ namespace NJsonApi
         public Uri RequestUri { get; private set; }
         public string[] IncludedResources { get; set; }
 
-        public string BaseUri {
+        public Uri BaseUri {
             get
             {
-
                 var authority = (UriComponents.Scheme | UriComponents.UserInfo | UriComponents.Host | UriComponents.Port);
-                var baseUri = new Uri(RequestUri.GetComponents(authority, UriFormat.SafeUnescaped));
-                return baseUri.AbsoluteUri;
+                return new Uri(RequestUri.GetComponents(authority, UriFormat.SafeUnescaped));
             }
         }
     }

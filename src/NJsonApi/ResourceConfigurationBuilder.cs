@@ -26,7 +26,7 @@ namespace NJsonApi
             LinkIdConvention = configurationBuilder.GetConvention<ILinkIdConvention>();
             PropertyScanningConvention = configurationBuilder.GetConvention<IPropertyScanningConvention>();
 
-            BuiltResourceMapping = new ResourceMapping<TResource>
+            BuiltResourceMapping = new ResourceMapping<TResource, TController>
             {
                 ResourceType = ResourceTypeConvention.GetResourceTypeFromRepresentationType(typeof(TResource))
             };

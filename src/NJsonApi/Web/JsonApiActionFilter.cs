@@ -50,7 +50,6 @@ namespace NJsonApi.Web
 
                     if (updateDocument != null)
                     {
-                        // TODO this method doesn't belong here, should be part of TransformBack method in the transformer
                         var actionDescriptorForBody = context.ActionDescriptor
                             .Parameters
                             .Single(x => x.BindingInfo.BindingSource == BindingSource.Body);

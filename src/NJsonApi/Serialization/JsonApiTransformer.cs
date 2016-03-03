@@ -2,15 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NJsonApi.Infrastructure;
 using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Representations;
 using NJsonApi.Utils;
 using NJsonApi.Serialization.Representations.Relationships;
-using Microsoft.AspNet.Mvc.ApiExplorer;
 
 namespace NJsonApi.Serialization
 {
@@ -19,18 +16,16 @@ namespace NJsonApi.Serialization
         private JsonSerializer serializer;
 
         private readonly TransformationHelper transformationHelper;
-        private readonly IApiDescriptionGroupCollectionProvider descriptionProvider;
         private readonly IConfiguration configuration;
 
         public JsonApiTransformer(
             JsonSerializer serializer, 
-            IApiDescriptionGroupCollectionProvider descriptionProvider,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            TransformationHelper transformationHelper)
         {
             this.serializer = serializer;
-            this.descriptionProvider = descriptionProvider;
             this.configuration = configuration;
-            this.transformationHelper = new TransformationHelper(configuration);
+            this.transformationHelper = transformationHelper;
         }
 
         public CompoundDocument Transform(Exception e, int httpStatus)
@@ -66,7 +61,8 @@ namespace NJsonApi.Serialization
             var resourceMapping = configuration.GetMapping(innerObjectType);
 
             var resourceList = transformationHelper.UnifyObjectsToList(resource);
-            var representationList = resourceList.Select(o => transformationHelper.CreateResourceRepresentation(o, resourceMapping, context));
+            var representationList = resourceList.Select(
+                o => transformationHelper.CreateResourceRepresentation(o, resourceMapping, context));
             result.Data = transformationHelper.ChooseProperResourceRepresentation(resource, representationList);
             result.Links = transformationHelper.GetTopLevelLinks(context.RequestUri);
 

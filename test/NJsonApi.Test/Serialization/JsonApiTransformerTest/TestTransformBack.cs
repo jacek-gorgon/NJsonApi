@@ -60,11 +60,11 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
             var config = TestModelConfigurationBuilder.BuilderForEverything.Build();
             var context = new Context(new Uri("http://fakehost:1234", UriKind.Absolute));
-            var sut = new JsonApiTransformer(null, null, config);
+            var transformer = new JsonApiTransformerBuilder().With(config).Build();
 
 
             // Act
-            var resultDelta = sut.TransformBack(updateDocument, typeof(Post), context);
+            var resultDelta = transformer.TransformBack(updateDocument, typeof(Post), context);
 
             // Assert
             Assert.True(resultDelta.ObjectPropertyValues.ContainsKey("title"));

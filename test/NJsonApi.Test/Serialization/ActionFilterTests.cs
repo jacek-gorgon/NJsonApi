@@ -336,7 +336,7 @@ namespace NJsonApi.Test.Serialization
         private JsonApiActionFilter GetActionFilterForTestModel()
         {
             var config = TestModelConfigurationBuilder.BuilderForEverything.Build();
-            var transformer = new JsonApiTransformer(null, null, config);
+            var transformer = new JsonApiTransformerBuilder().With(config).Build();
             return new JsonApiActionFilter(transformer, config, JsonSerializerBuilder.Build());
         }
     }

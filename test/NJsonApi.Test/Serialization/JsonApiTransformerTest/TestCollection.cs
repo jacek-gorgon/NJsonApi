@@ -8,6 +8,7 @@ using NJsonApi.Serialization.Representations;
 using NJsonApi.Serialization.Representations.Resources;
 using Xunit;
 using NJsonApi.Test.Builders;
+using NJsonApi.Test.TestControllers;
 
 namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 {
@@ -101,25 +102,6 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         }
 
         [Fact]
-        public void Creates_CompondDocument_for_collection_not_nested_class_and_propertly_map_href()
-        {
-            // Arrange
-            var configuration = CreateContext();
-            IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform();
-            var transformer = new JsonApiTransformerBuilder()
-                .With(CreateConfiguration())
-                .Build();
-
-            // Act
-            CompoundDocument result = transformer.Transform(objectsToTransform, configuration);
-
-            // Assert
-            var transformedObject = result.Data as ResourceCollection;
-            Assert.Equal(transformedObject[0].Links["self"].ToString(), "http://sampleclass/1");
-            Assert.Equal(transformedObject[1].Links["self"].ToString(), "http://sampleclass/2");
-        }
-
-        [Fact]
         public void Creates_CompondDocument_for_collection_not_nested_class_and_propertly_map_type()
         {
             // Arrange
@@ -188,7 +170,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
         private IConfiguration CreateConfiguration()
         {
-            var mapping = new ResourceMapping<SampleClass>(c => c.Id, "http://sampleClass/{id}");
+            var mapping = new ResourceMapping<SampleClass, DummyController>(c => c.Id, "http://sampleClass/{id}");
             mapping.ResourceType = "sampleClasses";
             mapping.AddPropertyGetter("someValue", c => c.SomeValue);
             mapping.AddPropertyGetter("date", c => c.DateTime);

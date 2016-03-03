@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using NJsonApi.Serialization;
 using NJsonApi.Test.Builders;
+using NJsonApi.Test.TestControllers;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -73,18 +74,18 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         private IConfiguration CreateConfiguration()
         {
             var conf = new NJsonApi.Configuration();
-            var sampleClassMapping = new ResourceMapping<SampleClass>(c => c.Id, "http://sampleClass/{id}");
+            var sampleClassMapping = new ResourceMapping<SampleClass, DummyController>(c => c.Id, "http://sampleClass/{id}");
             sampleClassMapping.ResourceType = "sampleClasses";
             sampleClassMapping.AddPropertyGetter("someValue", c => c.SomeValue);
             sampleClassMapping.AddPropertyGetter("date", c => c.DateTime);
 
 
-            var nestedClassMapping = new ResourceMapping<NestedClass>(c => c.Id, "http://nestedclass/{id}");
+            var nestedClassMapping = new ResourceMapping<NestedClass, DummyController>(c => c.Id, "http://nestedclass/{id}");
             nestedClassMapping.ResourceType = "nestedClasses";
             nestedClassMapping.AddPropertyGetter("nestedText", c => c.NestedText);
 
 
-            var deeplyNestedMapping = new ResourceMapping<DeeplyNestedClass>(c => c.Id, "http://deep/{id}");
+            var deeplyNestedMapping = new ResourceMapping<DeeplyNestedClass, DummyController>(c => c.Id, "http://deep/{id}");
             deeplyNestedMapping.ResourceType = "deeplyNestedClasses";
             deeplyNestedMapping.AddPropertyGetter("value", c => c.Value);
 

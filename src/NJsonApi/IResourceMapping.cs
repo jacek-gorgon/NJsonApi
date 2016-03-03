@@ -9,6 +9,7 @@ namespace NJsonApi
         Func<object, object> IdGetter { get; set; }
         Action<object, string> IdSetter { get; set; }
         Type ResourceRepresentationType { get; set; }
+        Type Controller { get; }
         string ResourceType { get; set; }
         string UrlTemplate { get; set; }
         List<IRelationshipMapping> Relationships { get; set; }
@@ -16,6 +17,5 @@ namespace NJsonApi
         Dictionary<string, Action<object, object>> PropertySetters { get; }
         Dictionary<string, Expression<Action<object, object>>> PropertySettersExpressions { get; }
         bool ValidateIncludedRelationshipPaths(string[] includedPaths);
-
     }
 }

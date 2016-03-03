@@ -1,12 +1,9 @@
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using NJsonApi.Infrastructure;
 using NJsonApi.Exceptions;
-using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Representations;
 using NJsonApi.Serialization.Representations.Relationships;
 using NJsonApi.Serialization.Representations.Resources;
@@ -22,10 +19,12 @@ namespace NJsonApi.Serialization
         private const string MetaCountAttribute = "count";
         private const string SelfLinkKey = "self";
         private readonly IConfiguration configuration;
+        private readonly ILinkBuilder linkBuilder;
 
-        public TransformationHelper(IConfiguration configuration)
+        public TransformationHelper(IConfiguration configuration, ILinkBuilder linkBuilder)
         {
             this.configuration = configuration;
+            this.linkBuilder = linkBuilder;
         }
 
         public IResourceRepresentation ChooseProperResourceRepresentation(object resource, IEnumerable<SingleResource> representationList)
@@ -159,31 +158,25 @@ namespace NJsonApi.Serialization
             return null;
         }
 
-        public SingleResource CreateResourceRepresentation(object objectGraph, IResourceMapping resourceMapping, Context context)
+        public SingleResource CreateResourceRepresentation(
+            object objectGraph, 
+            IResourceMapping resourceMapping, 
+            Context context)
         {
             var urlBuilder = new UrlBuilder();
             var result = new SingleResource();
 
             result.Id = resourceMapping.IdGetter(objectGraph).ToString();
             result.Type = resourceMapping.ResourceType;
-
             result.Attributes = resourceMapping.PropertyGetters.ToDictionary(kvp => kvp.Key, kvp => kvp.Value(objectGraph));
-
-            if (resourceMapping.UrlTemplate != null)
-                result.Links = CreateLinks(context, resourceMapping, urlBuilder, result);
+            result.Links = new Dictionary<string, ILink>() { { "self", linkBuilder.FindLink(context, result.Id, resourceMapping) } };
 
             if (resourceMapping.Relationships.Any())
+            {
                 result.Relationships = CreateRelationships(objectGraph, result.Id, resourceMapping, context);
+            }
 
             return result;
-        }
-
-        private static Dictionary<string, ILink> CreateLinks(Context context, IResourceMapping resourceMapping, UrlBuilder urlBuilder, SingleResource result)
-        {
-            return new Dictionary<string, ILink>() {
-                { SelfLinkKey,
-                    new SimpleLink {
-                        Href = urlBuilder.GetFullyQualifiedUrl(context, resourceMapping.UrlTemplate.Replace(IdPlaceholder, result.Id)) } } };
         }
 
         private ILink GetUrlFromTemplate(Context context, string urlTemplate, string parentId, string relatedId = null)
