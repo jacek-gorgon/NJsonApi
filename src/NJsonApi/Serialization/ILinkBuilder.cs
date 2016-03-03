@@ -4,6 +4,6 @@ namespace NJsonApi.Serialization
 {
     internal interface ILinkBuilder
     {
-        ILink FindLink(Context context, string id, IResourceMapping resourceMapping);
+        ILink FindResourceSelfLink(Context context, string id, IResourceMapping resourceMapping);
     }
 }

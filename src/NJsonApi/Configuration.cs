@@ -64,6 +64,7 @@ namespace NJsonApi
                         options.OutputFormatters.Insert(0, new JsonApiOutputFormatter(this));
                     });
 
+            services.AddSingleton<ILinkBuilder, LinkBuilder>();
             services.AddInstance<JsonSerializer>(GetJsonSerializer());
             services.AddSingleton<IJsonApiTransformer, JsonApiTransformer>();
             services.AddInstance<IConfiguration>(this);

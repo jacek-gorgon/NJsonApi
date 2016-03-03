@@ -9,7 +9,7 @@ namespace NJsonApi.Test.Fakes
 {
     internal class FakeLinkBuilder : ILinkBuilder
     {
-        public ILink FindLink(Context context, string id, IResourceMapping resourceMapping)
+        public ILink FindResourceSelfLink(Context context, string id, IResourceMapping resourceMapping)
         {
             return new SimpleLink(new Uri("http://example.com"));
         }
