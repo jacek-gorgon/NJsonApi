@@ -47,19 +47,16 @@ During Startup, the entities are registered with the `ConfigurationBuilder` to b
 	var configBuilder = new ConfigurationBuilder();
 
 	configBuilder
-		.Resource<Article>()
-		.WithAllProperties()
-		.WithLinkTemplate("/articles/{id}");
-
-	configBuilder
-		.Resource<Person>()
-		.WithAllProperties()
-		.WithLinkTemplate("/authors/{id}");
+      .Resource<Article, ArticlesController>()
+      .WithAllProperties();
 
   configBuilder
-    .Resource<Comment>()
-    .WithAllProperties()
-    .WithLinkTemplate("/comments/{id}");
+      .Resource<Person, PeopleController>()
+      .WithAllProperties();
+
+  configBuilder
+      .Resource<Comment, CommentsController>()
+      .WithAllProperties();
 
 	var nJsonApiConfig = configBuilder.Build();
 	nJsonApiConfig.Apply(httpConfiguration);
@@ -75,69 +72,54 @@ The Controller method requires no additional attributes or markup:
 	}
 ```
 
-A GET request to `localhost:5000/articles/1?include=comments.author` with header `application/vnd.api+json` gives the compound document:
+A GET request to `http://localhost:5000/articles/1?include=comments.people` with header `application/vnd.api+json` gives the compound document:
 
 ```json
 {
-  "data": [
-    {
-      "id": "1",
-      "type": "articles",
-      "attributes": {
-        "title": "JSON API paints my bikeshed!"
-      },
-      "relationships": {
-        "author": {
-          "data": {
-            "id": "3",
-            "type": "people"
-          }
+  "data": {
+    "id": "1",
+    "type": "articles",
+    "attributes": {
+      "title": "JSON API paints my bikeshed!"
+    },
+    "relationships": {
+      "author": {
+        "links": {
+          "self": "http://localhost:5000/articles/1/relationships/author",
+          "related": "http://localhost:5000/articles/1/author"
         },
-        "comments": {
-          "data": [
-            {
-              "id": "5",
-              "type": "comments"
-            },
-            {
-              "id": "6",
-              "type": "comments"
-            }
-          ],
-          "meta": {
-            "count": "2"
-          }
+        "data": {
+          "id": "3",
+          "type": "people"
         }
       },
-      "links": {
-        "self": "http://localhost:5000/articles/1"
+      "comments": {
+        "links": {
+          "self": "http://localhost:5000/articles/1/relationships/comments",
+          "related": "http://localhost:5000/articles/1/comments"
+        },
+        "data": [
+          {
+            "id": "5",
+            "type": "comments"
+          },
+          {
+            "id": "6",
+            "type": "comments"
+          }
+        ],
+        "meta": {
+          "count": "2"
+        }
       }
     },
-    {
-      "id": "2",
-      "type": "articles",
-      "attributes": {
-        "title": "JSON API makes the tea!"
-      },
-      "relationships": {
-        "author": {
-          "data": {
-            "id": "4",
-            "type": "people"
-          }
-        },
-        "comments": {
-          "data": [],
-          "meta": {
-            "count": "0"
-          }
-        }
-      },
-      "links": {
-        "self": "http://localhost:5000/articles/2"
-      }
+    "links": {
+      "self": "http://localhost:5000/articles/1"
     }
-  ],
+  },
+  "links": {
+    "self": "http://localhost:5000/articles/1?include=comments.people"
+  },
   "included": [
     {
       "id": "3",
@@ -159,6 +141,10 @@ A GET request to `localhost:5000/articles/1?include=comments.author` with header
       },
       "relationships": {
         "author": {
+          "links": {
+            "self": "http://localhost:5000/comments/5/relationships/author",
+            "related": "http://localhost:5000/comments/5/author"
+          },
           "data": {
             "id": "3",
             "type": "people"
@@ -177,6 +163,10 @@ A GET request to `localhost:5000/articles/1?include=comments.author` with header
       },
       "relationships": {
         "author": {
+          "links": {
+            "self": "http://localhost:5000/comments/6/relationships/author",
+            "related": "http://localhost:5000/comments/6/author"
+          },
           "data": {
             "id": "4",
             "type": "people"
@@ -199,6 +189,9 @@ A GET request to `localhost:5000/articles/1?include=comments.author` with header
         "self": "http://localhost:5000/people/4"
       }
     }
-  ]
+  ],
+  "jsonapi": {
+    "Version": "1.0"
+  }
 }
 ```
