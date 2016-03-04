@@ -12,7 +12,6 @@ namespace NJsonApi
         public Action<object, string> IdSetter { get; set; }
         public Type ResourceRepresentationType { get; set; }
         public string ResourceType { get; set; }
-        public string UrlTemplate { get; set; }
         public Dictionary<string, Func<object, object>> PropertyGetters { get; set; }
         public Dictionary<string, Action<object, object>> PropertySetters { get; private set; }
         public Dictionary<string, Expression<Action<object, object>>> PropertySettersExpressions { get; private set; }
@@ -32,7 +31,6 @@ namespace NJsonApi
         {
             IdGetter = ExpressionUtils.CompileToObjectTypedFunction(idPointer);
             ResourceRepresentationType = typeof(TEntity);
-            UrlTemplate = urlResource;
             PropertyGetters = new Dictionary<string, Func<object, object>>();
             PropertySetters = new Dictionary<string, Action<object, object>>();
             PropertySettersExpressions = new Dictionary<string, Expression<Action<object, object>>>();

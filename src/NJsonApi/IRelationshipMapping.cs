@@ -18,10 +18,6 @@ namespace NJsonApi
         IPropertyHandle RelatedCollectionProperty { get; set; }
         Func<object, object> RelatedResource { get; }
         Func<object, object> RelatedResourceId { get; }
-
-        string SelfUrlTemplate { get; set; }
-        string RelatedUrlTemplate { get; set; }
-
         string ParentResourceNavigationPropertyName { get; }
         Type ParentResourceNavigationPropertyType { get; }
     }

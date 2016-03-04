@@ -13,11 +13,7 @@ namespace NJsonApi.Serialization
 {
     internal class TransformationHelper
     {
-        private const string IdPlaceholder = "{id}";
-        private const string ParentIdPlaceholder = "{parentId}";
-        private const string RelatedIdPlaceholder = "{relatedId}";
         private const string MetaCountAttribute = "count";
-        private const string SelfLinkKey = "self";
         private readonly IConfiguration configuration;
         private readonly ILinkBuilder linkBuilder;
 
@@ -163,7 +159,6 @@ namespace NJsonApi.Serialization
             IResourceMapping resourceMapping, 
             Context context)
         {
-            var urlBuilder = new UrlBuilder();
             var result = new SingleResource();
 
             result.Id = resourceMapping.IdGetter(objectGraph).ToString();
@@ -177,15 +172,6 @@ namespace NJsonApi.Serialization
             }
 
             return result;
-        }
-
-        private ILink GetUrlFromTemplate(Context context, string urlTemplate, string parentId, string relatedId = null)
-        {
-            var builder = new UrlBuilder();
-            return new SimpleLink
-            {
-                Href = builder.GetFullyQualifiedUrl(context, urlTemplate.Replace(ParentIdPlaceholder, parentId).Replace(RelatedIdPlaceholder, relatedId))
-            };
         }
 
         public Dictionary<string, IRelationship> CreateRelationships(object objectGraph, string parentId, IResourceMapping resourceMapping, Context context)
@@ -217,11 +203,6 @@ namespace NJsonApi.Serialization
                             relatedId = id.ToString();
                     }
 
-                    // Generating "related" link for to-one relationships
-                    if (linkMapping.RelatedUrlTemplate != null && relatedId != null)
-                        relLinks.Related = GetUrlFromTemplate(context, linkMapping.RelatedUrlTemplate, parentId, relatedId.ToString());
-
-
                     if (linkMapping.InclusionRule != ResourceInclusionRules.ForceOmit)
                     {
                         // Generating resource linkage for to-one relationships
@@ -237,10 +218,6 @@ namespace NJsonApi.Serialization
                 }
                 else
                 {
-                    // Generating "related" link for to-many relationships
-                    if (linkMapping.RelatedUrlTemplate != null)
-                        relLinks.Related = GetUrlFromTemplate(context, linkMapping.RelatedUrlTemplate, parentId);
-
                     IEnumerable relatedInstance = null;
                     if (linkMapping.RelatedResource != null)
                         relatedInstance = (IEnumerable)linkMapping.RelatedResource(objectGraph);

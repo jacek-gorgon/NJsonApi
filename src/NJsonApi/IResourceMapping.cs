@@ -11,7 +11,6 @@ namespace NJsonApi
         Type ResourceRepresentationType { get; set; }
         Type Controller { get; }
         string ResourceType { get; set; }
-        string UrlTemplate { get; set; }
         List<IRelationshipMapping> Relationships { get; set; }
         Dictionary<string, Func<object, object>> PropertyGetters { get; set; }
         Dictionary<string, Action<object, object>> PropertySetters { get; }

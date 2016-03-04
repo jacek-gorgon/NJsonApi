@@ -15,8 +15,6 @@ namespace NJsonApi
         public Type RelatedBaseType { get; set; }
         public string RelatedBaseResourceType { get; set; }
         public IResourceMapping ResourceMapping { get; set; }
-        public string SelfUrlTemplate { get; set; }
-        public string RelatedUrlTemplate { get; set; }
         public bool IsCollection { get; set; }
         public IPropertyHandle<TParent, TNested> RelatedCollectionProperty { get; set; }
 
