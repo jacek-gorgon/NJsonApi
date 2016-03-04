@@ -22,7 +22,7 @@ namespace NJsonApi.Serialization
             this.urlHelper = urlHelper;
         }
 
-        public ILink FindResourceSelfLink(Context context, string id, IResourceMapping resourceMapping)
+        public ILink FindResourceSelfLink(Context context, string resourceId, IResourceMapping resourceMapping)
         {
             var actions = descriptionProvider.From(resourceMapping.Controller).Items;
 
@@ -31,9 +31,24 @@ namespace NJsonApi.Serialization
                 a.ParameterDescriptions.Count(p => p.Name == "id") == 1);
 
             var values = new Dictionary<string, object>();
-            values.Add("id", id);
+            values.Add("id", resourceId);
 
             return ToUrl(context, action, values);
+        }
+
+        public ILink RelationshipRelatedLink(Context context, string resourceId, IResourceMapping resourceMapping, IRelationshipMapping linkMapping)
+        {
+            var selfLink = FindResourceSelfLink(context, resourceId, resourceMapping).Href;
+            var completeLink = $"{selfLink}/{linkMapping.RelationshipName}";
+            return new SimpleLink(new Uri(completeLink));
+           
+        }
+
+        public ILink RelationshipSelfLink(Context context, string resourceId, IResourceMapping resourceMapping, IRelationshipMapping linkMapping)
+        {
+            var selfLink = FindResourceSelfLink(context, resourceId, resourceMapping).Href;
+            var completeLink = $"{selfLink}/relationships/{linkMapping.RelationshipName}";
+            return new SimpleLink(new Uri(completeLink));
         }
 
         // TODO replace with UrlHelper method once RC2 has been released

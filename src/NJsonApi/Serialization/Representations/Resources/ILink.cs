@@ -2,5 +2,6 @@
 {
     internal interface ILink
     {
+        string Href { get; set; }
     }
 }

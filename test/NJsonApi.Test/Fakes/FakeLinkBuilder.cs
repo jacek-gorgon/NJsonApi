@@ -13,5 +13,15 @@ namespace NJsonApi.Test.Fakes
         {
             return new SimpleLink(new Uri("http://example.com"));
         }
+
+        public ILink RelationshipRelatedLink(Context context, string parentId, IResourceMapping resourceMapping, IRelationshipMapping linkMapping)
+        {
+            return new SimpleLink(new Uri("http://example.com"));
+        }
+
+        public ILink RelationshipSelfLink(Context context, string resourceId, IResourceMapping resourceMapping, IRelationshipMapping linkMapping)
+        {
+            return new SimpleLink(new Uri("http://example.com"));
+        }
     }
 }

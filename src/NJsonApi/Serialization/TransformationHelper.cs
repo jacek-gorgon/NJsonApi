@@ -197,9 +197,8 @@ namespace NJsonApi.Serialization
                 var rel = new Relationship();
                 var relLinks = new RelationshipLinks();
 
-                // Generating "self" link
-                if (linkMapping.SelfUrlTemplate != null)
-                    relLinks.Self = GetUrlFromTemplate(context, linkMapping.SelfUrlTemplate, parentId);
+                relLinks.Self = linkBuilder.RelationshipSelfLink(context, parentId, resourceMapping, linkMapping);
+                relLinks.Related = linkBuilder.RelationshipRelatedLink(context, parentId, resourceMapping, linkMapping);
 
                 if (!linkMapping.IsCollection)
                 {
