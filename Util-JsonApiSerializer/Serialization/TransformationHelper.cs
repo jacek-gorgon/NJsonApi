@@ -197,9 +197,9 @@ namespace UtilJsonApiSerializer.Serialization
             if (resourceMapping.Relationships.Any())
                 result.Relationships = CreateRelationships(objectGraph, result.Id, resourceMapping, context, result.Type);
 
-            if (resourceMapping.CustomHandlerAction != null)
+            if (resourceMapping.PipelineModule != null)
             {
-                resourceMapping.CustomHandlerAction(resourceMapping.ResourceRepresentationType, result);
+                resourceMapping.PipelineModule.Run(resourceMapping.ResourceRepresentationType, result);
             }
             
             return result;
