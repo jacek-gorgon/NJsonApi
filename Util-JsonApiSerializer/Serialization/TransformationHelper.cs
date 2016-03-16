@@ -84,7 +84,7 @@ namespace UtilJsonApiSerializer.Serialization
                 {
                     _parentId = string.Empty;
                 }
-                
+
                 AppendIncludedRepresentationRecursive(resource, resourceMapping, includedList, alreadyVisitedObjects, context);
             }
 
@@ -197,6 +197,11 @@ namespace UtilJsonApiSerializer.Serialization
             if (resourceMapping.Relationships.Any())
                 result.Relationships = CreateRelationships(objectGraph, result.Id, resourceMapping, context, result.Type);
 
+            if (resourceMapping.PermissionsAction != null)
+            {
+                resourceMapping.PermissionsAction(resourceMapping.ResourceRepresentationType, result);
+            }
+            
             return result;
         }
 
@@ -293,7 +298,13 @@ namespace UtilJsonApiSerializer.Serialization
 
                     // If data is present, count meta attribute is added for convenience
                     if (rel.Data != null)
-                        rel.Meta = new Dictionary<string, string> { { MetaCountAttribute, ((MultipleResourceIdentifiers)rel.Data).Count.ToString() } };
+                        rel.Meta = new Dictionary<string, string>
+                        {
+                            {
+                                MetaCountAttribute, ((MultipleResourceIdentifiers)rel.Data).Count.ToString()
+                            }
+                        };
+                   
                 }
 
                 if (relLinks.self != null || relLinks.related != null)

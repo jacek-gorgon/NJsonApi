@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using UtilJsonApiSerializer.Serialization.Representations.Resources;
 using UtilJsonApiSerializer.Utils;
 
 namespace UtilJsonApiSerializer
@@ -15,6 +16,7 @@ namespace UtilJsonApiSerializer
         public Dictionary<string, Func<object, object>> PropertyGetters { get; set; }
         public Dictionary<string, Action<object, object>> PropertySetters { get; private set; }
         public Dictionary<string, Expression<Action<object, object>>> PropertySettersExpressions { get; private set; }
+        public Action<Type, SingleResource> PermissionsAction { get; set; }
         public List<IRelationshipMapping> Relationships { get; set; }
 
         public ResourceMapping()

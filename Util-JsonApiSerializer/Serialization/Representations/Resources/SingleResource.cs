@@ -20,5 +20,8 @@ namespace UtilJsonApiSerializer.Serialization.Representations.Resources
 
         [JsonProperty(PropertyName = "links", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, ILink> Links { get; set; }
+
+        [JsonProperty(PropertyName = "meta", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, object> Meta { get; set; }
     }
 }
