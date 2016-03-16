@@ -341,7 +341,7 @@ namespace UtilJsonApiSerializer
         //permissions support
         public ResourceConfigurationBuilder<TResource> WithCustomHandler(Action<Type,SingleResource> handlerAction)
         {
-            ConstructedMetadata.PermissionsAction = handlerAction;
+            ConstructedMetadata.CustomHandlerAction = handlerAction;
             return this;
         }
 
