@@ -8,6 +8,8 @@ using System.Reflection;
 using UtilJsonApiSerializer.Conventions;
 using UtilJsonApiSerializer.Utils;
 using System.Diagnostics;
+using UtilJsonApiSerializer.Serialization.Documents;
+using UtilJsonApiSerializer.Serialization.Representations.Resources;
 
 namespace UtilJsonApiSerializer
 {
@@ -105,19 +107,13 @@ namespace UtilJsonApiSerializer
 
         public ResourceConfigurationBuilder<TResource> WithSpecifiedSimpleProperties(string properties)
         {
-            if (properties == null)
-            {
-                properties = string.Empty;
-            }
-
-            var props = properties.ToLower().Split(',').ToList();
-
-            //default resource to pull all fields when none are provided
-            if (!props.Any(a => a.Length > 0))
+            if (string.IsNullOrEmpty(properties))
             {
                 WithAllSimpleProperties();
                 return this;
             }
+
+            var props = properties.ToLower().Split(',').ToList();
 
             //check for id existance and add if necessary
             var idproperty = string.Format("{0}", "id");
@@ -341,5 +337,15 @@ namespace UtilJsonApiSerializer
             ConstructedMetadata.PropertySetters.Remove(name);
             ConstructedMetadata.PropertySettersExpressions.Remove(name);
         }
+
+        //permissions support
+        public ResourceConfigurationBuilder<TResource> WithCustomHandler(Action<Type,SingleResource> handlerAction)
+        {
+            ConstructedMetadata.CustomHandlerAction = handlerAction;
+            return this;
+        }
+
+
+        public Action<Type,SingleResource> HandlerAction { get; set; }
     }
 }
