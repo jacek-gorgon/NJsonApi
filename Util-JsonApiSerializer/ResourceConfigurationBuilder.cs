@@ -339,9 +339,9 @@ namespace UtilJsonApiSerializer
         }
 
         //permissions support
-        public ResourceConfigurationBuilder<TResource> WithCustomHandler(Action<Type,SingleResource> handlerAction)
+        public ResourceConfigurationBuilder<TResource> WithCustomHandler(ISerializerPipelineModule pipelineModule)
         {
-            ConstructedMetadata.CustomHandlerAction = handlerAction;
+            ConstructedMetadata.PipelineModule = pipelineModule;
             return this;
         }
 
