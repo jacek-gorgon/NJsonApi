@@ -17,6 +17,7 @@ namespace UtilJsonApiSerializer
         public Dictionary<string, Action<object, object>> PropertySetters { get; private set; }
         public Dictionary<string, Expression<Action<object, object>>> PropertySettersExpressions { get; private set; }
         public ISerializerPipelineModule PipelineModule { get; set; }
+        public HashSet<string> RequestedFields { get; set; }
         public List<IRelationshipMapping> Relationships { get; set; }
 
         public ResourceMapping()
@@ -26,6 +27,7 @@ namespace UtilJsonApiSerializer
             PropertySetters = new Dictionary<string, Action<object, object>>();
             PropertySettersExpressions = new Dictionary<string, Expression<Action<object, object>>>();
             Relationships = new List<IRelationshipMapping>();
+            RequestedFields = new HashSet<string>();
         }
         public ResourceMapping(Expression<Func<T, object>> idPointer, string urlResource)
         {

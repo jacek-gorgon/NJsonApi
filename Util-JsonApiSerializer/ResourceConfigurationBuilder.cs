@@ -328,6 +328,10 @@ namespace UtilJsonApiSerializer
                     ConstructedMetadata.PropertySettersExpressions[name] = expression;
                 }
             }
+
+            //add to requested fields hashset
+            if (!ConstructedMetadata.RequestedFields.Contains(name.ToLower()))
+                ConstructedMetadata.RequestedFields.Add(name.ToLower());
         }
 
         private void RemoveProperty(PropertyInfo propertyInfo)
@@ -346,6 +350,6 @@ namespace UtilJsonApiSerializer
         }
 
 
-        public Action<Type,SingleResource> HandlerAction { get; set; }
+        public Action<Type, SingleResource> HandlerAction { get; set; }
     }
 }
