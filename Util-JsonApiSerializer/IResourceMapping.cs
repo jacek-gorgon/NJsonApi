@@ -17,6 +17,6 @@ namespace UtilJsonApiSerializer
         Dictionary<string, Action<object, object>> PropertySetters { get; }
         Dictionary<string, Expression<Action<object, object>>> PropertySettersExpressions { get; }
         ISerializerPipelineModule PipelineModule { get; set; }
-
+        HashSet<string> RequestedFields { get; set; }
     }
 }

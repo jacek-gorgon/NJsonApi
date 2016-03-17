@@ -9,6 +9,6 @@ namespace UtilJsonApiSerializer
 {
     public interface ISerializerPipelineModule
     {
-        void Run(Type resourceType, SingleResource resource, bool isIncludedResource);
+        void Run(Type resourceType, SingleResource resource, bool isIncludedResource, HashSet<string> requestedFields);
     }
 }

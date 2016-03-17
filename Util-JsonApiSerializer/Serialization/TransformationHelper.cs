@@ -199,7 +199,7 @@ namespace UtilJsonApiSerializer.Serialization
 
             if (resourceMapping.PipelineModule != null)
             {
-                resourceMapping.PipelineModule.Run(resourceMapping.ResourceRepresentationType, result, isIncludedResource);
+                resourceMapping.PipelineModule.Run(resourceMapping.ResourceRepresentationType, result, isIncludedResource, resourceMapping.RequestedFields);
             }
 
             return result;
