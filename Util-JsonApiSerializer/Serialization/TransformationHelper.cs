@@ -106,7 +106,7 @@ namespace UtilJsonApiSerializer.Serialization
                 .ForEach(x =>
                 {
                     alreadyVisitedObjects.Add(x.RelatedResourceInstance);
-                    includedList.Add(CreateResourceRepresentation(x.RelatedResourceInstance, x.Mapping.ResourceMapping, context));
+                    includedList.Add(CreateResourceRepresentation(x.RelatedResourceInstance, x.Mapping.ResourceMapping, context, true));
                     AppendIncludedRepresentationRecursive(x.RelatedResourceInstance, x.Mapping.ResourceMapping, includedList, alreadyVisitedObjects, context);
                 });
         }
@@ -175,7 +175,7 @@ namespace UtilJsonApiSerializer.Serialization
             return objectType;
         }
 
-        public SingleResource CreateResourceRepresentation(object objectGraph, IResourceMapping resourceMapping, Context context)
+        public SingleResource CreateResourceRepresentation(object objectGraph, IResourceMapping resourceMapping, Context context, bool isIncludedResource = false)
         {
             var urlBuilder = new UrlBuilder
             {
@@ -199,9 +199,9 @@ namespace UtilJsonApiSerializer.Serialization
 
             if (resourceMapping.PipelineModule != null)
             {
-                resourceMapping.PipelineModule.Run(resourceMapping.ResourceRepresentationType, result);
+                resourceMapping.PipelineModule.Run(resourceMapping.ResourceRepresentationType, result, isIncludedResource);
             }
-            
+
             return result;
         }
 
@@ -304,7 +304,7 @@ namespace UtilJsonApiSerializer.Serialization
                                 MetaCountAttribute, ((MultipleResourceIdentifiers)rel.Data).Count.ToString()
                             }
                         };
-                   
+
                 }
 
                 if (relLinks.self != null || relLinks.related != null)
