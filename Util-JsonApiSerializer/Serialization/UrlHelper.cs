@@ -26,12 +26,23 @@ namespace UtilJsonApiSerializer.Serialization
         {
             get
             {
-                if (HttpContext.Current != null)
+                if (routePrefix != string.Empty)
                 {
-                    Uri url = HttpContext.Current.Request.Url;
-                    root = url.Scheme + "://" + url.Authority + HttpContext.Current.Request.ApplicationPath;
-                    if (!root.EndsWith("/")) root += "/";
+                    root = routePrefix;
                 }
+                else
+                {
+                    if (HttpContext.Current != null)
+                    {
+                        if (routePrefix == string.Empty)
+                        {
+                            Uri url = HttpContext.Current.Request.Url;
+                            root = url.Scheme + "://" + url.Authority + HttpContext.Current.Request.ApplicationPath;
+                        }
+                    }
+                }
+             
+                if (!root.EndsWith("/")) root += "/";
                 return root;
             }
         }
@@ -48,7 +59,12 @@ namespace UtilJsonApiSerializer.Serialization
 
             Uri fullyQualiffiedUrl;
 
+            //try to create an absolute URL from the urlTemplate
             if (Uri.TryCreate(urlTemplate, UriKind.Absolute, out fullyQualiffiedUrl))
+                return fullyQualiffiedUrl.ToString();
+
+            //try to create an absolute url from the routeprefix + urltemplate
+            if (Uri.TryCreate(RoutePrefix + urlTemplate, UriKind.Absolute, out fullyQualiffiedUrl))
                 return fullyQualiffiedUrl.ToString();
 
             if (!Uri.TryCreate(new Uri(Url), new Uri(RoutePrefix + urlTemplate, UriKind.Relative), out fullyQualiffiedUrl))
