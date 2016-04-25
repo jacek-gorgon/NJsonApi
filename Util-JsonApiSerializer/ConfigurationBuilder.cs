@@ -9,9 +9,20 @@ namespace UtilJsonApiSerializer
     public class ConfigurationBuilder
     {
         public readonly Dictionary<Type, IResourceConfigurationBuilder> ResourceConfigurationsByType = new Dictionary<Type, IResourceConfigurationBuilder>();
-
+        public ISerializerPipelineModule PipelineModule { get; private set; }
         private readonly Stack<IConvention> conventions = new Stack<IConvention>();
+        
         public ConfigurationBuilder()
+        {
+            BuildConventions();
+        }
+        public ConfigurationBuilder(ISerializerPipelineModule pipelineModule)
+        {
+            BuildConventions();
+            PipelineModule = pipelineModule;
+        }
+
+        private void BuildConventions()
         {
             //add the default conventions
             WithConvention(new PluralizedCamelCaseTypeConvention());
@@ -19,7 +30,7 @@ namespace UtilJsonApiSerializer
             WithConvention(new SimpleLinkedIdConvention());
             WithConvention(new DefaultPropertyScanningConvention());
         }
-
+    
         public ConfigurationBuilder WithConvention<T>(T convention) where T : class, IConvention
         {
             conventions.Push(convention);
@@ -86,5 +97,6 @@ namespace UtilJsonApiSerializer
 
             return configuration;
         }
+
     }
 }

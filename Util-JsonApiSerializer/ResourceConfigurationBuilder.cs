@@ -22,6 +22,7 @@ namespace UtilJsonApiSerializer
         public ILinkNameConvention LinkNameConvention { get; set; }
         public ILinkIdConvention LinkIdConvention { get; set; }
         public IPropertyScanningConvention PropertyScanningConvention { get; set; }
+        public ISerializerPipelineModule PipelineModule { get; set; }
 
         public ResourceConfigurationBuilder(ConfigurationBuilder configurationBuilder)
         {
@@ -31,7 +32,7 @@ namespace UtilJsonApiSerializer
             LinkNameConvention = configurationBuilder.GetConvention<ILinkNameConvention>();
             LinkIdConvention = configurationBuilder.GetConvention<ILinkIdConvention>();
             PropertyScanningConvention = configurationBuilder.GetConvention<IPropertyScanningConvention>();
-
+            PipelineModule = configurationBuilder.PipelineModule;
             ConstructedMetadata = new ResourceMapping<TResource>
             {
                 ResourceType = ResourceTypeConvention.GetResourceTypeFromRepresentationType(typeof(TResource))
@@ -41,6 +42,7 @@ namespace UtilJsonApiSerializer
         public ResourceConfigurationBuilder<TResource> WithResourceType(string resourceType)
         {
             ConstructedMetadata.ResourceType = resourceType;
+            ConstructedMetadata.PipelineModule = PipelineModule;
             return this;
         }
 
@@ -342,14 +344,7 @@ namespace UtilJsonApiSerializer
             ConstructedMetadata.PropertySettersExpressions.Remove(name);
         }
 
-        //permissions support
-        public ResourceConfigurationBuilder<TResource> WithCustomHandler(ISerializerPipelineModule pipelineModule)
-        {
-            ConstructedMetadata.PipelineModule = pipelineModule;
-            return this;
-        }
-
-
         public Action<Type, SingleResource> HandlerAction { get; set; }
+
     }
 }
