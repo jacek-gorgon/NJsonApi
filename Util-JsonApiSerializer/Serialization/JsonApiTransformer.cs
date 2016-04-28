@@ -51,12 +51,17 @@ namespace UtilJsonApiSerializer.Serialization
             var primaryResource = TransformationHelper.ChooseProperResourceRepresentation(resource, representationList);
 
             result.Data = primaryResource;
-         
+
             if (resourceMapping.Relationships.Any())
             {
                 result.Included = TransformationHelper.CreateIncludedRepresentations(resourceList, resourceMapping, context);
             }
-            
+
+            if (resourceMapping.PipelineModule != null)
+            {
+                resourceMapping.PipelineModule.Run(result);
+            }
+
             return result;
         }
 
