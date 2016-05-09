@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using UtilJsonApiSerializer.Serialization.Representations.Resources;
 using System.Collections.Generic;
+using System;
 
 namespace UtilJsonApiSerializer.Serialization.Representations.Resources
 {
@@ -23,5 +24,8 @@ namespace UtilJsonApiSerializer.Serialization.Representations.Resources
 
         [JsonProperty(PropertyName = "meta", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, object> Meta { get; set; }
+
+        [JsonIgnore]
+        public Type OwnerType { get; set; }
     }
 }
