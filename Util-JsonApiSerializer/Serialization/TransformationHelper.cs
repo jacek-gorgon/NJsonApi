@@ -106,7 +106,7 @@ namespace UtilJsonApiSerializer.Serialization
                 .ForEach(x =>
                 {
                     alreadyVisitedObjects.Add(x.RelatedResourceInstance);
-                    includedList.Add(CreateResourceRepresentation(x.RelatedResourceInstance, x.Mapping.ResourceMapping, context, true));
+                    includedList.Add(CreateResourceRepresentation(x.RelatedResourceInstance, x.Mapping.ResourceMapping, context, true, resource.GetType()));
                     AppendIncludedRepresentationRecursive(x.RelatedResourceInstance, x.Mapping.ResourceMapping, includedList, alreadyVisitedObjects, context);
                 });
         }
@@ -175,7 +175,7 @@ namespace UtilJsonApiSerializer.Serialization
             return objectType;
         }
 
-        public SingleResource CreateResourceRepresentation(object objectGraph, IResourceMapping resourceMapping, Context context, bool isIncludedResource = false)
+        public SingleResource CreateResourceRepresentation(object objectGraph, IResourceMapping resourceMapping, Context context, bool isIncludedResource = false, Type ownerType = null)
         {
             var urlBuilder = new UrlBuilder
             {
@@ -201,6 +201,8 @@ namespace UtilJsonApiSerializer.Serialization
             {
                 resourceMapping.PipelineModule.Run(resourceMapping.ResourceRepresentationType, result, isIncludedResource, resourceMapping.RequestedFields);
             }
+
+            result.OwnerType = ownerType;
 
             return result;
         }
