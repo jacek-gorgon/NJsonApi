@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web;
 
 namespace UtilJsonApiSerializer.Serialization
@@ -37,7 +38,12 @@ namespace UtilJsonApiSerializer.Serialization
                         if (routePrefix == string.Empty)
                         {
                             Uri url = HttpContext.Current.Request.Url;
-                            root = url.Scheme + "://" + url.Authority + HttpContext.Current.Request.ApplicationPath;
+                            var scheme = url.Scheme;
+                            if (HttpContext.Current.Request.Headers["X-Forwarded-Proto"] != null)
+                            {
+                                scheme = HttpContext.Current.Request.Headers["X-Forwarded-Proto"];
+                            }
+                            root = scheme + "://" + url.Authority + HttpContext.Current.Request.ApplicationPath;
                         }
                     }
                 }
