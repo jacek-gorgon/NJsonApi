@@ -29,7 +29,7 @@ namespace NJsonApi.Serialization.Documents
         public List<SingleResource> Included { get; set; }
 
         [JsonProperty(PropertyName = "errors", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, Error> Errors { get; set; }
+        public List<Error> Errors { get; set; }
 
         [JsonExtensionData]
         public Dictionary<string, JToken> UnmappedAttributes { get; set; }

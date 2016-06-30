@@ -31,14 +31,14 @@ namespace NJsonApi.Serialization
 
             var compoundDocument = new CompoundDocument
             {
-                Errors = new Dictionary<string, Error>
+                Errors = new List<Error>
                 {
-                    { "error", new Error
+                    new Error
                     {
                         Id = scfException.Id.ToString(),
                         Title = scfException.Message,
                         Status = ((int)scfException.GetHttpStatusCode()).ToString(CultureInfo.InvariantCulture),
-                    }}
+                    }
                 }
             };
 
@@ -49,12 +49,12 @@ namespace NJsonApi.Serialization
         {
             return new CompoundDocument
             {
-                Errors = new Dictionary<string, Error>
+                Errors = new List<Error>
                 {
-                    { "Internal server error", new Error
+                    new Error
                     {
                         Status = error.Message,
-                    }}
+                    }
                 }
             };
         }
