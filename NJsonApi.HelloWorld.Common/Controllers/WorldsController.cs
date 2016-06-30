@@ -24,7 +24,7 @@ namespace NJsonApi.HelloWorld.Common.Controllers
             }
             catch
             {
-                throw new HttpResponseException(System.Net.HttpStatusCode.NotFound);
+                throw new NotFoundNJsonApiException("No world with the id of " + id);
             }
         }
 
