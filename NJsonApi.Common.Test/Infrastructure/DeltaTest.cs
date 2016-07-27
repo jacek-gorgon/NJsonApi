@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NJsonApi.Common.Infrastructure;
+using UtilJsonApiSerializer.Common.Infrastructure;
 using SoftwareApproach.TestingExtensions;
 
-namespace NJsonApi.Common.Test.Infrastructure
+namespace UtilJsonApiSerializer.Common.Test.Infrastructure
 {
     [TestClass]
     public class DeltaTest

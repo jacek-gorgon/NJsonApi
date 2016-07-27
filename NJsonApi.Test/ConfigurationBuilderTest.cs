@@ -5,12 +5,12 @@ using System.Linq.Expressions;
 using System.Reflection;
 using FakeItEasy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NJsonApi.Test.TestModel;
-using NJsonApi.Conventions;
-using NJsonApi.Conventions.Impl;
+using UtilJsonApiSerializer.Conventions;
+using UtilJsonApiSerializer.Conventions.Impl;
 using SoftwareApproach.TestingExtensions;
+using UtilJsonApiSerializer.Test.TestModel;
 
-namespace NJsonApi.Test
+namespace UtilJsonApiSerializer.Test
 {
     [TestClass]
     public class ConfigurationBuilderTest

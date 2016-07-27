@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{39073AC4-47C1-4C0E-87E1-E48FA606D165}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>UtilJsonApiSerializer</RootNamespace>
+    <AssemblyName>UtilJsonApiSerializer</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Humanizer, Version=1.37.7.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Humanizer.1.37.7\lib\portable-win+net40+sl50+wp8+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Humanizer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity.Design" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Configuration.cs" />
+    <Compile Include="ConfigurationBuilder.cs" />
+    <Compile Include="Conventions\IConvention.cs" />
+    <Compile Include="Conventions\ILinkIdConvention.cs" />
+    <Compile Include="Conventions\ILinkNameConvention.cs" />
+    <Compile Include="Conventions\Impl\DefaultPropertyScanningConvention.cs" />
+    <Compile Include="Conventions\Impl\SimpleLinkedIdConvention.cs" />
+    <Compile Include="Conventions\IPropertyScanningConvention.cs" />
+    <Compile Include="Conventions\IRelationshipUrlConvention.cs" />
+    <Compile Include="Context.cs" />
+    <Compile Include="IJsonApiSerializer.cs" />
+    <Compile Include="ISerializerPipelineModule.cs" />
+    <Compile Include="JsonApiSerializer.cs" />
+    <Compile Include="SerializationDirection.cs" />
+    <Compile Include="Serialization\Converters\SerializationAwareConverter.cs" />
+    <Compile Include="Serialization\Converters\ISerializationAware.cs" />
+    <Compile Include="Serialization\Representations\Documents\Document.cs" />
+    <Compile Include="Serialization\JsonApiActionFilter.cs" />
+    <Compile Include="Serialization\IJsonApiTransformer.cs" />
+    <Compile Include="Serialization\IUrlBuilder.cs" />
+    <Compile Include="Serialization\JsonApiFormatter.cs" />
+    <Compile Include="Exceptions\MissingMappingException.cs" />
+    <Compile Include="Serialization\Representations\Relationships\IRelationship.cs" />
+    <Compile Include="Serialization\Representations\Relationships\IResourceLinkage.cs" />
+    <Compile Include="Serialization\Representations\Relationships\NullResourceIdentifier.cs" />
+    <Compile Include="Serialization\Representations\Relationships\RelationshipLinks.cs" />
+    <Compile Include="Serialization\Representations\Resources\IResourceIdentifier.cs" />
+    <Compile Include="Serialization\Representations\Resources\IResourceRepresentation.cs" />
+    <Compile Include="Serialization\Representations\Resources\ILink.cs" />
+    <Compile Include="Serialization\Representations\Relationships\MultipleResourceIdentifiers.cs" />
+    <Compile Include="Serialization\Representations\Relationships\Relationship.cs" />
+    <Compile Include="Serialization\Representations\Resources\ResourceCollection.cs" />
+    <Compile Include="Serialization\Representations\Resources\SimpleLink.cs" />
+    <Compile Include="Serialization\Representations\Resources\SingleResource.cs" />
+    <Compile Include="Serialization\Representations\Relationships\SingleResourceIdentifier.cs" />
+    <Compile Include="Serialization\TransformationHelper.cs" />
+    <Compile Include="Serialization\UpdateDocumentTypeWrapper.cs" />
+    <Compile Include="Serialization\UrlHelper.cs" />
+    <Compile Include="Serialization\UpdateDocument.cs" />
+    <Compile Include="Utils\CamelCaseUtil.cs" />
+    <Compile Include="Conventions\Impl\CamelCaseLinkNameConvention.cs" />
+    <Compile Include="Conventions\Impl\PluralizedCamelCaseTypeConvention.cs" />
+    <Compile Include="Conventions\IResourceTypeConvention.cs" />
+    <Compile Include="IRelationshipMapping.cs" />
+    <Compile Include="IResourceConfigurationBuilder.cs" />
+    <Compile Include="IResourceMapping.cs" />
+    <Compile Include="LinkMapping.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceConfigurationBuilder.cs" />
+    <Compile Include="ResourceMapping.cs" />
+    <Compile Include="Serialization\Representations\Documents\CompoundDocument.cs" />
+    <Compile Include="Serialization\Error.cs" />
+    <Compile Include="Serialization\JsonApiTransformer.cs" />
+    <Compile Include="Serialization\Metadataitem.cs" />
+    <Compile Include="Utils\ExpressionUtils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="makeNugetPackage.bat" />
+    <None Include="Util-JsonApiSerializer.nuspec" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Util-JsonApiSerializer.Common\Util-JsonApiSerializer.Common.csproj">
+      <Project>{59e4c7f0-daa5-462c-bab2-6bd36787d122}</Project>
+      <Name>Util-JsonApiSerializer.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

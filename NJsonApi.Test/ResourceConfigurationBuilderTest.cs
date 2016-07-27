@@ -2,10 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NJsonApi.Test.TestModel;
 using SoftwareApproach.TestingExtensions;
+using UtilJsonApiSerializer.Test.TestModel;
 
-namespace NJsonApi.Test
+namespace UtilJsonApiSerializer.Test
 {
     [TestClass]
     public class ResourceConfigurationBuilderTest

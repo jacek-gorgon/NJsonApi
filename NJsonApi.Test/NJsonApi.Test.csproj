@@ -82,11 +82,11 @@
     <Compile Include="TestModel\PostLike.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NJsonApi.Common\NJsonApi.Common.csproj">
+    <ProjectReference Include="..\Util-JsonApiSerializer.Common\Util-JsonApiSerializer.Common.csproj">
       <Project>{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}</Project>
       <Name>NJsonApi.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NJsonApi\NJsonApi.csproj">
+    <ProjectReference Include="..\Util-JsonApiSerializer\Util-JsonApiSerializer.csproj">
       <Project>{39073AC4-47C1-4C0E-87E1-E48FA606D165}</Project>
       <Name>NJsonApi</Name>
     </ProjectReference>
