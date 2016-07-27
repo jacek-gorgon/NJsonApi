@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Util-JsonApiSerializer")]
-[assembly: AssemblyDescription(".NET implementation of the {json:api} compliant sever serializer")]
+[assembly: AssemblyDescription(".NET implementation of the {json:api} compliant server serializer")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("FrontLine Technologies")]
 [assembly: AssemblyProduct("Util-JsonApiSerializer")]

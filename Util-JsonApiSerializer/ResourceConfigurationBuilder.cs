@@ -75,7 +75,6 @@ namespace UtilJsonApiSerializer
             return this;
         }
 
-
         public ResourceConfigurationBuilder<TResource> WithLinkTemplate(string link)
         {
             ConstructedMetadata.UrlTemplate = link;
