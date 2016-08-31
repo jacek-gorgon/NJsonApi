@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace NJsonApi.Test.TestModel
+namespace UtilJsonApiSerializer.Test.TestModel
 {
     public class Author
     {

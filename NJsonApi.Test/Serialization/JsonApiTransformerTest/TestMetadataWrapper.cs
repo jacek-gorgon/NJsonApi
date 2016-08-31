@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NJsonApi.Common.Infrastructure;
-using NJsonApi.Serialization;
+using UtilJsonApiSerializer.Common.Infrastructure;
+using UtilJsonApiSerializer.Serialization;
 using SoftwareApproach.TestingExtensions;
-using NJsonApi.Serialization.Documents;
-using NJsonApi.Serialization.Representations.Resources;
+using UtilJsonApiSerializer.Serialization.Documents;
+using UtilJsonApiSerializer.Serialization.Representations.Resources;
 
-namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
+namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
 {
     [TestClass]
     public class TestMetadataWrapper
