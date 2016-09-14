@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftwareApproach.TestingExtensions;
 
-namespace NJsonApi.Test
+namespace UtilJsonApiSerializer.Test
 {
     [TestClass]
     public class ConfigurationTest

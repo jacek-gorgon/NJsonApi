@@ -1,4 +1,4 @@
-﻿namespace NJsonApi.Test.TestModel
+﻿namespace UtilJsonApiSerializer.Test.TestModel
 {
     public class Comment
     {

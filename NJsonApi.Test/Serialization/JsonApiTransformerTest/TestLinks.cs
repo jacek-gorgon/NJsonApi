@@ -3,12 +3,12 @@ using System.Linq;
 using FakeItEasy;
 using FakeItEasy.ExtensionSyntax.Full;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NJsonApi.Serialization;
+using UtilJsonApiSerializer.Serialization;
 using SoftwareApproach.TestingExtensions;
-using NJsonApi.Serialization.Representations.Resources;
-using NJsonApi.Serialization.Representations.Relationships;
+using UtilJsonApiSerializer.Serialization.Representations.Resources;
+using UtilJsonApiSerializer.Serialization.Representations.Relationships;
 
-namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
+namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
 {
     [TestClass]
     public class TestLinks
