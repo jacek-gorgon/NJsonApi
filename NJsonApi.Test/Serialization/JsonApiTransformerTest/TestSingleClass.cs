@@ -1,13 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NJsonApi.Serialization;
-using NJsonApi.Serialization.Documents;
-using NJsonApi.Serialization.Representations.Resources;
+using UtilJsonApiSerializer.Serialization;
+using UtilJsonApiSerializer.Serialization.Documents;
+using UtilJsonApiSerializer.Serialization.Representations.Resources;
 using SoftwareApproach.TestingExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
+namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
 {
     [TestClass]
     public class TestSingleClass
