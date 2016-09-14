@@ -27,7 +27,7 @@ namespace UtilJsonApiSerializer.Serialization
         {
             get
             {
-                if (routePrefix != string.Empty)
+                if (!string.IsNullOrEmpty(routePrefix))
                 {
                     root = routePrefix;
                 }
