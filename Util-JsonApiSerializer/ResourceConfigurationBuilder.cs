@@ -17,6 +17,7 @@ namespace UtilJsonApiSerializer
     {
         public IResourceMapping ConstructedMetadata { get; set; }
         public ConfigurationBuilder ConfigurationBuilder { get; set; }
+        public IPreSerializerPipelineModule PreSerializerPipelineModule { get; set; }
 
         public IResourceTypeConvention ResourceTypeConvention { get; set; }
         public ILinkNameConvention LinkNameConvention { get; set; }
@@ -345,5 +346,14 @@ namespace UtilJsonApiSerializer
 
         public Action<Type, SingleResource> HandlerAction { get; set; }
 
+        public ResourceConfigurationBuilder<TResource> WithPreSerializerPipelineModule(IPreSerializerPipelineModule preSerializerPipelineModule)
+        {
+            PreSerializerPipelineModule = preSerializerPipelineModule;
+            return this;
+        }
+
+
     }
+
+    
 }

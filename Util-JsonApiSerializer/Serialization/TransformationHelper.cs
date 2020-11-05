@@ -159,7 +159,7 @@ namespace UtilJsonApiSerializer.Serialization
             return null;
         }
 
-        public Type GetObjectType(object objectGraph)
+        public static Type GetObjectType(object objectGraph)
         {
             Type objectType = objectGraph.GetType();
             if (objectGraph is IMetaDataWrapper)
