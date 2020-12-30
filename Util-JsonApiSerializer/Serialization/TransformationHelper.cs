@@ -209,11 +209,25 @@ namespace UtilJsonApiSerializer.Serialization
 
         private static Dictionary<string, ILink> CreateLinks(IResourceMapping resourceMapping, UrlBuilder urlBuilder, SingleResource result, string parentId = null)
         {
-            return new Dictionary<string, ILink>() { { SelfLinkKey, new SimpleLink { Href = urlBuilder.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace(TypePlaceholder, result.Type).Replace(IdPlaceholder, result.Id).Replace(ParentIdPlaceholder, parentId)) } } };
+            var tokens = ExtractFromString(resourceMapping.UrlTemplate, "{", "}");
+            var url = resourceMapping.UrlTemplate.Replace(TypePlaceholder, result.Type);
+            url = url.Replace(IdPlaceholder, result.Id);
+            url = url.Replace(ParentIdPlaceholder, parentId);
+            foreach (var token in tokens)
+            {
+                string tokenValue = null;
+                if (result.Attributes.ContainsKey(token))
+                {
+                    tokenValue = result.Attributes[token].ToString();
+                }
+                url = url.Replace("{" + token + "}", tokenValue);
+            }
+            return new Dictionary<string, ILink>() { { SelfLinkKey, new SimpleLink { Href = urlBuilder.GetFullyQualifiedUrl(url) } } };
         }
 
         private ILink GetUrlFromTemplate(string urlTemplate, string routePrefix, string parentId, string relatedId = null, string parenttype = null, string relationshipName = null)
         {
+
             var builder = new UrlBuilder
             {
                 RoutePrefix = routePrefix
@@ -223,6 +237,29 @@ namespace UtilJsonApiSerializer.Serialization
                 Href = builder.GetFullyQualifiedUrl(urlTemplate.Replace(ParentIdPlaceholder, parentId).Replace(RelatedIdPlaceholder, relatedId).Replace(TypePlaceholder, parenttype).Replace(RelationshipPlaceholder, relationshipName))
             };
         }
+
+        private static List<string> ExtractFromString(
+            string text, string startString, string endString)
+        {
+            List<string> matched = new List<string>();
+            bool exit = false;
+            while (!exit)
+            {
+                var indexStart = text.IndexOf(startString, StringComparison.Ordinal);
+                var indexEnd = text.IndexOf(endString, StringComparison.Ordinal);
+                if (indexStart != -1 && indexEnd != -1)
+                {
+                    matched.Add(text.Substring(indexStart + startString.Length,
+                        indexEnd - indexStart - startString.Length));
+                    text = text.Substring(indexEnd + endString.Length);
+                }
+                else
+                    exit = true;
+            }
+            return matched;
+        }
+
+
 
         public Dictionary<string, IRelationship> CreateRelationships(object objectGraph, string parentId, IResourceMapping resourceMapping, Context context, string parentresourcetype)
         {
