@@ -1,14 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using FluentAssertions;
+using NUnit.Framework;
 using UtilJsonApiSerializer.Conventions.Impl;
-using SoftwareApproach.TestingExtensions;
 using UtilJsonApiSerializer.Test.TestModel;
 
 namespace UtilJsonApiSerializer.Test.Conventions
 {
-    [TestClass]
     public class PluralizedCamelCaseTypeConventionTests
     {
-        [TestMethod]
+        [Theory]
         public void Supports_english_singular_single_word_type_name()
         {
             // Arrange
@@ -18,10 +17,10 @@ namespace UtilJsonApiSerializer.Test.Conventions
             var name = convention.GetResourceTypeFromRepresentationType(typeof(Author));
 
             // Assert
-            name.ShouldEqual("authors");
+            name.Should().Be("authors");
         }
 
-        [TestMethod]
+        [Theory]
         public void Supports_english_singular_pascal_case_type_name()
         {
             // Arrange
@@ -31,7 +30,7 @@ namespace UtilJsonApiSerializer.Test.Conventions
             var name = convention.GetResourceTypeFromRepresentationType(typeof(PostLike));
 
             // Assert
-            name.ShouldEqual("postLikes");
+            name.Should().Be("postLikes");
         }
     }
 }

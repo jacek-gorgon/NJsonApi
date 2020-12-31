@@ -1,16 +1,11 @@
-﻿using System;
-using System.Linq;
-using FakeItEasy;
-using FakeItEasy.ExtensionSyntax.Full;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using FluentAssertions;
+using NUnit.Framework;
 using UtilJsonApiSerializer.Serialization;
-using SoftwareApproach.TestingExtensions;
 using UtilJsonApiSerializer.Serialization.Representations.Resources;
 using UtilJsonApiSerializer.Serialization.Representations.Relationships;
 
 namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
 {
-    [TestClass]
     public class TestLinks
     {
         private const string appUrl = @"http://localhost/";
@@ -18,13 +13,12 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
         private JsonApiTransformer transformer;
         private readonly TransformationHelper transformationHelper = new TransformationHelper();
 
-        [TestInitialize]
-        public void Initialize()
+        public TestLinks()
         {
             transformer = new JsonApiTransformer(){TransformationHelper = transformationHelper};
         }
 
-        [TestMethod]
+        [Theory]
         public void Creates_one_to_one_relation_links()
         {
             // Arrange
@@ -36,11 +30,11 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
             var resource = (SingleResource)result.Data;
 
             // Assert
-            resource.Relationships.ShouldNotBeEmpty();
-            ((Relationship)resource.Relationships["nestedValues"]).Data.ShouldNotBeNull();
+            resource.Relationships.Should().NotBeEmpty();
+            ((Relationship)resource.Relationships["nestedValues"]).Data.Should().NotBeNull();
         }
 
-        [TestMethod]
+        [Theory]
         public void Creates_one_to_one_null_relation_links()
         {
             // Arrange
@@ -52,9 +46,9 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
             var resource = (SingleResource)result.Data;
 
             // Assert
-            resource.Relationships.ShouldNotBeEmpty();
+            resource.Relationships.Should().NotBeEmpty();
             var rel = (Relationship)resource.Relationships["nestedValues"];
-            rel.Data.ShouldBeOfType(typeof(NullResourceIdentifier));
+            rel.Data.Should().BeOfType(typeof(NullResourceIdentifier));
         }
 
 

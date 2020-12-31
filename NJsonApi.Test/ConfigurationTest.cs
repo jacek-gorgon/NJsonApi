@@ -1,9 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
+﻿using System;
+using FluentAssertions;
+using NUnit.Framework;
 
 namespace UtilJsonApiSerializer.Test
 {
-    [TestClass]
     public class ConfigurationTest
     {
         class SampleClass
@@ -21,7 +21,7 @@ namespace UtilJsonApiSerializer.Test
             public string OtherValue { get; set; }
         }
 
-        [TestMethod]
+        [Theory]
         public void Creates_configuration_mapping()
         {
             // Arrange
@@ -38,10 +38,10 @@ namespace UtilJsonApiSerializer.Test
             conf.AddMapping(sampleMapping);
 
             // Assert
-            conf.IsMappingRegistered(typeof(SampleClass)).ShouldBeTrue();
-            conf.GetMapping(typeof(SampleClass)).ShouldNotBeNull();
-            conf.IsMappingRegistered(typeof(NestedClass)).ShouldBeFalse();
-            conf.GetMapping(typeof(NestedClass)).ShouldBeNull();
+            conf.IsMappingRegistered(typeof(SampleClass)).Should().BeTrue();
+            conf.GetMapping(typeof(SampleClass)).Should().NotBeNull();
+            conf.IsMappingRegistered(typeof(NestedClass)).Should().BeFalse();
+            conf.GetMapping(typeof(NestedClass)).Should().BeNull();
         }
     }
 }

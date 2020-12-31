@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using FluentAssertions;
+using NUnit.Framework;
 using UtilJsonApiSerializer.Common.Infrastructure;
-using SoftwareApproach.TestingExtensions;
 
 namespace UtilJsonApiSerializer.Common.Test.Infrastructure
 {
-    [TestClass]
     public class DeltaTest
     {
-        [TestMethod]
+        [Theory]
         public void SimpleTestOfFunction()
         {
             //Arange
@@ -23,12 +22,12 @@ namespace UtilJsonApiSerializer.Common.Test.Infrastructure
             //Act
             classUnderTest.Apply(simpleObject);
             //Assert
-            simpleObject.Prop2.ShouldNotBeNull();
-            simpleObject.Prop2.ShouldEqual("b");
-            simpleObject.Prop1NotIncluded.ShouldBeNull();
+            simpleObject.Prop2.Should().NotBeNull();
+            simpleObject.Prop2.Should().Be("b");
+            simpleObject.Prop1NotIncluded.Should().BeNull();
         }
 
-        [TestMethod]
+        [Theory]
         public void TestNotIncludedProperties()
         {
             //Arrange
@@ -44,12 +43,12 @@ namespace UtilJsonApiSerializer.Common.Test.Infrastructure
             //Act
             objectUnderTest.Apply(simpleObject);
             //Assert
-            simpleObject.Prop2.ShouldNotBeNull();
-            simpleObject.Prop2.ShouldEqual("b");
-            simpleObject.Prop1NotIncluded.ShouldBeNull();
+            simpleObject.Prop2.Should().NotBeNull();
+            simpleObject.Prop2.Should().Be("b");
+            simpleObject.Prop1NotIncluded.Should().BeNull();
         }
 
-        [TestMethod]
+        [Theory]
         public void TestEmptyPropertiesValues()
         {
             //Arrange
@@ -59,9 +58,9 @@ namespace UtilJsonApiSerializer.Common.Test.Infrastructure
             objectUnderTest.AddFilter(t => t.Prop1NotIncluded);
             objectUnderTest.Apply(simpleObject);
             //Assert
-            simpleObject.Prop1NotIncluded.ShouldBeNull();
-            simpleObject.Prop1.ShouldBeNull();
-            simpleObject.Prop2.ShouldBeNull();
+            simpleObject.Prop1NotIncluded.Should().BeNull();
+            simpleObject.Prop1.Should().BeNull();
+            simpleObject.Prop2.Should().BeNull();
         }
     }
 

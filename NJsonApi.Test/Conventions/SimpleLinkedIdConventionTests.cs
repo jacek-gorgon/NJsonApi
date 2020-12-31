@@ -1,14 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using FluentAssertions;
+using NUnit.Framework;
 using UtilJsonApiSerializer.Conventions.Impl;
-using SoftwareApproach.TestingExtensions;
 using UtilJsonApiSerializer.Test.TestModel;
 
 namespace UtilJsonApiSerializer.Test.Conventions
 {
-    [TestClass]
     public class SimpleLinkedIdConventionTests
     {
-        [TestMethod]
+        [Theory]
         public void For_collection_links_gracefully_fails()
         {
             // Arrange
@@ -18,10 +17,10 @@ namespace UtilJsonApiSerializer.Test.Conventions
             var expression = convention.GetIdExpression((Author a) => a.Posts);
 
             // Assert
-            expression.ShouldBeNull();
+            expression.Should().BeNull();
         }
 
-        [TestMethod]
+        [Theory]
         public void For_absent_id_properties_gracefully_fails()
         {
             // Arrange
@@ -31,10 +30,10 @@ namespace UtilJsonApiSerializer.Test.Conventions
             var expression = convention.GetIdExpression((Comment c) => c.Post);
 
             // Assert
-            expression.ShouldBeNull();
+            expression.Should().BeNull();
         }
 
-        [TestMethod]
+        [Theory]
         public void For_existing_id_properties_returns_proper_expression()
         {
             // Arrange
@@ -45,9 +44,9 @@ namespace UtilJsonApiSerializer.Test.Conventions
             var expression = convention.GetIdExpression((Post p) => p.Author);
 
             // Assert
-            expression.ShouldNotBeNull();
+            expression.Should().NotBeNull();
             var compiled = expression.Compile();
-            compiled(post).ShouldEqual(4);
+            compiled(post).Should().Be(4);
         }
     }
 }

@@ -1,17 +1,15 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using UtilJsonApiSerializer.Serialization;
-using UtilJsonApiSerializer.Serialization.Converters;
-using SoftwareApproach.TestingExtensions;
 using System;
 using System.Collections.Generic;
+using FluentAssertions;
+using NUnit.Framework;
 
 namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
 {
-    [TestClass]
     public class TestSerialization
     {
-        [TestMethod]
+        [Theory]
         public void Serilized_properly()
         {
             // Arrange
@@ -25,7 +23,7 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
             var json = JsonConvert.SerializeObject(transformed);
 
             // Assert
-            json.ShouldNotContain("Data");
+            json.Should().NotContain("Data");
         }
 
         private static SampleClass CreateObjectToTransform()

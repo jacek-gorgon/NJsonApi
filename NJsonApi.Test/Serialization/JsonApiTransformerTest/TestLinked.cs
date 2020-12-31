@@ -1,17 +1,11 @@
-﻿using FakeItEasy;
-using FakeItEasy.ExtensionSyntax.Full;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
-using UtilJsonApiSerializer.Serialization;
-using UtilJsonApiSerializer.Serialization.Representations.Relationships;
+﻿using UtilJsonApiSerializer.Serialization;
 using UtilJsonApiSerializer.Serialization.Representations.Resources;
-using SoftwareApproach.TestingExtensions;
 using System.Collections.Generic;
-using System.Linq;
+using FluentAssertions;
+using NUnit.Framework;
 
 namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
 {
-    [TestClass]
     public class TestLinked
     {
         private const string appUrl = @"http://localhost/";
@@ -19,13 +13,12 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
         private JsonApiTransformer transformer;
         private readonly TransformationHelper transformationHelper = new TransformationHelper();
 
-        [TestInitialize]
-        public void Initialize()
+        public TestLinked()
         {
             transformer = new JsonApiTransformer(){TransformationHelper = transformationHelper};
         }
 
-        [TestMethod]
+        [Theory]
         public void Creates_one_to_one_relationship()
         {
             // Arrange
@@ -38,10 +31,10 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
 
             // Assert
             var resource = (SingleResource)result.Data;
-            resource.Relationships.ShouldHaveCountOf(1);
+            resource.Relationships.Count.Should().Be(1);
         }
 
-        [TestMethod]
+        [Theory]
         public void Creates_one_to_many_relation_links()
         {
             // Arrange
@@ -52,10 +45,10 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
             var result = transformer.Transform(objectToTransform, configuration);
 
             // Assert
-            var linkedDict = result.Included.ShouldNotBeEmpty();
+            var linkedDict = result.Included.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Theory]
         public void Creates_one_to_many_relation_links_without_duplication()
         {
             // Arrange
@@ -66,7 +59,7 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
             var result = transformer.Transform(objectToTransform, configuration);
 
             // Assert
-            result.Included.ShouldHaveCountOf(2);
+            result.Included.Count.Should().Be(2);
         }
 
         private object CreateOneToManyObject()
