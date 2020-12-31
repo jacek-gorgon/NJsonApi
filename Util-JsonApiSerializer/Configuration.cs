@@ -13,6 +13,7 @@ namespace UtilJsonApiSerializer
     {
         private readonly Dictionary<string, IResourceMapping> resourcesMappingsByResourceType = new Dictionary<string, IResourceMapping>();
         private readonly Dictionary<Type, IResourceMapping> resourcesMappingsByType = new Dictionary<Type, IResourceMapping>();
+        private readonly Dictionary<Type, IPreSerializerPipelineModule> _preSerializerPipelineModules = new Dictionary<Type, IPreSerializerPipelineModule>();
 
         public void AddMapping(IResourceMapping resourceMapping)
         {
@@ -35,6 +36,12 @@ namespace UtilJsonApiSerializer
             IResourceMapping mapping;
             resourcesMappingsByType.TryGetValue(type, out mapping);
             return mapping;
+        }
+
+        public IPreSerializerPipelineModule GetPreSerializerPipelineModule(Type type)
+        {
+            _preSerializerPipelineModules.TryGetValue(type, out var preSerializerPipelineModule);
+            return preSerializerPipelineModule;
         }
 
         public void Apply(HttpConfiguration configuration)
@@ -61,6 +68,11 @@ namespace UtilJsonApiSerializer
 #endif
             var jsonSerializer = JsonSerializer.Create(serializerSettings);
             return jsonSerializer;
+        }
+
+        public void AddPreSerializationModule(Type type, IPreSerializerPipelineModule preSerializerPipelineModule)
+        {
+            _preSerializerPipelineModules.Add(type, preSerializerPipelineModule);
         }
     }
 }

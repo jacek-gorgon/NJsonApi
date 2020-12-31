@@ -1,14 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using FluentAssertions;
+using NUnit.Framework;
 using UtilJsonApiSerializer.Conventions.Impl;
-using SoftwareApproach.TestingExtensions;
 using UtilJsonApiSerializer.Test.TestModel;
 
 namespace UtilJsonApiSerializer.Test.Conventions
 {
-    [TestClass]
     public class DefaultPropertyScanningConventionTests
     {
-        [TestMethod]
+        [Theory]
         public void Distinguishes_linked_resources()
         {
             // Arrange
@@ -23,12 +22,12 @@ namespace UtilJsonApiSerializer.Test.Conventions
             var repliesIsLinkedResource = convention.IsLinkedResource(repliesPi);
 
             // Assert
-            titleIsLinkedResource.ShouldBeFalse();
-            authorIsLinkedResource.ShouldBeTrue();
-            repliesIsLinkedResource.ShouldBeTrue();
+            titleIsLinkedResource.Should().BeFalse();
+            authorIsLinkedResource.Should().BeTrue();
+            repliesIsLinkedResource.Should().BeTrue();
         }
 
-        [TestMethod]
+        [Theory]
         public void Distinguishes_primary_id()
         {
             // Arrange
@@ -44,12 +43,12 @@ namespace UtilJsonApiSerializer.Test.Conventions
             
 
             // Assert
-            titleIsPrimaryId.ShouldBeFalse();
-            authorIdPiIsPrimaryId.ShouldBeFalse();
-            idIsPrimaryId.ShouldBeTrue();
+            titleIsPrimaryId.Should().BeFalse();
+            authorIdPiIsPrimaryId.Should().BeFalse();
+            idIsPrimaryId.Should().BeTrue();
         }
 
-        [TestMethod]
+        [Theory]
         public void Distinguishes_ignored_properties()
         {
             // Arrange
@@ -62,11 +61,11 @@ namespace UtilJsonApiSerializer.Test.Conventions
             var shouldIgnoreInternalNumber = convention.ShouldIgnore(internalNumberPi);
 
             // Assert
-            shouldIgnoreTitle.ShouldBeFalse();
-            shouldIgnoreInternalNumber.ShouldBeTrue();
+            shouldIgnoreTitle.Should().BeFalse();
+            shouldIgnoreInternalNumber.Should().BeTrue();
         }
 
-        [TestMethod]
+        [Theory]
         public void Converts_property_name_to_camel_case()
         {
             // Arrange
@@ -77,7 +76,7 @@ namespace UtilJsonApiSerializer.Test.Conventions
             var name = convention.GetPropertyName(titlePi);
 
             // Assert
-            name.ShouldEqual("title");
+            name.Should().Be("title");
         }
     }
 }

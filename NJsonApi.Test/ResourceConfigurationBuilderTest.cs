@@ -1,24 +1,23 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
+using FluentAssertions;
+using NUnit.Framework;
 using UtilJsonApiSerializer.Test.TestModel;
 
 namespace UtilJsonApiSerializer.Test
 {
-    [TestClass]
     public class ResourceConfigurationBuilderTest
     {
         private ConfigurationBuilder configurationBuilder;
 
-        [TestInitialize]
+        [SetUp]
         public void Init()
         {
             configurationBuilder = new ConfigurationBuilder();
         }
 
-        [TestMethod]
+        [Theory]
         public void TestWithResourceType()
         {
             //Arrange
@@ -27,10 +26,10 @@ namespace UtilJsonApiSerializer.Test
             //Act
             classUnderTest.WithResourceType(resourceType);
             //Assert
-            classUnderTest.ConstructedMetadata.ResourceType.ShouldEqual(resourceType);
+            classUnderTest.ConstructedMetadata.ResourceType.Should().Be(resourceType);
         }
 
-        [TestMethod]
+        [Theory]
         public void TestWithResourceTypeForMultipleTypes()
         {
             //Arrange
@@ -45,15 +44,15 @@ namespace UtilJsonApiSerializer.Test
             resourceConfigurationForAuthor
                 .ConstructedMetadata
                 .ResourceType
-                .ShouldEqual(resourceTypeAuthor);
+                .Should().Be(resourceTypeAuthor);
 
             resourceConfigurationForPost
                 .ConstructedMetadata
                 .ResourceType
-                .ShouldEqual(resourceTypePost);
+                .Should().Be(resourceTypePost);
         }
 
-        [TestMethod]
+        [Theory]
         public void TestWithIdSelector()
         {
             //Arrange
@@ -64,10 +63,10 @@ namespace UtilJsonApiSerializer.Test
             resourceConfigurationForAuthor.WithIdSelector(a => a.Id);
             //Assert
             var result = (int)resourceConfigurationForAuthor.ConstructedMetadata.IdGetter.Invoke(author);
-            result.ShouldEqual(authorId);
+            result.Should().Be(authorId);
         }
 
-        [TestMethod]
+        [Theory]
         public void TestWithIdSelectorForMultipleTypes()
         {
             //Arrange
@@ -82,12 +81,12 @@ namespace UtilJsonApiSerializer.Test
             resourceConfigurationForPost.WithIdSelector(p => p.Id);
             //Assert
             var authorResult = (int)resourceConfigurationForAuthor.ConstructedMetadata.IdGetter.Invoke(author);
-            authorResult.ShouldEqual(authorId);
+            authorResult.Should().Be(authorId);
             var postResult = (int)resourceConfigurationForPost.ConstructedMetadata.IdGetter.Invoke(post);
-            postResult.ShouldEqual(postId);
+            postResult.Should().Be(postId);
         }
 
-        [TestMethod]
+        [Theory]
         public void TestWithSimpleProperty()
         {
             //Arrange
@@ -97,10 +96,10 @@ namespace UtilJsonApiSerializer.Test
             //Act
             resourceConfigurationForAuthor.WithSimpleProperty(a => a.Name);
             //Assert
-            resourceConfigurationForAuthor.ConstructedMetadata.PropertyGetters.Count.ShouldEqual(1);
-            resourceConfigurationForAuthor.ConstructedMetadata.PropertySetters.Count.ShouldEqual(1);
-            resourceConfigurationForAuthor.ConstructedMetadata.IdGetter.ShouldBeNull();
-            resourceConfigurationForAuthor.ConstructedMetadata.ResourceType.ShouldContain(typeof(Author).Name.ToLower());
+            resourceConfigurationForAuthor.ConstructedMetadata.PropertyGetters.Count.Should().Be(1);
+            resourceConfigurationForAuthor.ConstructedMetadata.PropertySetters.Count.Should().Be(1);
+            resourceConfigurationForAuthor.ConstructedMetadata.IdGetter.Should().BeNull();
+            resourceConfigurationForAuthor.ConstructedMetadata.ResourceType.Contains(typeof(Author).Name.ToLower()).Should().BeTrue();
         }
 
         class ClassWithReserveredKeys
@@ -111,7 +110,7 @@ namespace UtilJsonApiSerializer.Test
             public string Href { get; set; }
         }
 
-        [TestMethod]
+        [Theory]
         public void TestWithSimpleProperty_with_reserved_jsonapi_key()
         {
             // Arrange
@@ -125,19 +124,27 @@ namespace UtilJsonApiSerializer.Test
 
             // Assert
             var propertyGetters = sut.ConstructedMetadata.PropertyGetters;
-            propertyGetters.Keys.ShouldContain("_id").ShouldNotContain("id");
-            propertyGetters.Keys.ShouldContain("_type").ShouldNotContain("type");
-            propertyGetters.Keys.ShouldContain("_links").ShouldNotContain("links");
-            propertyGetters.Keys.ShouldContain("_href").ShouldNotContain("href");
+            propertyGetters.Keys.Should().Contain("_id");
+            propertyGetters.Keys.Should().NotContain("id");
+            propertyGetters.Keys.Should().Contain("_type");
+            propertyGetters.Keys.Should().NotContain("type");
+            propertyGetters.Keys.Should().Contain("_links");
+            propertyGetters.Keys.Should().NotContain("links");
+            propertyGetters.Keys.Should().Contain("_href");
+            propertyGetters.Keys.Should().NotContain("href");
 
             var propertySetters = sut.ConstructedMetadata.PropertySetters;
-            propertySetters.Keys.ShouldContain("_id").ShouldNotContain("id");
-            propertySetters.Keys.ShouldContain("_type").ShouldNotContain("type");
-            propertySetters.Keys.ShouldContain("_links").ShouldNotContain("links");
-            propertySetters.Keys.ShouldContain("_href").ShouldNotContain("href");
+            propertySetters.Keys.Should().Contain("_id");
+            propertySetters.Keys.Should().NotContain("id");
+            propertySetters.Keys.Should().Contain("_type");
+            propertySetters.Keys.Should().NotContain("type");
+            propertySetters.Keys.Should().Contain("_links");
+            propertySetters.Keys.Should().NotContain("links");
+            propertySetters.Keys.Should().Contain("_href");
+            propertySetters.Keys.Should().NotContain("href");
         }
 
-        [TestMethod]
+        [Theory]
         public void TestWithSimplePropertyWithIdentity()
         {
             //Arrange & Act
@@ -147,10 +154,10 @@ namespace UtilJsonApiSerializer.Test
                 .WithIdSelector(a => a.Id);
             //Assert
             AssertResourceConfigurationHasValuesForWithSimpleProperty(resourceConfigurationForAuthor);
-            resourceConfigurationForAuthor.ConstructedMetadata.ResourceType.ShouldContain(typeof(Author).Name.ToLower());
+            resourceConfigurationForAuthor.ConstructedMetadata.ResourceType.Should().Contain(typeof(Author).Name.ToLower());
         }
 
-        [TestMethod]
+        [Theory]
         public void TestWithSimplePropertyWithIdentyAndAscessor()
         {
             //Arrange
@@ -168,11 +175,11 @@ namespace UtilJsonApiSerializer.Test
             var resultForId = resourceConfigurationForAuthor.ConstructedMetadata.IdGetter.Invoke(author);
 
             //Assert
-            resultForName.ShouldEqual(authorName);
-            resultForId.ShouldEqual(authorId);
+            resultForName.Should().Be(authorName);
+            resultForId.Should().Be(authorId);
         }
 
-        [TestMethod]
+        [Theory]
         public void TestWithSimplePropertyMultipleTypes()
         {
             //Arrange
@@ -196,19 +203,19 @@ namespace UtilJsonApiSerializer.Test
 
             //Assert
             AssertResourceConfigurationHasValuesForWithSimpleProperty(resourceConfigurationForAuthor);
-            resourceConfigurationForAuthor.ConstructedMetadata.ResourceType.ShouldContain(typeof(Author).Name.ToLower());
-            resourceConfigurationForAuthor.ConstructedMetadata.PropertyGetters["name"].Invoke(author).ShouldEqual(authorName);
-            resourceConfigurationForAuthor.ConstructedMetadata.IdGetter.Invoke(author).ShouldEqual(authorId);
+            resourceConfigurationForAuthor.ConstructedMetadata.ResourceType.Should().Contain(typeof(Author).Name.ToLower());
+            resourceConfigurationForAuthor.ConstructedMetadata.PropertyGetters["name"].Invoke(author).Should().Be(authorName);
+            resourceConfigurationForAuthor.ConstructedMetadata.IdGetter.Invoke(author).Should().Be(authorId);
 
             AssertResourceConfigurationHasValuesForWithSimpleProperty(resourceConfigurationForPost);
-            resourceConfigurationForPost.ConstructedMetadata.ResourceType.ShouldContain(typeof(Post).Name.ToLower());
-            resourceConfigurationForPost.ConstructedMetadata.PropertyGetters["title"].Invoke(post).ShouldEqual(postTitle);
+            resourceConfigurationForPost.ConstructedMetadata.ResourceType.Should().Contain(typeof(Post).Name.ToLower());
+            resourceConfigurationForPost.ConstructedMetadata.PropertyGetters["title"].Invoke(post).Should().Be(postTitle);
             resourceConfigurationForPost.ConstructedMetadata.PropertySetters["title"].Invoke(post, postTitleModifed);
-            post.Title.ShouldEqual(postTitleModifed);
-            resourceConfigurationForPost.ConstructedMetadata.PropertyGetters["title"].Invoke(post).ShouldEqual(postTitleModifed);
+            post.Title.Should().Be(postTitleModifed);
+            resourceConfigurationForPost.ConstructedMetadata.PropertyGetters["title"].Invoke(post).Should().Be(postTitleModifed);
         }
 
-        [TestMethod]
+        [Theory]
         public void IgnorePropertyTest()
         {
             //Arrange
@@ -216,40 +223,40 @@ namespace UtilJsonApiSerializer.Test
             var author = new Author() { Id = authorId };
             var resourceConfigurationForAuthor = configurationBuilder.Resource<Author>();
             resourceConfigurationForAuthor.WithSimpleProperty(a => a.Name);
-            resourceConfigurationForAuthor.ConstructedMetadata.PropertyGetters.Count.ShouldEqual(1);
-            resourceConfigurationForAuthor.ConstructedMetadata.PropertySetters.Count.ShouldEqual(1);
-            resourceConfigurationForAuthor.ConstructedMetadata.IdGetter.ShouldBeNull();
-            resourceConfigurationForAuthor.ConstructedMetadata.ResourceType.ShouldContain(typeof(Author).Name.ToLower());
+            resourceConfigurationForAuthor.ConstructedMetadata.PropertyGetters.Count.Should().Be(1);
+            resourceConfigurationForAuthor.ConstructedMetadata.PropertySetters.Count.Should().Be(1);
+            resourceConfigurationForAuthor.ConstructedMetadata.IdGetter.Should().BeNull();
+            resourceConfigurationForAuthor.ConstructedMetadata.ResourceType.Should().Contain(typeof(Author).Name.ToLower());
             //Act
             resourceConfigurationForAuthor.IgnoreProperty(a => a.Name);
             //Assert
-            resourceConfigurationForAuthor.ConstructedMetadata.PropertyGetters.Count.ShouldEqual(0);
-            resourceConfigurationForAuthor.ConstructedMetadata.PropertySetters.Count.ShouldEqual(0);
-            resourceConfigurationForAuthor.ConstructedMetadata.IdGetter.ShouldBeNull();
-            resourceConfigurationForAuthor.ConstructedMetadata.ResourceType.ShouldContain(typeof(Author).Name.ToLower());
+            resourceConfigurationForAuthor.ConstructedMetadata.PropertyGetters.Count.Should().Be(0);
+            resourceConfigurationForAuthor.ConstructedMetadata.PropertySetters.Count.Should().Be(0);
+            resourceConfigurationForAuthor.ConstructedMetadata.IdGetter.Should().BeNull();
+            resourceConfigurationForAuthor.ConstructedMetadata.ResourceType.Should().Contain(typeof(Author).Name.ToLower());
 
         }
 
-        [TestMethod]
+        [Theory]
         public void WithLinkedResourceTest()
         {
             //Arrange
-
+            
             //Act
             var resourceConfigurationForPost = configurationBuilder
                 .Resource<Post>()
                 .WithIdSelector(p => p.Id)
                 .WithSimpleProperty(p => p.Title)
-                .WithLinkedResource<Author>(p => p.Author);
+                .WithLinkedResource<Author>(p => p.Author,null, null, "author", ResourceInclusionRules.Smart, null, "author");
 
             //Assert
-            resourceConfigurationForPost.ConstructedMetadata.Relationships.Count.ShouldEqual(1);
-            resourceConfigurationForPost.ConstructedMetadata.Relationships[0].RelationshipName.ShouldContain(typeof(Author).Name.ToLower());
-            resourceConfigurationForPost.ConstructedMetadata.Relationships[0].RelatedBaseType.ShouldEqual(typeof(Author));
-            resourceConfigurationForPost.ConstructedMetadata.Relationships[0].ResourceMapping.ShouldBeNull();
+            resourceConfigurationForPost.ConstructedMetadata.Relationships.Count.Should().Be(1);
+            resourceConfigurationForPost.ConstructedMetadata.Relationships[0].RelationshipName.Should().Contain(typeof(Author).Name.ToLower());
+            resourceConfigurationForPost.ConstructedMetadata.Relationships[0].RelatedBaseType.Should().Be(typeof(Author));
+            resourceConfigurationForPost.ConstructedMetadata.Relationships[0].ResourceMapping.Should().BeNull();
         }
 
-        [TestMethod]
+        [Theory]
         public void WithLinkTemplateTest()
         {
             //Arrange
@@ -258,23 +265,23 @@ namespace UtilJsonApiSerializer.Test
                 .Resource<Post>()
                 .WithIdSelector(p => p.Id)
                 .WithSimpleProperty(p => p.Title);
-            resourceConfigurationForPost.ConstructedMetadata.UrlTemplate.ShouldBeNull();
+            resourceConfigurationForPost.ConstructedMetadata.UrlTemplate.Should().BeNull();
             //Act
             resourceConfigurationForPost
                  .WithLinkTemplate(urlTemplate);
 
             //Assert
 
-            resourceConfigurationForPost.ConstructedMetadata.UrlTemplate.ShouldEqual(urlTemplate);
+            resourceConfigurationForPost.ConstructedMetadata.UrlTemplate.Should().Be(urlTemplate);
         }
 
 
 
         private void AssertResourceConfigurationHasValuesForWithSimpleProperty(IResourceConfigurationBuilder resourceConfiguration)
         {
-            resourceConfiguration.ConstructedMetadata.PropertyGetters.Count.ShouldEqual(1);
-            resourceConfiguration.ConstructedMetadata.PropertySetters.Count.ShouldEqual(1);
-            resourceConfiguration.ConstructedMetadata.IdGetter.ShouldNotBeNull();
+            resourceConfiguration.ConstructedMetadata.PropertyGetters.Count.Should().Be(1);
+            resourceConfiguration.ConstructedMetadata.PropertySetters.Count.Should().Be(1);
+            resourceConfiguration.ConstructedMetadata.IdGetter.Should().NotBeNull();
         }
     }
 }

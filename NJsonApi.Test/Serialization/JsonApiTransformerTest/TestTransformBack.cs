@@ -1,16 +1,15 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using UtilJsonApiSerializer.Serialization;
-using SoftwareApproach.TestingExtensions;
 using System.Collections.Generic;
+using FluentAssertions;
+using NUnit.Framework;
 using UtilJsonApiSerializer.Test.TestModel;
 
 namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
 {
-    [TestClass]
     public class TestTransformBack
     {
-        [TestMethod]
+        [Theory]
         public void Transform_properties_with_reserverd_keyword()
         {
             var updateDocument = new UpdateDocument()
@@ -33,10 +32,10 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
             var resultDelta = sut.TransformBack(updateDocument, typeof(Post), context);
 
             // Assert
-            resultDelta.ObjectPropertyValues.ContainsKey("id").ShouldBeTrue();
+            resultDelta.ObjectPropertyValues.ContainsKey("id").Should().BeTrue();
         }
 
-        [TestMethod]
+        [Theory]
         public void Transform_UpdateDocument_To_Delta_OneField()
         {
             // Arrange
@@ -65,10 +64,10 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
             var resultDelta = sut.TransformBack(updateDocument, typeof(Post), context);
 
             // Assert
-            resultDelta.ObjectPropertyValues.ContainsKey("title").ShouldBeTrue();
+            resultDelta.ObjectPropertyValues.ContainsKey("title").Should().BeTrue();
         }
 
-        [TestMethod]
+        [Theory]
         public void Transform_UpdateDocument_To_Delta_TwoFields()
         {
             // Arrange
@@ -98,8 +97,8 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
             var resultDelta = sut.TransformBack(updateDocument, typeof(Post), context);
 
             // Assert
-            resultDelta.ObjectPropertyValues.ContainsKey("title").ShouldBeTrue();
-            resultDelta.ObjectPropertyValues.ContainsKey("authorId").ShouldBeTrue();
+            resultDelta.ObjectPropertyValues.ContainsKey("title").Should().BeTrue();
+            resultDelta.ObjectPropertyValues.ContainsKey("authorId").Should().BeTrue();
         }
 
         class PostUpdateOneField

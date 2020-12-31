@@ -93,6 +93,7 @@ namespace UtilJsonApiSerializer
                 }
 
                 configuration.AddMapping(resourceConfiguration.Value.ConstructedMetadata);
+                configuration.AddPreSerializationModule(resourceConfiguration.Key, resourceConfiguration.Value.PreSerializerPipelineModule);
             }
 
             return configuration;

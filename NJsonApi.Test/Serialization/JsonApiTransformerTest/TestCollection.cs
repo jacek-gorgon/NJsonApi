@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MSTestExtensions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using FluentAssertions;
+using NUnit.Framework;
 using UtilJsonApiSerializer.Common.Infrastructure;
 using UtilJsonApiSerializer.Serialization;
-using SoftwareApproach.TestingExtensions;
 using UtilJsonApiSerializer.Serialization.Documents;
 using UtilJsonApiSerializer.Serialization.Representations;
 using UtilJsonApiSerializer.Serialization.Representations.Resources;
 
 namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
 {
-    [TestClass]
     public class TestCollection
     {
         readonly List<string> reservedKeys = new List<string> { "id", "type", "href", "links" };
            
-        [TestMethod]
+        [Theory]
         public void Creates_CompondDocument_for_collection_not_nested_class_and_propertly_map_resourceName()
         {
             // Arrange
@@ -29,12 +27,12 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
 
             // Assert
-            result.Data.ShouldNotBeNull();
+            result.Data.Should().NotBeNull();
             var transformedObject = result.Data as ResourceCollection;
-            transformedObject.ShouldNotBeNull();
+            transformedObject.Should().NotBeNull();
         }
 
-        [TestMethod]
+        [Theory]
         public void Creates_CompondDocument_for_collection_not_nested_single_class()
         {
             // Arrange
@@ -46,13 +44,13 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
 
             // Assert
-            result.Data.ShouldNotBeNull();
+            result.Data.Should().NotBeNull();
             var transformedObject = result.Data as ResourceCollection;
-            transformedObject.ShouldNotBeNull();
+            transformedObject.Should().NotBeNull();
         }
 
 
-        [TestMethod]
+        [Theory]
         public void Creates_CompondDocument_for_collection_not_nested_class_and_propertly_map_id()
         {
             // Arrange
@@ -65,11 +63,11 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
 
             // Assert
             var transformedObject = result.Data as ResourceCollection;
-            transformedObject[0].Id.ShouldEqual(objectsToTransform.First().Id.ToString());
-            transformedObject[1].Id.ShouldEqual(objectsToTransform.Last().Id.ToString());
+            transformedObject[0].Id.Should().Be(objectsToTransform.First().Id.ToString());
+            transformedObject[1].Id.Should().Be(objectsToTransform.Last().Id.ToString());
         }
 
-        [TestMethod]
+        [Theory]
         public void Creates_CompondDocument_for_collection_not_nested_class_and_propertly_map_properties()
         {
             // Arrange
@@ -85,16 +83,16 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
 
             Action<SingleResource, SampleClass> assertSame = (actual, expected) =>
             {
-                actual.Attributes["someValue"].ShouldEqual(expected.SomeValue);
-                actual.Attributes["date"].ShouldEqual(expected.DateTime);
-                actual.Attributes.ShouldHaveCountOf(2);
+                actual.Attributes["someValue"].Should().Be(expected.SomeValue);
+                actual.Attributes["date"].Should().Be(expected.DateTime);
+                actual.Attributes.Count.Should().Be(2);
             };
 
             assertSame(transformedObject[0], objectsToTransform.First());
             assertSame(transformedObject[1], objectsToTransform.Last());
         }
 
-        [TestMethod]
+        [Theory]
         public void Creates_CompondDocument_for_collection_not_nested_class_and_propertly_map_href()
         {
             // Arrange
@@ -107,11 +105,11 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
 
             // Assert
             var transformedObject = result.Data as ResourceCollection;
-            transformedObject[0].Links["self"].ToString().ShouldEqual("http://sampleclass/1");
-            transformedObject[1].Links["self"].ToString().ShouldEqual("http://sampleclass/2");
+            transformedObject[0].Links["self"].ToString().Should().Be("http://sampleclass/1");
+            transformedObject[1].Links["self"].ToString().Should().Be("http://sampleclass/2");
         }
 
-        [TestMethod]
+        [Theory]
         public void Creates_CompondDocument_for_collection_not_nested_class_and_propertly_map_type()
         {
             // Arrange
@@ -124,11 +122,11 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
 
             // Assert
             var transformedObject = result.Data as ResourceCollection;
-            transformedObject[0].Type.ShouldEqual("sampleClasses");
-            transformedObject[1].Type.ShouldEqual("sampleClasses");
+            transformedObject[0].Type.Should().Be("sampleClasses");
+            transformedObject[1].Type.Should().Be("sampleClasses");
         }
 
-        [TestMethod]
+        [Theory]
         public void Creates_CompondDocument_for_collectione_of_metadatawrapper_throws_notSupportedException()
         {
             // Arrange
@@ -139,8 +137,11 @@ namespace UtilJsonApiSerializer.Test.Serialization.JsonApiTransformerTest
             };
             var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
 
-            // Act => Assert
-            ThrowsAssert.Throws<NotSupportedException>(() => sut.Transform(objectsToTransform, configuration));
+            // Act
+            Action act = () => sut.Transform(objectsToTransform, configuration);
+
+            // Assert
+            act.Should().Throw<NotSupportedException>();
         }
 
         private static IEnumerable<SampleClass> CreateObjectToTransform()

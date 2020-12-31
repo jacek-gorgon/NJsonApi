@@ -1,14 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using FluentAssertions;
+using NUnit.Framework;
 using UtilJsonApiSerializer.Conventions.Impl;
-using SoftwareApproach.TestingExtensions;
 using UtilJsonApiSerializer.Test.TestModel;
 
 namespace UtilJsonApiSerializer.Test.Conventions
 {
-    [TestClass]
     public class CamelCaseLinkNameConventionTests
     {
-        [TestMethod]
+        [Theory]
         public void Converts_collection_links()
         {
             // Arrange
@@ -18,10 +17,10 @@ namespace UtilJsonApiSerializer.Test.Conventions
             var name = convention.GetLinkNameFromExpression((Author a) => a.Posts);
 
             // Assert
-            name.ShouldEqual("posts");
+            name.Should().Be("posts");
         }
 
-        [TestMethod]
+        [Theory]
         public void Converts_single_links()
         {
             // Arrange
@@ -31,10 +30,10 @@ namespace UtilJsonApiSerializer.Test.Conventions
             var name = convention.GetLinkNameFromExpression((Post a) => a.Author);
 
             // Assert
-            name.ShouldEqual("author");
+            name.Should().Be("author");
         }
 
-        [TestMethod]
+        [Theory]
         public void Converts_distinct_collection_names()
         {
             // Arrange
@@ -44,7 +43,7 @@ namespace UtilJsonApiSerializer.Test.Conventions
             var name = convention.GetLinkNameFromExpression((Post a) => a.Replies);
 
             // Assert
-            name.ShouldEqual("replies");
+            name.Should().Be("replies");
         }
     }
 }

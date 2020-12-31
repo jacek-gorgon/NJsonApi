@@ -17,6 +17,7 @@ namespace UtilJsonApiSerializer
     {
         public IResourceMapping ConstructedMetadata { get; set; }
         public ConfigurationBuilder ConfigurationBuilder { get; set; }
+        public IPreSerializerPipelineModule PreSerializerPipelineModule { get; set; }
 
         public IResourceTypeConvention ResourceTypeConvention { get; set; }
         public ILinkNameConvention LinkNameConvention { get; set; }
@@ -205,7 +206,7 @@ namespace UtilJsonApiSerializer
                     // Because the expression is constructed in run-time and we need to invoke the convention that expects
                     // a compile-time-safe generic method, reflection must be used to invoke it.
                     MethodInfo closedMethod = openMethod.MakeGenericMethod(nestedType);
-                    closedMethod.Invoke(this, new object[] { propertyAccessor, null, null, null, ResourceInclusionRules.Smart, null, null });
+                    closedMethod.Invoke(this, new object[] { propertyAccessor, null, null, propertyExp.Member.Name.ToLower(), ResourceInclusionRules.Smart, null, propertyExp.Member.Name.ToLower() });
                 }
             }
             return this;
@@ -345,5 +346,14 @@ namespace UtilJsonApiSerializer
 
         public Action<Type, SingleResource> HandlerAction { get; set; }
 
+        public ResourceConfigurationBuilder<TResource> WithPreSerializerPipelineModule(IPreSerializerPipelineModule preSerializerPipelineModule)
+        {
+            PreSerializerPipelineModule = preSerializerPipelineModule;
+            return this;
+        }
+
+
     }
+
+    
 }

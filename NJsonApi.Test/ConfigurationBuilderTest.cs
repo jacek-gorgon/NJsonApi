@@ -4,18 +4,17 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using FakeItEasy;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using FluentAssertions;
+using NUnit.Framework;
 using UtilJsonApiSerializer.Conventions;
 using UtilJsonApiSerializer.Conventions.Impl;
-using SoftwareApproach.TestingExtensions;
 using UtilJsonApiSerializer.Test.TestModel;
 
 namespace UtilJsonApiSerializer.Test
 {
-    [TestClass]
     public class ConfigurationBuilderTest
     {
-        [TestMethod]
+        [Theory]
         public void Resource_creates_mapping()
         {
             //Arrange
@@ -27,11 +26,11 @@ namespace UtilJsonApiSerializer.Test
             var result = builder.Build();
 
             //Assert
-            result.IsMappingRegistered(typeof(Post)).ShouldBeTrue();
-            result.GetMapping(typeof(Post)).ShouldNotBeNull();
+            result.IsMappingRegistered(typeof(Post)).Should().BeTrue();
+            result.GetMapping(typeof(Post)).Should().NotBeNull();
         }
 
-        [TestMethod]
+        [Theory]
         public void WithSimpleProperty_maps_properly()
         {
             //Arrange
@@ -47,19 +46,19 @@ namespace UtilJsonApiSerializer.Test
             var mapping = configuration.GetMapping(typeof(Post));
 
             //Assert
-            mapping.PropertyGetters.Count.ShouldEqual(1);
-            mapping.PropertySetters.Count.ShouldEqual(1);
+            mapping.PropertyGetters.Count.Should().Be(1);
+            mapping.PropertySetters.Count.Should().Be(1);
 
             var getter = mapping.PropertyGetters.Single().Value;
             var setter = mapping.PropertySetters.Single().Value;
 
-            ((string)getter(post)).ShouldEqual("test");
+            ((string)getter(post)).Should().Be("test");
 
             setter(post, "works");
-            post.Title.ShouldEqual("works");
+            post.Title.Should().Be("works");
         }
 
-        [TestMethod]
+        [Theory]
         public void WithIdSelector_maps_properly()
         {
             //Arrange
@@ -75,11 +74,11 @@ namespace UtilJsonApiSerializer.Test
             var mapping = configuration.GetMapping(typeof(Post));
 
             //Assert
-            mapping.IdGetter.ShouldNotBeNull();
-            mapping.IdGetter(post).ShouldEqual(4);
+            mapping.IdGetter.Should().NotBeNull();
+            mapping.IdGetter(post).Should().Be(4);
         }
 
-        [TestMethod]
+        [Theory]
         public void WithLinkedResource_maps_properly()
         {
             //Arrange
@@ -101,42 +100,42 @@ namespace UtilJsonApiSerializer.Test
             //Act
             builder
                 .Resource<Post>()
-                .WithLinkedResource(p => p.Author);
+                .WithLinkedResource(p => p.Author, null, null, "author", ResourceInclusionRules.Smart, null, "author");
 
             builder
                 .Resource<Author>()
-                .WithLinkedResource(a => a.Posts);
+                .WithLinkedResource(a => a.Posts, null, null, "posts", ResourceInclusionRules.Smart, null, "posts");
 
             var configuration = builder.Build();
             var postMapping = configuration.GetMapping(typeof(Post));
             var authorMapping = configuration.GetMapping(typeof(Author));
 
             //Assert
-            postMapping.Relationships.Count.ShouldEqual(1);
+            postMapping.Relationships.Count.Should().Be(1);
 
             var linkToAuthor = postMapping.Relationships.Single();
 
-            linkToAuthor.IsCollection.ShouldBeFalse();
-            linkToAuthor.RelationshipName.ShouldEqual("author");
-            linkToAuthor.ParentType.ShouldEqual(typeof(Post));
-            linkToAuthor.RelatedBaseType.ShouldEqual(typeof(Author));
-            linkToAuthor.RelatedResource(post).ShouldBeSameAs(author);
-            linkToAuthor.RelatedResourceId(post).ShouldEqual(4);
-            linkToAuthor.ResourceMapping.ShouldBeSameAs(authorMapping);
+            linkToAuthor.IsCollection.Should().BeFalse();
+            linkToAuthor.RelationshipName.Should().Be("author");
+            linkToAuthor.ParentType.Should().Be(typeof(Post));
+            linkToAuthor.RelatedBaseType.Should().Be(typeof(Author));
+            linkToAuthor.RelatedResource(post).Should().Be(author);
+            linkToAuthor.RelatedResourceId(post).Should().Be(4);
+            linkToAuthor.ResourceMapping.Should().Be(authorMapping);
 
-            authorMapping.Relationships.Count.ShouldEqual(1);
+            authorMapping.Relationships.Count.Should().Be(1);
             var linkToPosts = authorMapping.Relationships.Single();
 
-            linkToPosts.IsCollection.ShouldBeTrue();
-            linkToPosts.RelationshipName.ShouldEqual("posts");
-            linkToPosts.RelatedBaseType.ShouldEqual(typeof(Post));
-            linkToPosts.ParentType.ShouldEqual(typeof(Author));
-            linkToPosts.RelatedResource(author).ShouldBeSameAs(author.Posts);
-            linkToPosts.RelatedResourceId.ShouldBeNull();
-            linkToPosts.ResourceMapping.ShouldBeSameAs(postMapping);
+            linkToPosts.IsCollection.Should().BeTrue();
+            linkToPosts.RelationshipName.Should().Be("posts");
+            linkToPosts.RelatedBaseType.Should().Be(typeof(Post));
+            linkToPosts.ParentType.Should().Be(typeof(Author));
+            linkToPosts.RelatedResource(author).Should().Be(author.Posts);
+            linkToPosts.RelatedResourceId.Should().BeNull();
+            linkToPosts.ResourceMapping.Should().Be(postMapping);
         }
 
-        [TestMethod]
+        [Theory]
         public void WithLinkedResource_uses_conventions()
         {
             //Arrange
@@ -164,7 +163,7 @@ namespace UtilJsonApiSerializer.Test
             //Act
             builder
                 .Resource<Post>()
-                .WithLinkedResource(p => p.Author);
+                .WithLinkedResource(p => p.Author, null, null, testLinkName, ResourceInclusionRules.Smart, null, testLinkName);
 
             builder
                 .Resource<Author>()
@@ -175,12 +174,12 @@ namespace UtilJsonApiSerializer.Test
             var link = postMapping.Relationships.Single();
 
             //Assert
-            link.RelationshipName.ShouldEqual(testLinkName);
-            link.RelatedBaseResourceType.ShouldEqual(testResourceType);
-            link.RelatedResourceId(new Post()).ShouldEqual(4);
+            link.RelationshipName.Should().Be(testLinkName);
+            link.RelatedBaseResourceType.Should().Be(testResourceType);
+            link.RelatedResourceId(new Post()).Should().Be(4);
         }
 
-        [TestMethod]
+        [Theory]
         public void WithAllSimpleProperties_maps_properly()
         {
             //Arrange
@@ -204,15 +203,15 @@ namespace UtilJsonApiSerializer.Test
             var postMapping = configuration.GetMapping(typeof(Post));
 
             //Assert
-            postMapping.IdGetter.ShouldNotBeNull();
-            postMapping.IdGetter(post).ShouldEqual(4);
-            postMapping.PropertyGetters.Count.ShouldEqual(2);
-            postMapping.PropertySetters.Count.ShouldEqual(2);
-            postMapping.PropertyGetters["title"](post).ShouldEqual(testTitle);
-            postMapping.PropertyGetters.ContainsKey("authorId").ShouldBeTrue();
+            postMapping.IdGetter.Should().NotBeNull();
+            postMapping.IdGetter(post).Should().Be(4);
+            postMapping.PropertyGetters.Count.Should().Be(2);
+            postMapping.PropertySetters.Count.Should().Be(2);
+            postMapping.PropertyGetters["title"](post).Should().Be(testTitle);
+            postMapping.PropertyGetters.ContainsKey("authorId").Should().BeTrue();
         }
 
-        [TestMethod]
+        [Theory]
         public void WithAllLinkedResources_maps_properly()
         {
             //Arrange
@@ -235,12 +234,12 @@ namespace UtilJsonApiSerializer.Test
             var postMapping = configuration.GetMapping(typeof(Post));
 
             //Assert
-            postMapping.Relationships.Count.ShouldEqual(2);
-            postMapping.Relationships.SingleOrDefault(l => l.RelatedBaseResourceType == "authors").ShouldNotBeNull();
-            postMapping.Relationships.SingleOrDefault(l => l.RelatedBaseResourceType == "comments").ShouldNotBeNull();
+            postMapping.Relationships.Count.Should().Be(2);
+            postMapping.Relationships.SingleOrDefault(l => l.RelatedBaseResourceType == "authors").Should().NotBeNull();
+            postMapping.Relationships.SingleOrDefault(l => l.RelatedBaseResourceType == "comments").Should().NotBeNull();
         }
 
-        [TestMethod]
+        [Theory]
         public void WithAllProperties_maps_properly()
         {
             //Arrange
@@ -263,15 +262,15 @@ namespace UtilJsonApiSerializer.Test
             var postMapping = configuration.GetMapping(typeof(Post));
 
             //Assert
-            postMapping.Relationships.Count.ShouldEqual(2);
-            postMapping.Relationships.SingleOrDefault(l => l.RelatedBaseResourceType == "authors").ShouldNotBeNull();
-            postMapping.Relationships.SingleOrDefault(l => l.RelatedBaseResourceType == "comments").ShouldNotBeNull();
-            postMapping.PropertyGetters.Count.ShouldEqual(2);
-            postMapping.PropertySetters.Count.ShouldEqual(2);
-            postMapping.IdGetter.ShouldNotBeNull();
+            postMapping.Relationships.Count.Should().Be(2);
+            postMapping.Relationships.SingleOrDefault(l => l.RelatedBaseResourceType == "authors").Should().NotBeNull();
+            postMapping.Relationships.SingleOrDefault(l => l.RelatedBaseResourceType == "comments").Should().NotBeNull();
+            postMapping.PropertyGetters.Count.Should().Be(2);
+            postMapping.PropertySetters.Count.Should().Be(2);
+            postMapping.IdGetter.Should().NotBeNull();
         }
 
-        [TestMethod]
+        [Theory]
         public void WithAllProperties_uses_conventions()
         {
             //Arrange
@@ -323,10 +322,10 @@ namespace UtilJsonApiSerializer.Test
             var link = postMapping.Relationships.Single();
 
             //Assert
-            link.RelationshipName.ShouldEqual(testLinkName);
-            link.RelatedBaseResourceType.ShouldEqual(testResourceType);
-            link.RelatedResourceId(new Post()).ShouldEqual(4);
-            postMapping.PropertyGetters.ContainsKey(testname).ShouldBeTrue();
+            link.RelationshipName.Should().Be("author");
+            link.RelatedBaseResourceType.Should().Be(testResourceType);
+            link.RelatedResourceId(new Post()).Should().Be(4);
+            postMapping.PropertyGetters.ContainsKey(testname).Should().BeTrue();
 
             A.CallTo(() => propertyScanningConventionMock.IsLinkedResource(A<PropertyInfo>._)).MustHaveHappened();
             A.CallTo(() => propertyScanningConventionMock.IsPrimaryId(A<PropertyInfo>._)).MustHaveHappened();
@@ -334,7 +333,7 @@ namespace UtilJsonApiSerializer.Test
             A.CallTo(() => propertyScanningConventionMock.ThrowOnUnmappedLinkedType).MustHaveHappened();
         }
 
-        [TestMethod]
+        [Theory]
         public void WithComplexObjectTest()
         {
             //Arrange
@@ -357,12 +356,12 @@ namespace UtilJsonApiSerializer.Test
                 .Resource<Post>()
                 .WithSimpleProperty(p => p.Title)
                 .WithIdSelector(p => p.Id)
-                .WithLinkedResource(p => p.Replies);
+                .WithLinkedResource(p => p.Replies, null, null, "replies", ResourceInclusionRules.Smart, null, "replies");
             var resourceConfigurationForAuthor = configurationBuilder
                 .Resource<Author>()
                 .WithSimpleProperty(a => a.Name)
                 .WithIdSelector(a => a.Id)
-                .WithLinkedResource(a => a.Posts);
+                .WithLinkedResource(a => a.Posts, null, null, "posts", ResourceInclusionRules.Smart, null, "posts");
             var resourceConfigurationForComment = configurationBuilder
                 .Resource<Comment>()
                 .WithIdSelector(c => c.Id)
@@ -370,22 +369,23 @@ namespace UtilJsonApiSerializer.Test
             var result = configurationBuilder.Build();
 
             //Assert
-            resourceConfigurationForPost.ConstructedMetadata.Relationships.Count.ShouldEqual(1);
-            resourceConfigurationForAuthor.ConstructedMetadata.Relationships.Count.ShouldEqual(1);
+            resourceConfigurationForPost.ConstructedMetadata.Relationships.Count.Should().Be(1);
+            resourceConfigurationForAuthor.ConstructedMetadata.Relationships.Count.Should().Be(1);
             configurationBuilder.ResourceConfigurationsByType.All(
                 r => r.Value.ConstructedMetadata.Relationships.All(l => l.ResourceMapping != null));
             var authorLinks =
                  configurationBuilder.ResourceConfigurationsByType[
                      resourceConfigurationForAuthor.ConstructedMetadata.ResourceRepresentationType].ConstructedMetadata.Relationships;
-            authorLinks.ShouldNotBeNull().Count.ShouldEqual(1);
-            authorLinks[0].RelationshipName.ShouldEqual("posts");
-            authorLinks[0].ResourceMapping.PropertyGetters.ShouldNotBeNull().Count.ShouldEqual(1);
+            authorLinks.Should().NotBeNull();
+            authorLinks.Count.Should().Be(1);
+            authorLinks[0].RelationshipName.Should().Be("posts");
+            authorLinks[0].ResourceMapping.PropertyGetters.Should().NotBeNull();
+            authorLinks[0].ResourceMapping.PropertyGetters.Count.Should().Be(1);
             authorLinks[0].ResourceMapping.Relationships
                 .ForEach(p => p.ResourceMapping.Relationships
                     .ForEach(c => c
                         .RelationshipName
-                        .ShouldEqual(resourceConfigurationForComment.ConstructedMetadata.ResourceType)));
-
+                        .Should().Be(resourceConfigurationForComment.ConstructedMetadata.ResourceType)));
         }
     }
 }
