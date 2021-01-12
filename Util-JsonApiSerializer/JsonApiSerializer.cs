@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using UtilJsonApiSerializer.Serialization;
@@ -31,7 +32,21 @@ namespace UtilJsonApiSerializer
         {
             var objectType = TransformationHelper.GetObjectType(objectData);
             var preSerializerPipelineModule = config.GetPreSerializerPipelineModule(objectType);
-            preSerializerPipelineModule.Run(objectData);
+            if (preSerializerPipelineModule != null)
+            {
+                if (objectData is IEnumerable<object> enumerableData)
+                {
+                    foreach (var item in enumerableData)
+                    {
+                        preSerializerPipelineModule.Run(item);
+                    }
+                }
+                else
+                {
+                    preSerializerPipelineModule.Run(objectData);
+                }
+                
+            }
         }
 
 
