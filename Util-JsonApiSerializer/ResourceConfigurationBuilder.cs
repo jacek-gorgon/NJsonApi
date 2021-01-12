@@ -158,7 +158,7 @@ namespace UtilJsonApiSerializer
         }
 
         /// <summary>
-        /// Registers through discovery all properties, including primitive properties and linked resources.
+        /// Registers through discovery all primitive properties. Does not register linked resources.
         /// </summary>
         /// <remarks>
         /// Conventions used:
@@ -172,7 +172,11 @@ namespace UtilJsonApiSerializer
         public ResourceConfigurationBuilder<TResource> WithAllProperties()
         {
             WithAllSimpleProperties();
-            WithAllLinkedResources();
+            
+            // We no longer want to include linked resources with this as it creates a burden on the users
+            // to omit any properties that are not primitive types, yet should be serialized as primitives
+            //WithAllLinkedResources();
+            
             return this;
         }
 
@@ -206,7 +210,7 @@ namespace UtilJsonApiSerializer
                     // Because the expression is constructed in run-time and we need to invoke the convention that expects
                     // a compile-time-safe generic method, reflection must be used to invoke it.
                     MethodInfo closedMethod = openMethod.MakeGenericMethod(nestedType);
-                    closedMethod.Invoke(this, new object[] { propertyAccessor, null, null, propertyExp.Member.Name.ToLower(), ResourceInclusionRules.Smart, null, propertyExp.Member.Name.ToLower() });
+                    closedMethod.Invoke(this, new object[] { propertyAccessor, null, null, CamelCaseUtil.ToCamelCase(propertyExp.Member.Name), ResourceInclusionRules.Smart, null, CamelCaseUtil.ToCamelCase(propertyExp.Member.Name) });
                 }
             }
             return this;
@@ -260,6 +264,7 @@ namespace UtilJsonApiSerializer
         public ResourceConfigurationBuilder<TResource> WithLinkedResource<TNested>(Expression<Func<TResource, TNested>> objectAccessor, Expression<Func<TResource, object>> idAccessor = null, string linkedResourceType = null, string linkName = null, ResourceInclusionRules inclusionRule = ResourceInclusionRules.Smart, string smartUrlTemplate = null, string requestedIncludes = null) where TNested : class
         {
             var includes = requestedIncludes == null ? new List<string>() : requestedIncludes.ToLower().Split(',').ToList();
+
             if ((linkName != null && includes.Contains(linkName.ToLower())))
             {
                 if (typeof(TNested).Name == "Array")
@@ -271,7 +276,6 @@ namespace UtilJsonApiSerializer
 
                 var linkedType = isCollection ? GetItemType(typeof(TNested)) : typeof(TNested);
 
-                if (linkName == null) linkName = LinkNameConvention.GetLinkNameFromExpression(objectAccessor);
                 if (linkedResourceType == null) linkedResourceType = ResourceTypeConvention.GetResourceTypeFromRepresentationType(linkedType);
                 if (idAccessor == null) idAccessor = LinkIdConvention.GetIdExpression(objectAccessor);
 
