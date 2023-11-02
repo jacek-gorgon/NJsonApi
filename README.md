@@ -1,5 +1,5 @@
 # NJsonApi
-The .NET server implementation of the {**json:api**} standard. 
+The .NET server implementation of the {**json:api**} standard..
 
 > The library is in the process of upgrading to spec version 1.0. Some features are not yet compatibile with the current version of spec!
 
