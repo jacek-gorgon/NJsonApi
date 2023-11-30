@@ -2,28 +2,146 @@
 using Newtonsoft.Json;
 using System;
 using System.IO;
-using System.Net.Http;
+#if NETCOREAPP
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Net.Http.Headers;
+
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+#else
 using System.Net.Http.Formatting;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Web.Http;
+using System.Net.Http;
+using System.Net.Http.Headers;
+#endif
+using System.Text;
 using UtilJsonApiSerializer.Common.Infrastructure;
 using UtilJsonApiSerializer.Serialization.Documents;
 using UtilJsonApiSerializer.Serialization.Converters;
 
 namespace UtilJsonApiSerializer.Serialization
 {
+
+    public class JsonApiFormatterValues
+    {
+        public static readonly string JSON_API_MIME_TYPE = "application/vnd.api+json";
+    }
+
+#if NETCOREAPP
+
+    public class JsonApiInputFormatter : TextInputFormatter
+    {
+        private readonly Configuration _configuration;
+        private readonly JsonSerializer _jsonSerializer;
+
+        public JsonApiInputFormatter(Configuration configuration, JsonSerializer jsonSerializer)
+        {
+            _configuration = configuration;
+            _jsonSerializer = jsonSerializer;
+
+            SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse(JsonApiFormatterValues.JSON_API_MIME_TYPE));
+            SupportedEncodings.Add(Encoding.UTF8);
+            SupportedEncodings.Add(Encoding.Unicode);
+        }
+
+        public override async Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context, Encoding encoding)
+        {
+
+            var textReader = context.ReaderFactory(context.HttpContext.Request.Body, encoding);
+
+
+            var updateDocument = _jsonSerializer.Deserialize(textReader, typeof(UpdateDocument)) as UpdateDocument;
+            ValidateUpdateDocument(updateDocument);
+
+            return await InputFormatterResult.SuccessAsync(updateDocument);
+        }
+
+        protected override bool CanReadType(Type type)
+        {
+            return _configuration.IsMappingRegistered(type);
+        }
+
+        private void ValidateUpdateDocument(UpdateDocument updateDocument)
+        {
+            if (updateDocument == null)
+            {
+                throw new JsonException("Json body can not be empty or whitespace.");
+            }
+
+            if (updateDocument.Data == null)
+            {
+                throw new JsonException("Json body should contain some content.");
+            }
+        }
+    }
+
+
+
+    public class JsonApiOutputFormatter : TextOutputFormatter
+    {
+        private readonly Configuration _configuration;
+        private readonly JsonSerializer _jsonSerializer;
+
+        public JsonApiOutputFormatter(Configuration configuration, JsonSerializer jsonSerializer)
+        {
+            _configuration = configuration;
+            _jsonSerializer = jsonSerializer;
+
+            SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse(JsonApiFormatterValues.JSON_API_MIME_TYPE));
+            SupportedEncodings.Add(Encoding.UTF8);
+            SupportedEncodings.Add(Encoding.Unicode);
+        }
+        public override async Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
+        {
+            var httpContext = context.HttpContext;
+            var buffer = new StringBuilder();
+            _jsonSerializer.Serialize(new StringWriter(buffer), context.Object);
+            await httpContext.Response.WriteAsync(buffer.ToString(), selectedEncoding);
+        }
+
+        protected override bool CanWriteType(Type? type)
+        {
+            if (type == null)
+            {
+                return false;
+            }
+
+            if (type == typeof(CompoundDocument))
+            {
+                return true;
+            }
+
+            if (type == typeof(Error))
+            {
+                return true;
+            }
+
+            if ((typeof(Exception).IsAssignableFrom(type)))
+            {
+                return true;
+            }
+
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(MetaDataWrapper<>))
+            {
+                type = type.GenericTypeArguments[0];
+            }
+
+            return _configuration.IsMappingRegistered(type);
+        }
+    }
+#else
     public class JsonApiFormatter : BufferedMediaTypeFormatter
     {
-        public const string JSON_API_MIME_TYPE = "application/vnd.api+json";
         private readonly Configuration configuration;
         private readonly JsonSerializer jsonSerializer;
- 
+
         public JsonApiFormatter(Configuration cfg, JsonSerializer jsonSerializer)
         {
             this.jsonSerializer = jsonSerializer;
             configuration = cfg;
-            SupportedMediaTypes.Add(new MediaTypeHeaderValue(JSON_API_MIME_TYPE));
+            SupportedMediaTypes.Add(new MediaTypeHeaderValue(JsonApiFormatterValues.JSON_API_MIME_TYPE));
             SupportedEncodings.Add(new UTF8Encoding(false, true));
 
             //if(jsonSerializer.Converters.All(x => x.GetType() != typeof (CompoundDocumentObjectConverter)))
@@ -45,7 +163,7 @@ namespace UtilJsonApiSerializer.Serialization
             using (var reader = new StreamReader(readStream))
             using (var jsonReader = new JsonTextReader(reader))
             {
-                var updateDocument = jsonSerializer.Deserialize(jsonReader, typeof (UpdateDocument)) as UpdateDocument;
+                var updateDocument = jsonSerializer.Deserialize(jsonReader, typeof(UpdateDocument)) as UpdateDocument;
                 ValidateUpdateDocument(updateDocument);
 
                 return new UpdateDocumentTypeWrapper(updateDocument, type);
@@ -54,17 +172,17 @@ namespace UtilJsonApiSerializer.Serialization
 
         public override bool CanReadType(Type type)
         {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof (Delta<>);
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Delta<>);
         }
 
         public override bool CanWriteType(Type type)
         {
-            if (type == typeof (CompoundDocument))
+            if (type == typeof(CompoundDocument))
             {
                 return true;
             }
 
-            if (type == typeof (HttpError))
+            if (type == typeof(HttpError))
             {
                 return true;
             }
@@ -78,7 +196,7 @@ namespace UtilJsonApiSerializer.Serialization
             {
                 type = type.GenericTypeArguments[0];
             }
-    
+
             return configuration.IsMappingRegistered(type);
         }
 
@@ -95,6 +213,6 @@ namespace UtilJsonApiSerializer.Serialization
             }
         }
     }
+#endif
 
-    
 }

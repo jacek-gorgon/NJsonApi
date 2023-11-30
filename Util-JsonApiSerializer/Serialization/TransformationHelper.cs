@@ -1,10 +1,15 @@
+
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+#if NETCOREAPP
+using Microsoft.AspNetCore.Http;
+#else
 using System.Web.Http;
+#endif
 using UtilJsonApiSerializer.Common.Infrastructure;
 using UtilJsonApiSerializer.Exceptions;
 using UtilJsonApiSerializer.Serialization.Documents;
@@ -26,6 +31,21 @@ namespace UtilJsonApiSerializer.Serialization
         private const string MetaCountAttribute = "count";
         private const string SelfLinkKey = "self";
         private string _parentId = string.Empty;
+
+
+       
+
+#if NETCOREAPP
+
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public TransformationHelper(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
+#else
+ public TransformationHelper()
+        { }
+#endif
 
         public CompoundDocument HandleException(Exception exception)
         {
@@ -49,6 +69,9 @@ namespace UtilJsonApiSerializer.Serialization
             return compoundDocument;
         }
 
+        // note there appears to be no structure of HttpError in .NET Core
+#if NETCOREAPP
+#else
         public CompoundDocument HandleHttpError(HttpError error)
         {
             return new CompoundDocument
@@ -62,7 +85,7 @@ namespace UtilJsonApiSerializer.Serialization
                 }
             };
         }
-
+#endif
         public IResourceRepresentation ChooseProperResourceRepresentation(object resource, IEnumerable<SingleResource> representationList)
         {
             return resource is IEnumerable ?
@@ -177,11 +200,19 @@ namespace UtilJsonApiSerializer.Serialization
 
         public SingleResource CreateResourceRepresentation(object objectGraph, IResourceMapping resourceMapping, Context context, bool isIncludedResource = false, Type ownerType = null)
         {
-            var urlBuilder = new UrlBuilder
+#if NETCOREAPP
+            var urlBuilder = new UrlBuilder(_httpContextAccessor)
             {
                 RoutePrefix = context.RoutePrefix
             };
 
+
+#else
+            var urlBuilder = new UrlBuilder
+            {
+                RoutePrefix = context.RoutePrefix
+            };
+#endif
             var result = new SingleResource();
 
             result.Id = resourceMapping.IdGetter(objectGraph).ToString();
@@ -227,11 +258,17 @@ namespace UtilJsonApiSerializer.Serialization
 
         private ILink GetUrlFromTemplate(string urlTemplate, string routePrefix, string parentId, string relatedId = null, string parenttype = null, string relationshipName = null)
         {
-
+#if NETCOREAPP
+            var builder = new UrlBuilder(_httpContextAccessor)
+            {
+                RoutePrefix = routePrefix
+            };
+#else
             var builder = new UrlBuilder
             {
                 RoutePrefix = routePrefix
             };
+#endif
             return new SimpleLink
             {
                 Href = builder.GetFullyQualifiedUrl(urlTemplate.Replace(ParentIdPlaceholder, parentId).Replace(RelatedIdPlaceholder, relatedId).Replace(TypePlaceholder, parenttype).Replace(RelationshipPlaceholder, relationshipName))

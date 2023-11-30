@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NJsonApi.Test</RootNamespace>
     <AssemblyName>NJsonApi.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -20,6 +20,7 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,6 +38,15 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseCore|AnyCPU'">
+    <OutputPath>bin\ReleaseCore\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
@@ -103,11 +113,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Util-JsonApiSerializer.Common\Util-JsonApiSerializer.Common.csproj">
       <Project>{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}</Project>
-      <Name>NJsonApi.Common</Name>
+      <Name>Util-JsonApiSerializer.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Util-JsonApiSerializer\Util-JsonApiSerializer.csproj">
       <Project>{39073AC4-47C1-4C0E-87E1-E48FA606D165}</Project>
-      <Name>NJsonApi</Name>
+      <Name>Util-JsonApiSerializer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

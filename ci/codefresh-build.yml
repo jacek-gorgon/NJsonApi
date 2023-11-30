@@ -1,0 +1,110 @@
+version: '1.0'
+mode: sequential
+stages: [ 'checkout', 'build', 'push', 'notify' ]
+
+steps:
+  main_clone:
+    title: Cloning main repository...
+    fail_fast: false
+    type: git-clone
+    repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+    revision: '${{CF_REVISION}}'
+    git: FrontlineEducation
+    stage: checkout
+
+  list_directory:
+    when: {steps: [{name: main_clone, on: [success]}]}
+    title: List Directory
+    stage: checkout
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    fail_fast: false
+    commands:
+      - find "$PWD"
+
+#   unit_tests:
+#     when: {steps: [{name: list_directory, on: [success]}]}
+#     title: Unit Tests
+#     stage: test
+#     image: mcr.microsoft.com/dotnet/sdk:6.0
+#     commands:
+#       - dotnet test ${{SOLUTION_NAME}}.sln --configuration ${{RELEASE_TYPE}}
+
+  BumpTagVersion:
+    when: {steps: [{name: main_clone, on: [success]}]}
+    title: Bump Tag Version
+    image: ${{ECR}}/sys-tagging
+    fail_fast: false
+    commands: [ 'bump_tag_version.sh' ]
+    stage: build
+
+  BuildingDockerImage:
+    when: {steps: [{name: BumpTagVersion, on: [success]}]}
+    title: Building Docker Image
+    fail_fast: false
+    stage: build
+    type: build
+    image_name: ${{CF_BRANCH_TAG_NORMALIZED_LOWER_CASE}}
+    disable_push:  true
+    build_arguments:
+      - releaseType=${{RELEASE_TYPE}}
+      - nugetconfig=${{nugetconfig}}
+      - nugetUri=${{nugetUri}}
+      - nugetApiKey=${{nugetApiKey}}
+      - nugetVersion=${{TAG}}
+      - branchName=${{CF_BRANCH}}
+
+  PushTag:
+    when: {steps: [{name: BuildingDockerImage, on: [success]}]}
+    title: Push Tag
+    stage: push
+    image: ${{ECR}}/sys-tagging
+    fail_fast: false
+    commands: [ 'push_tag.sh' ]
+    
+      
+   
+  slack-notify-failure:
+    when:
+      steps:
+       any:
+        - name: main_clone
+          on:
+           - failure
+        - name: list_directory
+          on:
+           - failure
+        - name: BumpTagVersion
+          on:
+           - failure
+        - name: BuildingDockerImage
+          on:
+           - failure
+        - name: PushTag
+          on:
+           - failure
+    stage: notify
+    image: cfcommunity/slack-notification-resource
+    commands: [ 'echo ${{SLACK_FAILURE}} | /opt/resource/out .' ]
+
+  slack-notify-success:
+    when:
+      steps:
+       all:
+        - name: main_clone
+          on:
+           - success
+        - name: list_directory
+          on:
+           - success
+        - name: BumpTagVersion
+          on:
+           - success
+        - name: BuildingDockerImage
+          on:
+           - success
+        - name: PushTag
+          on:
+           - success
+    stage: notify
+    image: cfcommunity/slack-notification-resource
+    commands: [ 'echo ${{SLACK_SUCCESS}} | /opt/resource/out .' ]

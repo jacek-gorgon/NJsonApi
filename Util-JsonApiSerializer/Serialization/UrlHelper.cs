@@ -1,4 +1,8 @@
-﻿using System;
+﻿#if NETCOREAPP
+using Microsoft.AspNetCore.Http;
+#else
+#endif
+using System;
 using System.Linq;
 using System.Web;
 
@@ -8,6 +12,19 @@ namespace UtilJsonApiSerializer.Serialization
     {
         private string routePrefix = string.Empty;
         private string root = string.Empty;
+
+
+        public UrlBuilder()
+        {
+        }
+#if NETCOREAPP
+        private readonly IHttpContextAccessor _accessor;
+        public UrlBuilder(IHttpContextAccessor accessor)
+        {
+            _accessor = accessor;
+        }
+#else
+#endif
 
         public string RoutePrefix
         {
@@ -23,6 +40,8 @@ namespace UtilJsonApiSerializer.Serialization
             }
         }
 
+
+#if NETCOREAPP
         public string Url
         {
             get
@@ -33,6 +52,39 @@ namespace UtilJsonApiSerializer.Serialization
                 }
                 else
                 {
+                    var context = _accessor.HttpContext;
+                    if (context != null)
+                    {
+                        if (routePrefix == string.Empty)
+                        {
+                            Uri url =new Uri(Microsoft.AspNetCore.Http.Extensions.UriHelper.GetDisplayUrl(context.Request));
+                            var scheme = url.Scheme;
+                            if (context.Request.Headers["X-Forwarded-Proto"].Any())
+                            {
+                                scheme = context.Request.Headers["X-Forwarded-Proto"];
+                            }
+                            root = scheme + "://" + url.Authority + context.Request.PathBase;
+                        }
+                    }
+
+                }
+
+                if (!root.EndsWith("/")) root += "/";
+                return root;
+            }
+        }
+#else
+        public string Url
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(routePrefix))
+                {
+                    root = routePrefix;
+                }
+                else
+                {
+                    
                     if (HttpContext.Current != null)
                     {
                         if (routePrefix == string.Empty)
@@ -52,7 +104,7 @@ namespace UtilJsonApiSerializer.Serialization
                 return root;
             }
         }
-
+#endif
         public string GetFullyQualifiedUrl(string urlTemplate)
         {
             if (String.IsNullOrEmpty(Url))

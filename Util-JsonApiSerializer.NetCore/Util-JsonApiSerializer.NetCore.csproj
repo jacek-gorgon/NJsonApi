@@ -1,0 +1,119 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Util_JsonApiSerializer.NetCore</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Configurations>Debug;Release;ReleaseCore</Configurations>
+    <ApplicationIcon>FrontlineCentralIcon.ico</ApplicationIcon>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>UtilJsonApiSerializer Net Core</Title>
+    <PackageId>UtilJsonApiSerializerNetCore</PackageId>
+    <Authors>Frontline Central</Authors>
+    <Company>Prontline Education</Company>
+    <Description>The Json API Serializer utility for Net Core</Description>
+    <Copyright>copyright (c) Frontline Education  2023</Copyright>
+    <PackageIcon>FrontlineCentralIcon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/FrontlineEducation/Util-JsonApiSerializer</RepositoryUrl>
+    <PackageTags>util;jsonapi;serializer;jsonapiserializer;netcore;net;core;</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Util-JsonApiSerializer\Configuration.cs" Link="Configuration.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\ConfigurationBuilder.cs" Link="ConfigurationBuilder.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Context.cs" Link="Context.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Conventions\IConvention.cs" Link="Conventions\IConvention.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Conventions\ILinkIdConvention.cs" Link="Conventions\ILinkIdConvention.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Conventions\ILinkNameConvention.cs" Link="Conventions\ILinkNameConvention.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Conventions\Impl\CamelCaseLinkNameConvention.cs" Link="Conventions\Impl\CamelCaseLinkNameConvention.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Conventions\Impl\DefaultPropertyScanningConvention.cs" Link="Conventions\Impl\DefaultPropertyScanningConvention.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Conventions\Impl\PluralizedCamelCaseTypeConvention.cs" Link="Conventions\Impl\PluralizedCamelCaseTypeConvention.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Conventions\Impl\SimpleLinkedIdConvention.cs" Link="Conventions\Impl\SimpleLinkedIdConvention.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Conventions\IPropertyScanningConvention.cs" Link="Conventions\IPropertyScanningConvention.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Conventions\IRelationshipUrlConvention.cs" Link="Conventions\IRelationshipUrlConvention.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Conventions\IResourceTypeConvention.cs" Link="Conventions\IResourceTypeConvention.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Exceptions\MissingMappingException.cs" Link="Exceptions\MissingMappingException.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\IJsonApiSerializer.cs" Link="IJsonApiSerializer.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\IPreSerializerPipelineModule.cs" Link="IPreSerializerPipelineModule.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\IRelationshipMapping.cs" Link="IRelationshipMapping.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\IResourceConfigurationBuilder.cs" Link="IResourceConfigurationBuilder.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\IResourceMapping.cs" Link="IResourceMapping.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\ISerializerPipelineModule.cs" Link="ISerializerPipelineModule.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\JsonApiSerializer.cs" Link="JsonApiSerializer.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\LinkMapping.cs" Link="LinkMapping.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\ResourceConfigurationBuilder.cs" Link="ResourceConfigurationBuilder.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\ResourceMapping.cs" Link="ResourceMapping.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\SerializationDirection.cs" Link="SerializationDirection.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Converters\ISerializationAware.cs" Link="Serialization\Converters\ISerializationAware.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Converters\SerializationAwareConverter.cs" Link="Serialization\Converters\SerializationAwareConverter.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Error.cs" Link="Serialization\Error.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\IJsonApiTransformer.cs" Link="Serialization\IJsonApiTransformer.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\IUrlBuilder.cs" Link="Serialization\IUrlBuilder.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\JsonApiActionFilter.cs" Link="Serialization\JsonApiActionFilter.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\JsonApiFormatter.cs" Link="Serialization\JsonApiFormatter.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\JsonApiTransformer.cs" Link="Serialization\JsonApiTransformer.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Metadataitem.cs" Link="Serialization\Metadataitem.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Representations\Documents\CompoundDocument.cs" Link="Serialization\Representations\Documents\CompoundDocument.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Representations\Documents\Document.cs" Link="Serialization\Representations\Documents\Document.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Representations\Relationships\IRelationship.cs" Link="Serialization\Representations\Relationships\IRelationship.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Representations\Relationships\IResourceLinkage.cs" Link="Serialization\Representations\Relationships\IResourceLinkage.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Representations\Relationships\MultipleResourceIdentifiers.cs" Link="Serialization\Representations\Relationships\MultipleResourceIdentifiers.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Representations\Relationships\NullResourceIdentifier.cs" Link="Serialization\Representations\Relationships\NullResourceIdentifier.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Representations\Relationships\Relationship.cs" Link="Serialization\Representations\Relationships\Relationship.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Representations\Relationships\RelationshipLinks.cs" Link="Serialization\Representations\Relationships\RelationshipLinks.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Representations\Relationships\SingleResourceIdentifier.cs" Link="Serialization\Representations\Relationships\SingleResourceIdentifier.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Representations\Resources\ILink.cs" Link="Serialization\Representations\Resources\ILink.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Representations\Resources\IResourceIdentifier.cs" Link="Serialization\Representations\Resources\IResourceIdentifier.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Representations\Resources\IResourceRepresentation.cs" Link="Serialization\Representations\Resources\IResourceRepresentation.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Representations\Resources\ResourceCollection.cs" Link="Serialization\Representations\Resources\ResourceCollection.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Representations\Resources\SimpleLink.cs" Link="Serialization\Representations\Resources\SimpleLink.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\Representations\Resources\SingleResource.cs" Link="Serialization\Representations\Resources\SingleResource.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\TransformationHelper.cs" Link="Serialization\TransformationHelper.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\UpdateDocument.cs" Link="Serialization\UpdateDocument.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\UpdateDocumentTypeWrapper.cs" Link="Serialization\UpdateDocumentTypeWrapper.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Serialization\UrlHelper.cs" Link="Serialization\UrlHelper.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Utils\CamelCaseUtil.cs" Link="Utils\CamelCaseUtil.cs" />
+    <Compile Include="..\Util-JsonApiSerializer\Utils\ExpressionUtils.cs" Link="Utils\ExpressionUtils.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="FrontlineCentralIcon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Conventions\Impl\" />
+    <Folder Include="Exceptions\" />
+    <Folder Include="Serialization\Converters\" />
+    <Folder Include="Serialization\Representations\Documents\" />
+    <Folder Include="Serialization\Representations\Resources\" />
+    <Folder Include="Serialization\Representations\Relationships\" />
+    <Folder Include="Utils\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Pluralize.NET" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Util-JsonApiSerializer.Common.NetCore\Util-JsonApiSerializer.Common.NetCore.csproj" />
+  </ItemGroup>
+
+<ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+<ItemGroup>
+  <None Update="FrontlineCentralIcon.png">
+    <Pack>True</Pack>
+    <PackagePath>\</PackagePath>
+  </None>
+  <None Update="README.md">
+    <Pack>True</Pack>
+    <PackagePath>\</PackagePath>
+  </None>
+</ItemGroup>
+
+</Project>

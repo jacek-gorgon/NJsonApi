@@ -1,7 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
+
+#if NETCOREAPP
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Http;
+#else
 using System.Web.Http;
+#endif
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -44,25 +51,52 @@ namespace UtilJsonApiSerializer
             return preSerializerPipelineModule;
         }
 
+#if NETCOREAPP
+        public void Apply(IServiceCollection services, IHttpContextAccessor accessor)
+        {
+            var serializer = GetJsonSerializer();
+            var inputFormatter = new JsonApiInputFormatter(this, serializer);
+            var outputFormatter = new JsonApiOutputFormatter(this, serializer);
+
+           
+            services.AddControllers(options =>
+            {
+                options.InputFormatters.Add(inputFormatter);
+                options.OutputFormatters.Add(outputFormatter);
+            });
+            var helper = new TransformationHelper(accessor);
+
+            var transformer = new JsonApiTransformer { Serializer = serializer, TransformationHelper = helper };
+            var filter = new JsonApiActionFilter(transformer, this);
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(filter);
+            });
+        }
+#else
         public void Apply(HttpConfiguration configuration)
         {
+            // var conf = new ConfigurationBuilder();
+
+
             var serializer = GetJsonSerializer();
             var helper = new TransformationHelper();
             var transformer = new JsonApiTransformer { Serializer = serializer, TransformationHelper = helper };
-            
+
             var filter = new JsonApiActionFilter(transformer, this);
             configuration.Filters.Add(filter);
 
             var formatter = new JsonApiFormatter(this, serializer);
             configuration.Formatters.Add(formatter);
-        }
 
+        }
+#endif
         private static JsonSerializer GetJsonSerializer()
         {
             var serializerSettings = new JsonSerializerSettings();
-            serializerSettings.ContractResolver= new CamelCasePropertyNamesContractResolver();
+            serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             serializerSettings.Converters.Add(new IsoDateTimeConverter());
-            serializerSettings.Converters.Add(new StringEnumConverter() { CamelCaseText = true});
+            serializerSettings.Converters.Add(new StringEnumConverter() { CamelCaseText = true });
 #if DEBUG
             serializerSettings.Formatting = Formatting.Indented;
 #endif

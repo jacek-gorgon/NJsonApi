@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+#if NETCOREAPP
+#else
 using System.Web.Http;
+#endif
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UtilJsonApiSerializer.Common.Infrastructure;
@@ -24,12 +27,14 @@ namespace UtilJsonApiSerializer.Serialization
         public CompoundDocument Transform(object objectGraph, Context context)
         {
             Type innerObjectType = TransformationHelper.GetObjectType(objectGraph);
-
+            // note there appears to be no structure of HttpError in .NET Core
+#if NETCOREAPP
+#else
             if (objectGraph is HttpError)
             {
                 return TransformationHelper.HandleHttpError(objectGraph as HttpError);
             }
-
+#endif
             if (objectGraph is Exception)
             {
                 return TransformationHelper.HandleException(objectGraph as Exception);

@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Util_JsonApiSerializer.Common.NetCore</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Configurations>Debug;Release;ReleaseCore</Configurations>
+    <ApplicationIcon>FrontlineCentralIcon.ico</ApplicationIcon>
+    <Title>UtilJsonApiSerializerCommonNetCore</Title>
+    <Authors>Frontline Central</Authors>
+    <Company>Frontline Education</Company>
+    <Product>UtilJsonApiSerializerCommonNetCore</Product>
+    <Description>Net Core version of the JsonApiSerializer Common library</Description>
+    <Copyright>copyright (c) Frontline Education 2023</Copyright>
+    <PackageIcon>FrontlineCentralIcon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/FrontlineEducation/Util-JsonApiSerializer</RepositoryUrl>
+    <PackageTags>util;common;jsonapiserializercommon;jsonapiserializer;</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Util-JsonApiSerializer.Common\Infrastructure\Delta.cs" Link="Infrastructure\Delta.cs" />
+    <Compile Include="..\Util-JsonApiSerializer.Common\Infrastructure\IDelta.cs" Link="Infrastructure\IDelta.cs" />
+    <Compile Include="..\Util-JsonApiSerializer.Common\Infrastructure\IMetaDataWrapper.cs" Link="Infrastructure\IMetaDataWrapper.cs" />
+    <Compile Include="..\Util-JsonApiSerializer.Common\Infrastructure\MetaDataWrapper.cs" Link="Infrastructure\MetaDataWrapper.cs" />
+    <Compile Include="..\Util-JsonApiSerializer.Common\Infrastructure\NJsonApiBaseException.cs" Link="Infrastructure\NJsonApiBaseException.cs" />
+    <Compile Include="..\Util-JsonApiSerializer.Common\Infrastructure\Patch.cs" Link="Infrastructure\Patch.cs" />
+    <Compile Include="..\Util-JsonApiSerializer.Common\Infrastructure\SerializeAsPrimitive.cs" Link="Infrastructure\SerializeAsPrimitive.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="FrontlineCentralIcon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Infrastructure\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+<ItemGroup>
+  <FrameworkReference Include="Microsoft.AspNetCore.App" />
+</ItemGroup>
+<ItemGroup>
+  <None Update="FrontlineCentralIcon.png">
+    <Pack>True</Pack>
+    <PackagePath>\</PackagePath>
+  </None>
+  <None Update="README.md">
+    <Pack>True</Pack>
+    <PackagePath>\</PackagePath>
+  </None>
+</ItemGroup>
+
+</Project>
